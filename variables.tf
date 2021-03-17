@@ -1,30 +1,37 @@
-variable "project" {
-  type = string
-}
+variable "project" { type = string }
+variable "service_account_impersonate" { type = string }
 variable "service_account" {
-  type = string
+  default = null
+  type = object({
+    email  = string
+    scopes = set(string)
+  })
+  description = "Service account to attach to the instance. See https://www.terraform.io/docs/providers/google/r/compute_instance_template.html#service_account."
 }
 
-variable "location" {
-  type = string
-}
-# Variables for Instance template
-variable "instance_template_name" {
-  type = string
+variable "location" { type = string }
+variable "instance_template_name" { type = string }
+variable "machine_type" { type = string }
+
+# For boot disk image
+/*
+variable "source_image" { type = string}
+variable "disk_size_gb" { type = number}
+variable "auto_delete" { type = bool }
+*/
+
+# For additional disk
+variable "disks" {
+  type = list(object({
+    boot = bool
+    auto_delete  = bool
+    disk_name    = string
+    disk_size_gb = number
+    disk_type = string
+    source_image = string
+    type = string
+  }))
 }
 
-variable "machine_type" {
-  type = string
-}
-
-variable "image_names" {
-  type = list(string)
-}
-
-variable "subnetwork_project" {
-  type = string
-}
-
-variable "subnetwork" {
-  type = string
-}
+variable "subnetwork_project" { type = string }
+variable "subnetwork" { type = string }
