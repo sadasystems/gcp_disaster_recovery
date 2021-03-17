@@ -13,23 +13,15 @@ variable "location" { type = string }
 variable "instance_template_name" { type = string }
 variable "machine_type" { type = string }
 
-# For boot disk image
-/*
-variable "source_image" { type = string}
-variable "disk_size_gb" { type = number}
-variable "auto_delete" { type = bool }
-*/
-
-# For additional disk
 variable "disks" {
   type = list(object({
-    boot = bool
+    boot         = bool
     auto_delete  = bool
     disk_name    = string
     disk_size_gb = number
-    disk_type = string
+    disk_type    = string
     source_image = string
-    type = string
+    type         = string
   }))
 }
 
