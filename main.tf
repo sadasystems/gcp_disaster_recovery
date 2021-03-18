@@ -51,7 +51,7 @@ resource "google_compute_instance_template" "default" {
   scheduling {
     on_host_maintenance = "MIGRATE"
     automatic_restart   = true
-    preemptible = false
+    preemptible         = false
   }
 
   service_account {
@@ -67,15 +67,32 @@ resource "google_compute_instance_template" "default" {
 }
 
 resource "google_compute_health_check" "autohealing" {
-  name = "healthcheck-autohealing"
-  check_interval_sec = var.check_interval_sec
-  timeout_sec = var.timeout_sec
-  healthy_threshold = var.healthy_threshold
+  name                = "healthcheck-autohealing"
+  check_interval_sec  = var.check_interval_sec
+  timeout_sec         = var.timeout_sec
+  healthy_threshold   = var.healthy_threshold
   unhealthy_threshold = var.unhealthy_threshold
 
   http_health_check {
     request_path = var.hc_http_request_path
-    port = var.hc_http_port
+    port         = var.hc_http_port
+  }
+}
+
+resource "google_compute_instance_group_manager" "mig" {
+  name               = var.igm_name
+  base_instance_name = var.igm_base_instance_name
+  zone               = var.igm_zone
+
+  version {
+    instance_template = google_compute_instance_template.default.id
+  }
+
+  target_size = 1
+
+  auto_healing_policies {
+    health_check      = google_compute_health_check.autohealing.id
+    initial_delay_sec = var.igm_initial_delay_sec
   }
 }
 

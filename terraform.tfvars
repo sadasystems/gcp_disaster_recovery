@@ -35,11 +35,16 @@ disks = [
 subnetwork_project = "ent-net-mta-host-fde3"
 subnetwork         = "neustar-shared-prod-usc1-mta-rnd-subnet-26ee"
 
-# Health check configuration
-check_interval_sec = 15
-timeout_sec = 5
-healthy_threshold = 2
-unhealthy_threshold = 3
+# Health check
+check_interval_sec   = 15
+timeout_sec          = 5
+healthy_threshold    = 2
+unhealthy_threshold  = 3
 hc_http_request_path = "/health"
-hc_http_port = 80
+hc_http_port         = 80
 
+# Instance group manager
+igm_name               = "igm_test"
+igm_base_instance_name = "test-vm"
+igm_zone               = "us-central1-a"
+igm_initial_delay_sec  = "180"
