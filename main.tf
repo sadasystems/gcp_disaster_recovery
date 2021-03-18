@@ -47,9 +47,13 @@ resource "google_compute_instance_template" "default" {
     subnetwork         = var.subnetwork
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
   scheduling {
     on_host_maintenance = "MIGRATE"
     automatic_restart   = true
+    preemptible = false
   }
 
   service_account {
