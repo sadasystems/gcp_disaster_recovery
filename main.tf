@@ -22,8 +22,6 @@ resource "google_compute_resource_policy" "hourly_backup" {
   }
 }
 
-# VM to Instance template with source image
-# input source image, network
 resource "google_compute_instance_template" "default" {
   name         = var.instance_template_name
   region       = var.location
@@ -67,3 +65,18 @@ resource "google_compute_instance_template" "default" {
     enable_integrity_monitoring = true
   }
 }
+
+resource "google_compute_health_check" "autohealing" {
+  name = "healthcheck-autohealing"
+  check_interval_sec = var.check_interval_sec
+  timeout_sec = var.timeout_sec
+  healthy_threshold = var.healthy_threshold
+  unhealthy_threshold = var.unhealthy_threshold
+
+  http_health_check {
+    request_path = var.hc_http_request_path
+    port = var.hc_http_port
+  }
+}
+
+
