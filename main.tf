@@ -7,7 +7,10 @@ provider "google" {
   project      = var.project
 }
 
-# Create a Image
+resource "google_compute_address" "external_IP" {
+  name = "ipv4-address"
+  region = var.location
+}
 
 resource "google_compute_resource_policy" "hourly_backup" {
   name   = "every-day-2am"
@@ -27,6 +30,8 @@ resource "google_compute_instance_template" "default" {
   region       = var.location
   machine_type = var.machine_type
 
+  metadata_startup_script = var.startup_script
+
   dynamic "disk" {
     for_each = var.disks
     content {
@@ -43,11 +48,15 @@ resource "google_compute_instance_template" "default" {
   network_interface {
     subnetwork_project = var.subnetwork_project
     subnetwork         = var.subnetwork
+    access_config {
+      nat_ip = google_compute_address.external_IP.address
+    }
   }
 
   lifecycle {
     create_before_destroy = true
   }
+
   scheduling {
     on_host_maintenance = "MIGRATE"
     automatic_restart   = true
@@ -68,14 +77,14 @@ resource "google_compute_instance_template" "default" {
 
 resource "google_compute_health_check" "autohealing" {
   name                = "healthcheck-autohealing"
-  check_interval_sec  = var.check_interval_sec
-  timeout_sec         = var.timeout_sec
-  healthy_threshold   = var.healthy_threshold
-  unhealthy_threshold = var.unhealthy_threshold
+  check_interval_sec  = var.health_check["check_interval_sec"]
+  timeout_sec         = var.health_check["timeout_sec"]
+  healthy_threshold   = var.health_check["healthy_threshold"]
+  unhealthy_threshold = var.health_check["unhealthy_threshold"]
 
   http_health_check {
-    request_path = var.hc_http_request_path
-    port         = var.hc_http_port
+    request_path = var.health_check["request_path"]
+    port         = var.health_check["port"]
   }
 }
 
@@ -94,6 +103,13 @@ resource "google_compute_instance_group_manager" "mig" {
     health_check      = google_compute_health_check.autohealing.id
     initial_delay_sec = var.igm_initial_delay_sec
   }
+
+/*  stateful_disk {
+    device_name = google_compute_instance_template.default.disk
+  }*/
+
+  # to-do : create a snapshot. attach snap schedule
+
 }
 
 
