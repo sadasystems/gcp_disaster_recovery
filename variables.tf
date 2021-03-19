@@ -57,15 +57,6 @@ variable "health_check" {
     request_path        = string
   })
 }
-/*
-
-variable "check_interval_sec" { type = number }
-variable "timeout_sec" { type = number }
-variable "healthy_threshold" { type = number }
-variable "unhealthy_threshold" { type = number }
-variable "hc_http_request_path" { type = string }
-variable "hc_http_port" { type = number }
-*/
 
 # Instance group manager
 variable "igm_name" { type = string }
