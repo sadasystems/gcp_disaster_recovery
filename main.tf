@@ -9,29 +9,12 @@ provider "google" {
 
 resource "google_compute_address" "external_IP" {
   name = "ipv4-address"
-  region = var.location
-}
-
-resource "google_compute_resource_policy" "hourly_backup" {
-  name   = "every-day-2am"
-  region = "us-central1"
-  snapshot_schedule_policy {
-    schedule {
-      hourly_schedule {
-        hours_in_cycle = var.snapshot.hours
-        start_time     = var.snapshot.start_time
-      }
-    }
-    retention_policy {
-      max_retention_days    = var.snapshot.max_retention_days
-      on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
-    }
-  }
+  region = var.region
 }
 
 resource "google_compute_instance_template" "default" {
   name         = var.instance_template_name
-  region       = var.location
+  region       = var.region
   machine_type = var.machine_type
 
   metadata_startup_script = var.startup_script
@@ -80,6 +63,24 @@ resource "google_compute_instance_template" "default" {
   }
 }
 
+resource "google_compute_resource_policy" "hourly_backup" {
+  name   = "every-day-2am"
+  region = var.region
+  snapshot_schedule_policy {
+    schedule {
+      hourly_schedule {
+        hours_in_cycle = var.snapshot.hours
+        start_time     = var.snapshot.start_time
+      }
+    }
+    retention_policy {
+      max_retention_days    = var.snapshot.max_retention_days
+      on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
+    }
+  }
+}
+
+
 resource "google_compute_health_check" "autohealing" {
   name                = "healthcheck-autohealing"
   check_interval_sec  = var.health_check["check_interval_sec"]
@@ -116,5 +117,3 @@ resource "google_compute_instance_group_manager" "mig" {
     }
   }
 }
-
-

@@ -1,6 +1,6 @@
 project  = "mta-mta-rnd-mtaapp-6155"
 
-location = "us-central1"
+region = "us-central1"
 machine_type = "e2-medium"
 
 instance_template_name = "template-disaster-recovery"
