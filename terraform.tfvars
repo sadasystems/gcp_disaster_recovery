@@ -39,6 +39,12 @@ disks = [
   }
 ]
 
+snapshot = {
+  hours = 1
+  start_time = "02:00"
+  max_retention_days = 1
+}
+
 subnetwork_project = "ent-net-mta-host-fde3"
 subnetwork         = "neustar-shared-prod-usc1-mta-rnd-subnet-26ee"
 
@@ -54,6 +60,6 @@ health_check = {
 
 # Instance group manager
 igm_name               = "igm-test"  #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
-igm_base_instance_name = "test-vm"
+igm_base_instance_name_prefix = "test-vm"
 igm_zone               = "us-central1-a"
 igm_initial_delay_sec  = "180"

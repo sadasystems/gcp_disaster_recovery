@@ -18,9 +18,13 @@ resource "google_compute_resource_policy" "hourly_backup" {
   snapshot_schedule_policy {
     schedule {
       hourly_schedule {
-        hours_in_cycle = 1
-        start_time     = "02:00"
+        hours_in_cycle = var.snapshot.hours
+        start_time     = var.snapshot.start_time
       }
+    }
+    retention_policy {
+      max_retention_days    = var.snapshot.max_retention_days
+      on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
     }
   }
 }
@@ -42,6 +46,7 @@ resource "google_compute_instance_template" "default" {
       disk_type    = lookup(disk.value, "disk_type", null)
       source_image = lookup(disk.value, "source_image", null)
       type         = lookup(disk.value, "type", null)
+      resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
 
@@ -90,7 +95,7 @@ resource "google_compute_health_check" "autohealing" {
 
 resource "google_compute_instance_group_manager" "mig" {
   name               = var.igm_name
-  base_instance_name = var.igm_base_instance_name
+  base_instance_name = var.igm_base_instance_name_prefix
   zone               = var.igm_zone
 
   version {
@@ -104,12 +109,12 @@ resource "google_compute_instance_group_manager" "mig" {
     initial_delay_sec = var.igm_initial_delay_sec
   }
 
-/*  stateful_disk {
-    device_name = google_compute_instance_template.default.disk
-  }*/
-
-  # to-do : create a snapshot. attach snap schedule
-
+  dynamic "stateful_disk" {
+    for_each = google_compute_instance_template.default.disk
+    content {
+      device_name = stateful_disk.value["device_name"]
+    }
+  }
 }
 
 
