@@ -1,6 +1,3 @@
-locals {
-  source_vm = data.google_compute_instance.source_vm
-}
 provider "google" {
   alias = "tokengen"
 }
@@ -35,7 +32,7 @@ resource "google_compute_resource_policy" "hourly_backup" {
 resource "google_compute_instance_template" "default" {
   name         = var.instance_template_name
   region       = var.region
-  machine_type = local.source_vm.machine_type
+  machine_type = data.google_compute_instance.source_vm.machine_type
 
   metadata_startup_script = var.startup_script
 
@@ -54,8 +51,8 @@ resource "google_compute_instance_template" "default" {
   }
 
   network_interface {
-    subnetwork_project = local.source_vm.network_interface[0].subnetwork_project
-    subnetwork         = local.source_vm.network_interface[0].subnetwork
+    subnetwork_project = data.google_compute_instance.source_vm.network_interface[0].subnetwork_project
+    subnetwork         = data.google_compute_instance.source_vm.network_interface[0].subnetwork
     access_config {
       nat_ip = google_compute_address.external_IP.address
     }
@@ -85,7 +82,6 @@ resource "google_compute_instance_template" "default" {
   depends_on = [google_compute_address.external_IP, google_compute_resource_policy.hourly_backup]
 }
 
-
 resource "google_compute_health_check" "autohealing" {
   name                = var.health_check["name"]
   check_interval_sec  = var.health_check["check_interval_sec"]
@@ -97,12 +93,13 @@ resource "google_compute_health_check" "autohealing" {
     request_path = var.health_check["request_path"]
     port         = var.health_check["port"]
   }
+  depends_on = [google_compute_instance_template.default]
 }
 
 resource "google_compute_instance_group_manager" "mig" {
   name               = var.igm_name
   base_instance_name = var.igm_base_instance_name_prefix
-  zone               = local.source_vm.zone
+  zone               = data.google_compute_instance.source_vm.zone
 
   version {
     instance_template = google_compute_instance_template.default.id

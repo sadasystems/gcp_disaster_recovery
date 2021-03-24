@@ -51,7 +51,7 @@ snapshot = {
 
 # Health check
 health_check = {
-  name                = "dr-test-healthcheck"
+  name                = "dr-healthcheck"
   check_interval_sec  = 15
   timeout_sec         = 5
   healthy_threshold   = 2

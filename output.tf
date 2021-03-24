@@ -1,3 +1,3 @@
-output "instance_template_data" {
-  value = google_compute_instance_template.default
+output "instance_group_manager_data" {
+  value = google_compute_instance_group_manager.mig
 }
