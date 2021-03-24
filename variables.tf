@@ -1,4 +1,4 @@
-variable "project" {type = string}
+variable "project" { type = string }
 variable "service_account_impersonate" { type = string }
 variable "service_account" {
   default = null
@@ -10,17 +10,17 @@ variable "service_account" {
 }
 
 variable "region" { type = string }
-variable "zone" {type=string}
+variable "zone" { type = string }
 variable "source_vm" {
   description = "Name of the VM migrated from AWS to GCP"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "instance_template_name" { type = string }
 variable "startup_script" {
   description = "User startup script to run when instances spin up"
-  default = ""
+  default     = ""
 }
 
 variable "disks" {
@@ -35,10 +35,13 @@ variable "disks" {
   }))
 }
 
+variable "external_ip_name" { type = string }
+
 variable "snapshot" {
   type = object({
-    hours = number
-    start_time = string
+    name               = string
+    hours              = number
+    start_time         = string
     max_retention_days = number
   })
 }
@@ -46,6 +49,7 @@ variable "snapshot" {
 # Health check
 variable "health_check" {
   type = object({
+    name                = string
     type                = optional(string)
     initial_delay_sec   = optional(number)
     check_interval_sec  = number

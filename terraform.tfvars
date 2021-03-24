@@ -1,11 +1,11 @@
-project  = "mta-mta-rnd-mtaapp-6155"
-region = "us-central1"
-zone = "us-central1-a"
+project = "mta-mta-rnd-mtaapp-6155"
+region  = "us-central1"
+zone    = "us-central1-a"
 
 source_vm = "microservice"
 
 instance_template_name = "template-disaster-recovery"
-startup_script = <<EOF
+startup_script         = <<EOF
   sudo apt update && sudo apt -y install git gunicorn3 python3-pip
   git clone https://github.com/GoogleCloudPlatform/python-docs-samples.git
   cd python-docs-samples/compute/managed-instances/demo
@@ -18,6 +18,8 @@ service_account = {
   email  = "scv-test-mta-rnd-mtaapp@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com"
   scopes = ["cloud-platform"]
 }
+
+external_ip_name = "microservice-external-ip"
 
 disks = [
   {
@@ -41,22 +43,24 @@ disks = [
 ]
 
 snapshot = {
-  hours = 1
-  start_time = "02:00"
+  name               = "everyday-2am-1hour"
+  hours              = 1
+  start_time         = "02:00"
   max_retention_days = 1
 }
 
 # Health check
 health_check = {
-  check_interval_sec   = 15
-  timeout_sec          = 5
-  healthy_threshold    = 2
-  unhealthy_threshold  = 3
-  request_path = "/health"
-  port = 80
+  name                = "dr-test-healthcheck"
+  check_interval_sec  = 15
+  timeout_sec         = 5
+  healthy_threshold   = 2
+  unhealthy_threshold = 3
+  request_path        = "/health"
+  port                = 80
 }
 
 # Instance group manager
-igm_name               = "igm-test"  #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+igm_name                      = "igm-test" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 igm_base_instance_name_prefix = "test-vm"
-igm_initial_delay_sec  = "180"
+igm_initial_delay_sec         = "180"

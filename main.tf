@@ -11,8 +11,25 @@ provider "google" {
 }
 
 resource "google_compute_address" "external_IP" {
-  name = "ipv4-address"
+  name   = var.external_ip_name
   region = var.region
+}
+
+resource "google_compute_resource_policy" "hourly_backup" {
+  name   = var.snapshot.name
+  region = var.region
+  snapshot_schedule_policy {
+    schedule {
+      hourly_schedule {
+        hours_in_cycle = var.snapshot.hours
+        start_time     = var.snapshot.start_time
+      }
+    }
+    retention_policy {
+      max_retention_days    = var.snapshot.max_retention_days
+      on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
+    }
+  }
 }
 
 resource "google_compute_instance_template" "default" {
@@ -25,13 +42,13 @@ resource "google_compute_instance_template" "default" {
   dynamic "disk" {
     for_each = var.disks
     content {
-      boot         = lookup(disk.value, "boot", null)
-      auto_delete  = lookup(disk.value, "auto_delete", null)
-      disk_name    = lookup(disk.value, "disk_name", null)
-      disk_size_gb = lookup(disk.value, "disk_size_gb", null)
-      disk_type    = lookup(disk.value, "disk_type", null)
-      source_image = lookup(disk.value, "source_image", null)
-      type         = lookup(disk.value, "type", null)
+      boot              = lookup(disk.value, "boot", null)
+      auto_delete       = lookup(disk.value, "auto_delete", null)
+      disk_name         = lookup(disk.value, "disk_name", null)
+      disk_size_gb      = lookup(disk.value, "disk_size_gb", null)
+      disk_type         = lookup(disk.value, "disk_type", null)
+      source_image      = lookup(disk.value, "source_image", null)
+      type              = lookup(disk.value, "type", null)
       resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
@@ -64,28 +81,13 @@ resource "google_compute_instance_template" "default" {
     enable_vtpm                 = true
     enable_integrity_monitoring = true
   }
-}
 
-resource "google_compute_resource_policy" "hourly_backup" {
-  name   = "every-day-2am"
-  region = var.region
-  snapshot_schedule_policy {
-    schedule {
-      hourly_schedule {
-        hours_in_cycle = var.snapshot.hours
-        start_time     = var.snapshot.start_time
-      }
-    }
-    retention_policy {
-      max_retention_days    = var.snapshot.max_retention_days
-      on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
-    }
-  }
+  depends_on = [google_compute_address.external_IP, google_compute_resource_policy.hourly_backup]
 }
 
 
 resource "google_compute_health_check" "autohealing" {
-  name                = "healthcheck-autohealing"
+  name                = var.health_check["name"]
   check_interval_sec  = var.health_check["check_interval_sec"]
   timeout_sec         = var.health_check["timeout_sec"]
   healthy_threshold   = var.health_check["healthy_threshold"]
@@ -103,13 +105,13 @@ resource "google_compute_instance_group_manager" "mig" {
   zone               = local.source_vm.zone
 
   version {
-    instance_template =  google_compute_instance_template.default.id
+    instance_template = google_compute_instance_template.default.id
   }
 
   target_size = 1
 
   auto_healing_policies {
-    health_check      =  google_compute_health_check.autohealing.id
+    health_check      = google_compute_health_check.autohealing.id
     initial_delay_sec = var.igm_initial_delay_sec
   }
 
@@ -119,4 +121,5 @@ resource "google_compute_instance_group_manager" "mig" {
       device_name = stateful_disk.value["device_name"]
     }
   }
+  depends_on = [data.google_client_config.default, google_compute_health_check.autohealing]
 }
