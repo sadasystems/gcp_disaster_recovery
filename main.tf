@@ -100,7 +100,7 @@ resource "google_compute_health_check" "autohealing" {
 resource "google_compute_instance_group_manager" "mig" {
   name               = var.igm_name
   base_instance_name = var.igm_base_instance_name_prefix
-  zone               = var.igm_zone
+  zone               = local.source_vm.zone
 
   version {
     instance_template =  google_compute_instance_template.default.id

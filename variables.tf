@@ -1,4 +1,4 @@
-variable "project" { type = string }
+variable "project" {type = string}
 variable "service_account_impersonate" { type = string }
 variable "service_account" {
   default = null
@@ -10,13 +10,12 @@ variable "service_account" {
 }
 
 variable "region" { type = string }
-variable "zone" { type = string }
-
+variable "zone" {type=string}
 variable "source_vm" {
+  description = "Name of the VM migrated from AWS to GCP"
   type = string
   default = ""
 }
-
 
 variable "instance_template_name" { type = string }
 variable "startup_script" {
@@ -64,5 +63,4 @@ variable "health_check" {
 # Instance group manager
 variable "igm_name" { type = string }
 variable "igm_base_instance_name_prefix" { type = string }
-variable "igm_zone" { type = string }
 variable "igm_initial_delay_sec" { type = number }

@@ -1,5 +1,4 @@
 project  = "mta-mta-rnd-mtaapp-6155"
-enable_auto_vm_population = false
 region = "us-central1"
 zone = "us-central1-a"
 
@@ -60,5 +59,4 @@ health_check = {
 # Instance group manager
 igm_name               = "igm-test"  #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 igm_base_instance_name_prefix = "test-vm"
-igm_zone               = "us-central1-a"
 igm_initial_delay_sec  = "180"
