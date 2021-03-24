@@ -1,7 +1,9 @@
 project  = "mta-mta-rnd-mtaapp-6155"
-
+enable_auto_vm_population = false
 region = "us-central1"
-machine_type = "e2-medium"
+zone = "us-central1-a"
+
+source_vm = "microservice"
 
 instance_template_name = "template-disaster-recovery"
 startup_script = <<EOF
@@ -44,9 +46,6 @@ snapshot = {
   start_time = "02:00"
   max_retention_days = 1
 }
-
-subnetwork_project = "ent-net-mta-host-fde3"
-subnetwork         = "neustar-shared-prod-usc1-mta-rnd-subnet-26ee"
 
 # Health check
 health_check = {

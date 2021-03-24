@@ -1,3 +1,6 @@
+locals {
+  source_vm = data.google_compute_instance.source_vm
+}
 provider "google" {
   alias = "tokengen"
 }
@@ -15,7 +18,7 @@ resource "google_compute_address" "external_IP" {
 resource "google_compute_instance_template" "default" {
   name         = var.instance_template_name
   region       = var.region
-  machine_type = var.machine_type
+  machine_type = local.source_vm.machine_type
 
   metadata_startup_script = var.startup_script
 
@@ -34,8 +37,8 @@ resource "google_compute_instance_template" "default" {
   }
 
   network_interface {
-    subnetwork_project = var.subnetwork_project
-    subnetwork         = var.subnetwork
+    subnetwork_project = local.source_vm.network_interface[0].subnetwork_project
+    subnetwork         = local.source_vm.network_interface[0].subnetwork
     access_config {
       nat_ip = google_compute_address.external_IP.address
     }
@@ -100,13 +103,13 @@ resource "google_compute_instance_group_manager" "mig" {
   zone               = var.igm_zone
 
   version {
-    instance_template = google_compute_instance_template.default.id
+    instance_template =  google_compute_instance_template.default.id
   }
 
   target_size = 1
 
   auto_healing_policies {
-    health_check      = google_compute_health_check.autohealing.id
+    health_check      =  google_compute_health_check.autohealing.id
     initial_delay_sec = var.igm_initial_delay_sec
   }
 

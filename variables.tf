@@ -10,7 +10,13 @@ variable "service_account" {
 }
 
 variable "region" { type = string }
-variable "machine_type" { type = string }
+variable "zone" { type = string }
+
+variable "source_vm" {
+  type = string
+  default = ""
+}
+
 
 variable "instance_template_name" { type = string }
 variable "startup_script" {
@@ -37,9 +43,6 @@ variable "snapshot" {
     max_retention_days = number
   })
 }
-
-variable "subnetwork_project" { type = string }
-variable "subnetwork" { type = string }
 
 # Health check
 variable "health_check" {
