@@ -43,7 +43,7 @@ disks = [
 ]
 
 snapshot = {
-  name               = "everyday-2am-1hour"
+  name               = "microservice-everyday-2am-1hour"
   hours              = 1
   start_time         = "02:00"
   max_retention_days = 1
@@ -51,7 +51,7 @@ snapshot = {
 
 # Health check
 health_check = {
-  name                = "dr-healthcheck"
+  name                = "microservice-dr-healthcheck"
   check_interval_sec  = 15
   timeout_sec         = 5
   healthy_threshold   = 2
@@ -61,6 +61,6 @@ health_check = {
 }
 
 # Instance group manager
-igm_name                      = "igm-test" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
-igm_base_instance_name_prefix = "test-vm"
+igm_name                      = "microservice-igm" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+igm_base_instance_name_prefix = "microservice-dr"
 igm_initial_delay_sec         = "180"

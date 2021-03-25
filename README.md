@@ -31,10 +31,13 @@ Before typing the command, Google Cloud SDK must be installed on your machine.
 Once your machine is authorized by Google, you can run terraform command.
 `terraform { init | plan | apply | destroy }`
 
-# Delete VM
+# Delete the source VM
 If a new VM has multiple disks, mount them first.
 Restart the new VM and make sure those disks are still mounted.
 Check snapshot schedule and health check are created correctly.
 
 If everything is ok, delete the VM migrated from AWS to GCP.
+
+If you run `terraform destory`, it will destroy all resources except the snapshot scheduled and the disks created.
+It is correct behavior. You can manually delete disks first then delete the snapshot scheduled from Google Cloud Console UI.
 
