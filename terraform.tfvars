@@ -1,15 +1,25 @@
-project  = "mta-mta-rnd-mtaapp-6155"
-location = "us-central1"
+project = "mta-mta-rnd-mtaapp-6155"
+region  = "us-central1"
+zone    = "us-central1-a"
+
+source_vm = "microservice"
 
 instance_template_name = "template-disaster-recovery"
-
-machine_type = "e2-medium"
+startup_script         = <<EOF
+  sudo apt update && sudo apt -y install git gunicorn3 python3-pip
+  git clone https://github.com/GoogleCloudPlatform/python-docs-samples.git
+  cd python-docs-samples/compute/managed-instances/demo
+  sudo pip3 install -r requirements.txt
+  sudo gunicorn3 --bind 0.0.0.0:80 app:app --daemon
+EOF
 
 service_account_impersonate = "terraform-disaster-recovery@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com"
 service_account = {
   email  = "scv-test-mta-rnd-mtaapp@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com"
   scopes = ["cloud-platform"]
 }
+
+external_ip_name = "microservice-external-ip"
 
 disks = [
   {
@@ -32,5 +42,25 @@ disks = [
   }
 ]
 
-subnetwork_project = "ent-net-mta-host-fde3"
-subnetwork         = "neustar-shared-prod-usc1-mta-rnd-subnet-26ee"
+snapshot = {
+  name               = "everyday-2am-1hour"
+  hours              = 1
+  start_time         = "02:00"
+  max_retention_days = 1
+}
+
+# Health check
+health_check = {
+  name                = "dr-healthcheck"
+  check_interval_sec  = 15
+  timeout_sec         = 5
+  healthy_threshold   = 2
+  unhealthy_threshold = 3
+  request_path        = "/health"
+  port                = 80
+}
+
+# Instance group manager
+igm_name                      = "igm-test" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+igm_base_instance_name_prefix = "test-vm"
+igm_initial_delay_sec         = "180"

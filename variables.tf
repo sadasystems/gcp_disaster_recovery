@@ -9,9 +9,19 @@ variable "service_account" {
   description = "Service account to attach to the instance. See https://www.terraform.io/docs/providers/google/r/compute_instance_template.html#service_account."
 }
 
-variable "location" { type = string }
+variable "region" { type = string }
+variable "zone" { type = string }
+variable "source_vm" {
+  description = "Name of the VM migrated from AWS to GCP"
+  type        = string
+  default     = ""
+}
+
 variable "instance_template_name" { type = string }
-variable "machine_type" { type = string }
+variable "startup_script" {
+  description = "User startup script to run when instances spin up"
+  default     = ""
+}
 
 variable "disks" {
   type = list(object({
@@ -25,5 +35,36 @@ variable "disks" {
   }))
 }
 
-variable "subnetwork_project" { type = string }
-variable "subnetwork" { type = string }
+variable "external_ip_name" { type = string }
+
+variable "snapshot" {
+  type = object({
+    name               = string
+    hours              = number
+    start_time         = string
+    max_retention_days = number
+  })
+}
+
+# Health check
+variable "health_check" {
+  type = object({
+    name                = string
+    type                = optional(string)
+    initial_delay_sec   = optional(number)
+    check_interval_sec  = number
+    healthy_threshold   = number
+    timeout_sec         = number
+    unhealthy_threshold = number
+    response            = optional(string)
+    proxy_header        = optional(string)
+    port                = number
+    request             = optional(string)
+    request_path        = string
+  })
+}
+
+# Instance group manager
+variable "igm_name" { type = string }
+variable "igm_base_instance_name_prefix" { type = string }
+variable "igm_initial_delay_sec" { type = number }
