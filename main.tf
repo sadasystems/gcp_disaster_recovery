@@ -41,7 +41,7 @@ resource "google_compute_instance_template" "default" {
     content {
       boot              = lookup(disk.value, "boot", null)
       auto_delete       = lookup(disk.value, "auto_delete", null)
-      disk_name         = lookup(disk.value, "disk_name", null)
+      disk_name         = "${var.igm_base_instance_name_prefix}-${lookup(disk.value, "disk_name", null)}"
       disk_size_gb      = lookup(disk.value, "disk_size_gb", null)
       disk_type         = lookup(disk.value, "disk_type", null)
       source_image      = lookup(disk.value, "source_image", null)
