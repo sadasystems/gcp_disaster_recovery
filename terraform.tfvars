@@ -65,6 +65,7 @@ igm_initial_delay_sec         = "180"
 
 # Load-balancer
 enable_loadbalancer = true
+loadbalancer_name = "terraform-lb"
 lb_health_check = {
   check_interval_sec  = null
   timeout_sec         = null

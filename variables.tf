@@ -71,6 +71,7 @@ variable "igm_initial_delay_sec" { type = number }
 
 # Load-balancer
 variable "enable_loadbalancer" { type = bool }
+variable "loadbalancer_name" { type = string}
 variable "lb_health_check" { type = object({
   check_interval_sec  = number
   timeout_sec         = number

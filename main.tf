@@ -143,7 +143,7 @@ module "gce-lb-http" {
   version = "~> 4.4"
 
   project = var.project
-  name    = "microservice-dr-load-balancer"
+  name    = var.loadbalancer_name
 
   firewall_networks = []
   http_forward      = true
