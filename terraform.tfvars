@@ -2,7 +2,7 @@ project = "mta-mta-rnd-mtaapp-6155"
 region  = "us-central1"
 zone    = "us-central1-a"
 
-source_vm = "microservice"
+source_vm = "terraform-dr"
 
 instance_template_name = "template-disaster-recovery"
 startup_script         = <<EOF
@@ -19,7 +19,7 @@ service_account = {
   scopes = ["cloud-platform"]
 }
 
-external_ip_name = "microservice-external-ip"
+external_ip_name = "terraform-external-ip"
 
 disks = [
   {
@@ -28,7 +28,7 @@ disks = [
     disk_name    = "boot"
     disk_size_gb = 10
     disk_type    = "pd-balanced"
-    source_image = "projects/mta-mta-rnd-mtaapp-6155/global/images/image-dr-test-boot"
+    #source_image = "projects/mta-mta-rnd-mtaapp-6155/global/images/image-dr-test-boot"
     type         = "PERSISTENT"
   },
   {
@@ -37,13 +37,13 @@ disks = [
     disk_name    = "data1"
     disk_size_gb = 20
     disk_type    = "pd-balanced"
-    source_image = "projects/mta-mta-rnd-mtaapp-6155/global/images/image-disk-data-dr-test"
+    #source_image = "projects/mta-mta-rnd-mtaapp-6155/global/images/image-disk-data-dr-test"
     type         = "PERSISTENT"
   }
 ]
 
 snapshot = {
-  name               = "microservice-everyday-2am-1hour"
+  name               = "terraform-everyday-2am-1hour"
   hours              = 1
   start_time         = "02:00"
   max_retention_days = 1
@@ -51,7 +51,7 @@ snapshot = {
 
 # Health check for VM
 health_check = {
-  name                = "microservice-dr-healthcheck"
+  name                = "terraform-dr-healthcheck"
   check_interval_sec  = 15
   timeout_sec         = 5
   healthy_threshold   = 2
@@ -61,8 +61,8 @@ health_check = {
 }
 
 # Instance group manager
-igm_name                      = "microservice-igm" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
-igm_base_instance_name_prefix = "microservice-dr"
+igm_name                      = "terraform-igm" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+igm_base_instance_name_prefix = "terraform-dr"
 igm_initial_delay_sec         = "180"
 
 # Load-balancer

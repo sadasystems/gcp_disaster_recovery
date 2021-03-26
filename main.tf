@@ -7,6 +7,18 @@ provider "google" {
   project      = var.project
 }
 
+locals {
+  disks = concat(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk)
+  images = [ for x in google_compute_image.images: {"source_image" = x.self_link}]
+}
+
+resource "google_compute_image" "images" {
+  count = length(local.disks)
+
+  name = "image-${var.source_vm}-${local.disks[count.index].device_name}"
+  source_disk = local.disks[count.index].source
+}
+
 resource "google_compute_address" "external_IP" {
   name   = var.external_ip_name
   region = var.region

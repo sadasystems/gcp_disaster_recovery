@@ -30,7 +30,7 @@ variable "disks" {
     disk_name    = string
     disk_size_gb = number
     disk_type    = string
-    source_image = string
+    source_image = optional(string)
     type         = string
   }))
 }
