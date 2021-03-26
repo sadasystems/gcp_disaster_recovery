@@ -70,8 +70,8 @@ variable "igm_base_instance_name_prefix" { type = string }
 variable "igm_initial_delay_sec" { type = number }
 
 # Load-balancer
-variable "enable_loadbalancer" {type = bool}
-variable "lb_health_check" {type = object({
+variable "enable_loadbalancer" { type = bool }
+variable "lb_health_check" { type = object({
   check_interval_sec  = number
   timeout_sec         = number
   healthy_threshold   = number
@@ -80,4 +80,4 @@ variable "lb_health_check" {type = object({
   port                = number
   host                = string
   logging             = bool
-})}
+}) }

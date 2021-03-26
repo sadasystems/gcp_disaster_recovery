@@ -68,12 +68,12 @@ igm_initial_delay_sec         = "180"
 # Load-balancer
 enable_loadbalancer = true
 lb_health_check = {
-  check_interval_sec = null
-  timeout_sec = null
-  healthy_threshold = null
+  check_interval_sec  = null
+  timeout_sec         = null
+  healthy_threshold   = null
   unhealthy_threshold = null
-  request_path = "/health"
-  port = 80
-  host = null
-  logging = null
+  request_path        = "/health"
+  port                = 80
+  host                = null
+  logging             = null
 }
