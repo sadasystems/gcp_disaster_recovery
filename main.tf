@@ -49,7 +49,7 @@ resource "google_compute_instance_template" "default" {
   metadata_startup_script = var.startup_script
 
   dynamic "disk" {
-    for_each = var.disks
+    for_each = [for index, d in var.disks: merge(d, local.images[index])]
     content {
       boot              = lookup(disk.value, "boot", null)
       auto_delete       = lookup(disk.value, "auto_delete", null)

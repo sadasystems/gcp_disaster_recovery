@@ -28,7 +28,6 @@ disks = [
     disk_name    = "boot"
     disk_size_gb = 10
     disk_type    = "pd-balanced"
-    #source_image = "projects/mta-mta-rnd-mtaapp-6155/global/images/image-dr-test-boot"
     type         = "PERSISTENT"
   },
   {
@@ -37,7 +36,6 @@ disks = [
     disk_name    = "data1"
     disk_size_gb = 20
     disk_type    = "pd-balanced"
-    #source_image = "projects/mta-mta-rnd-mtaapp-6155/global/images/image-disk-data-dr-test"
     type         = "PERSISTENT"
   }
 ]
