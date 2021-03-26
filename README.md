@@ -13,13 +13,18 @@ This service account requires at least three roles, those are `compute instance 
 
 reference: https://cloud.google.com/iam/docs/impersonating-service-accounts
 
-## Take images from VM
-A VM may have multiple disks. You have to take images of all disks.
+## Stop the VM to take images out of disks 
+
+A VM may have multiple disks. 
+You have to take images of all disks.
+Fortunately, this script can take images out of all disks
+If your source VM is still running, this automatic process will be halted.
 
 reference: https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#create_image
 
 ## Configuration
-Once you have two service accounts and images, you can fill out variables.tfvars file
+Once you have two service accounts and images, you can fill out variables.tfvars file.
+You can turn on and off external HTTP/HTTPS load balancer. 
 
 
 # execution

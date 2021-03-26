@@ -7,6 +7,18 @@ provider "google" {
   project      = var.project
 }
 
+locals {
+  disks  = concat(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk)
+  images = [for x in google_compute_image.images : { "source_image" = x.self_link }]
+}
+
+resource "google_compute_image" "images" {
+  count = length(local.disks)
+
+  name        = "image-${var.source_vm}-${local.disks[count.index].device_name}"
+  source_disk = local.disks[count.index].source
+}
+
 resource "google_compute_address" "external_IP" {
   name   = var.external_ip_name
   region = var.region
@@ -37,7 +49,7 @@ resource "google_compute_instance_template" "default" {
   metadata_startup_script = var.startup_script
 
   dynamic "disk" {
-    for_each = var.disks
+    for_each = [for index, d in var.disks : merge(d, local.images[index])]
     content {
       boot              = lookup(disk.value, "boot", null)
       auto_delete       = lookup(disk.value, "auto_delete", null)
@@ -131,7 +143,7 @@ module "gce-lb-http" {
   version = "~> 4.4"
 
   project = var.project
-  name    = "microservice-dr-load-balancer"
+  name    = var.loadbalancer_name
 
   firewall_networks = []
   http_forward      = true
