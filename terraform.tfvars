@@ -49,7 +49,7 @@ snapshot = {
   max_retention_days = 1
 }
 
-# Health check
+# Health check for VM
 health_check = {
   name                = "microservice-dr-healthcheck"
   check_interval_sec  = 15
@@ -64,3 +64,16 @@ health_check = {
 igm_name                      = "microservice-igm" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 igm_base_instance_name_prefix = "microservice-dr"
 igm_initial_delay_sec         = "180"
+
+# Load-balancer
+enable_loadbalancer = true
+lb_health_check = {
+  check_interval_sec  = null
+  timeout_sec         = null
+  healthy_threshold   = null
+  unhealthy_threshold = null
+  request_path        = "/health"
+  port                = 80
+  host                = null
+  logging             = null
+}
