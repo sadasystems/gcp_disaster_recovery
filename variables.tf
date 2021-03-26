@@ -68,3 +68,16 @@ variable "health_check" {
 variable "igm_name" { type = string }
 variable "igm_base_instance_name_prefix" { type = string }
 variable "igm_initial_delay_sec" { type = number }
+
+# Load-balancer
+variable "enable_loadbalancer" {type = bool}
+variable "lb_health_check" {type = object({
+  check_interval_sec  = number
+  timeout_sec         = number
+  healthy_threshold   = number
+  unhealthy_threshold = number
+  request_path        = string
+  port                = number
+  host                = string
+  logging             = bool
+})}
