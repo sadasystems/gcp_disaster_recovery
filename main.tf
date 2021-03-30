@@ -94,7 +94,8 @@ resource "google_compute_instance_template" "default" {
   depends_on = [google_compute_address.external_IP, google_compute_resource_policy.hourly_backup]
 }
 
-resource "google_compute_health_check" "autohealing" {
+resource "google_compute_health_check" "http_autohealing" {
+  count = var.http_health_check_enabled ? 1 : 0
   name                = var.health_check["name"]
   check_interval_sec  = var.health_check["check_interval_sec"]
   timeout_sec         = var.health_check["timeout_sec"]
@@ -105,6 +106,22 @@ resource "google_compute_health_check" "autohealing" {
     request_path = var.health_check["request_path"]
     port         = var.health_check["port"]
   }
+
+  depends_on = [google_compute_instance_template.default]
+}
+
+resource "google_compute_health_check" "tcp_autohealing" {
+  count = var.http_health_check_enabled? 0 : 1
+  name                = var.health_check["name"]
+  check_interval_sec  = var.health_check["check_interval_sec"]
+  timeout_sec         = var.health_check["timeout_sec"]
+  healthy_threshold   = var.health_check["healthy_threshold"]
+  unhealthy_threshold = var.health_check["unhealthy_threshold"]
+
+  tcp_health_check {
+    port         = var.health_check["port"]
+  }
+
   depends_on = [google_compute_instance_template.default]
 }
 
@@ -120,7 +137,7 @@ resource "google_compute_instance_group_manager" "mig" {
   target_size = 1
 
   auto_healing_policies {
-    health_check      = google_compute_health_check.autohealing.id
+    health_check      = var.http_health_check_enabled? google_compute_health_check.http_autohealing[0].id : google_compute_health_check.tcp_autohealing[0].id
     initial_delay_sec = var.igm_initial_delay_sec
   }
 
