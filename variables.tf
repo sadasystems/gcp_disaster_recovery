@@ -47,6 +47,7 @@ variable "snapshot" {
 }
 
 # Health check
+variable "http_health_check_enabled" { type = bool }
 variable "health_check" {
   type = object({
     name                = string
