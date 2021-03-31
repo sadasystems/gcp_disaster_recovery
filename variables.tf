@@ -1,4 +1,5 @@
 variable "project" { type = string }
+
 variable "service_account_impersonate" { type = string }
 variable "service_account" {
   default = null
@@ -17,7 +18,10 @@ variable "source_vm" {
   default     = ""
 }
 
-variable "instance_template_name" { type = string }
+# Instance group manager
+variable "igm_name" { type = string }
+variable "igm_initial_delay_sec" { type = number }
+
 variable "startup_script" {
   description = "User startup script to run when instances spin up"
   default     = ""
@@ -35,11 +39,8 @@ variable "disks" {
   }))
 }
 
-variable "external_ip_name" { type = string }
-
 variable "snapshot" {
   type = object({
-    name               = string
     hours              = number
     start_time         = string
     max_retention_days = number
@@ -50,7 +51,6 @@ variable "snapshot" {
 variable "http_health_check_enabled" { type = bool }
 variable "health_check" {
   type = object({
-    name                = string
     type                = optional(string)
     initial_delay_sec   = optional(number)
     check_interval_sec  = number
@@ -65,14 +65,8 @@ variable "health_check" {
   })
 }
 
-# Instance group manager
-variable "igm_name" { type = string }
-variable "igm_base_instance_name_prefix" { type = string }
-variable "igm_initial_delay_sec" { type = number }
-
 # Load-balancer
 variable "enable_loadbalancer" { type = bool }
-variable "loadbalancer_name" { type = string }
 variable "lb_health_check" { type = object({
   check_interval_sec  = number
   timeout_sec         = number

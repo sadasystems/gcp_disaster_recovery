@@ -4,7 +4,9 @@ zone    = "us-central1-a"
 
 source_vm = "terraform-dr"
 
-instance_template_name = "ssh-terraform-disaster-recovery"
+# Instance group manager
+igm_name                      = "terraform-dr-igm" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+igm_initial_delay_sec         = "120"
 startup_script         = ""
 /* Star up script to test load balancer
 <<EOF
@@ -21,8 +23,6 @@ service_account = {
   email  = "scv-test-mta-rnd-mtaapp@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com"
   scopes = ["cloud-platform"]
 }
-
-external_ip_name = "ssh-terraform-external-ip"
 
 disks = [
   {
@@ -44,7 +44,6 @@ disks = [
 ]
 
 snapshot = {
-  name               = "four-am-1hour"
   hours              = 1
   start_time         = "04:00"
   max_retention_days = 1
@@ -53,7 +52,6 @@ snapshot = {
 # Health check for VM
 http_health_check_enabled = false
 health_check = {
-  name                = "ssh-dr-healthcheck"
   check_interval_sec  = 10
   timeout_sec         = 5
   healthy_threshold   = 2
@@ -62,14 +60,8 @@ health_check = {
   port                = 22
 }
 
-# Instance group manager
-igm_name                      = "ssh-healthcheck-igm" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
-igm_base_instance_name_prefix = "ssh-healthcheck-dr"
-igm_initial_delay_sec         = "120"
-
 # Load-balancer
 enable_loadbalancer = false
-loadbalancer_name   = "terraform-lb"
 lb_health_check = {
   check_interval_sec  = null
   timeout_sec         = null
