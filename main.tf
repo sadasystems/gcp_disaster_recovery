@@ -8,14 +8,14 @@ provider "google" {
 }
 
 locals {
-  disks  = concat(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk)
-  images = [for x in google_compute_image.images : { "source_image" = x.self_link }]
+  disks                     = concat(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk)
+  images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
   base_instance_name_prefix = "${var.igm_name}-vm"
-  instance_template_name = "${local.base_instance_name_prefix}-instance-template"
-  external_ip_name = "${local.base_instance_name_prefix}-external-ip"
-  snapshot_schedule_name               = "${local.base_instance_name_prefix}-snapshot-schedule"
-  healthcheck_name                = "${local.base_instance_name_prefix}-healthcheck"
-  loadbalancer_name   = "${local.base_instance_name_prefix}-loadbalancer"
+  instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
+  external_ip_name          = "${local.base_instance_name_prefix}-external-ip"
+  snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
+  healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
+  loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
 }
 
 resource "google_compute_image" "images" {

@@ -5,9 +5,9 @@ zone    = "us-central1-a"
 source_vm = "terraform-dr"
 
 # Instance group manager
-igm_name                      = "terraform-dr-igm" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
-igm_initial_delay_sec         = "120"
-startup_script         = ""
+igm_name              = "terraform-dr-igm" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+igm_initial_delay_sec = "120"
+startup_script        = ""
 /* Star up script to test load balancer
 <<EOF
   sudo apt update && sudo apt -y install git gunicorn3 python3-pip
