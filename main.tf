@@ -8,24 +8,30 @@ provider "google" {
 }
 
 locals {
-  disks  = concat(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk)
-  images = [for x in google_compute_image.images : { "source_image" = x.self_link }]
+  disks                     = concat(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk)
+  images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
+  base_instance_name_prefix = "${var.igm_name}-vm"
+  instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
+  external_ip_name          = "${local.base_instance_name_prefix}-external-ip"
+  snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
+  healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
+  loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
 }
 
 resource "google_compute_image" "images" {
   count = length(local.disks)
 
-  name        = "image-${var.source_vm}-${local.disks[count.index].device_name}"
+  name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].device_name}"
   source_disk = local.disks[count.index].source
 }
 
 resource "google_compute_address" "external_IP" {
-  name   = var.external_ip_name
+  name   = local.external_ip_name
   region = var.region
 }
 
 resource "google_compute_resource_policy" "hourly_backup" {
-  name   = var.snapshot.name
+  name   = local.snapshot_schedule_name
   region = var.region
   snapshot_schedule_policy {
     schedule {
@@ -42,7 +48,7 @@ resource "google_compute_resource_policy" "hourly_backup" {
 }
 
 resource "google_compute_instance_template" "default" {
-  name         = var.instance_template_name
+  name         = local.instance_template_name
   region       = var.region
   machine_type = data.google_compute_instance.source_vm.machine_type
 
@@ -53,7 +59,7 @@ resource "google_compute_instance_template" "default" {
     content {
       boot              = lookup(disk.value, "boot", null)
       auto_delete       = lookup(disk.value, "auto_delete", null)
-      disk_name         = "${var.igm_base_instance_name_prefix}-${lookup(disk.value, "disk_name", null)}"
+      disk_name         = "${local.base_instance_name_prefix}-${lookup(disk.value, "disk_name", null)}"
       disk_size_gb      = lookup(disk.value, "disk_size_gb", null)
       disk_type         = lookup(disk.value, "disk_type", null)
       source_image      = lookup(disk.value, "source_image", null)
@@ -96,7 +102,7 @@ resource "google_compute_instance_template" "default" {
 
 resource "google_compute_health_check" "http_autohealing" {
   count               = var.http_health_check_enabled ? 1 : 0
-  name                = var.health_check["name"]
+  name                = local.healthcheck_name
   check_interval_sec  = var.health_check["check_interval_sec"]
   timeout_sec         = var.health_check["timeout_sec"]
   healthy_threshold   = var.health_check["healthy_threshold"]
@@ -112,7 +118,7 @@ resource "google_compute_health_check" "http_autohealing" {
 
 resource "google_compute_health_check" "tcp_autohealing" {
   count               = var.http_health_check_enabled ? 0 : 1
-  name                = var.health_check["name"]
+  name                = local.healthcheck_name
   check_interval_sec  = var.health_check["check_interval_sec"]
   timeout_sec         = var.health_check["timeout_sec"]
   healthy_threshold   = var.health_check["healthy_threshold"]
@@ -127,7 +133,7 @@ resource "google_compute_health_check" "tcp_autohealing" {
 
 resource "google_compute_instance_group_manager" "mig" {
   name               = var.igm_name
-  base_instance_name = var.igm_base_instance_name_prefix
+  base_instance_name = local.base_instance_name_prefix
   zone               = data.google_compute_instance.source_vm.zone
 
   version {
@@ -160,7 +166,7 @@ module "gce-lb-http" {
   version = "~> 4.4"
 
   project = var.project
-  name    = var.loadbalancer_name
+  name    = local.loadbalancer_name
 
   firewall_networks = []
   http_forward      = true
