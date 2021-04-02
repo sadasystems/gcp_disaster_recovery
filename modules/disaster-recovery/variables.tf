@@ -19,7 +19,7 @@ variable "source_vm" {
 }
 
 # Instance group manager
-variable "igm_name" { type = string }
+#variable "igm_name" { type = string }
 variable "igm_initial_delay_sec" { type = number }
 
 variable "startup_script" {

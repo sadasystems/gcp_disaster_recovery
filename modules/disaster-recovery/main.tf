@@ -10,11 +10,12 @@ provider "google" {
 locals {
   disks                     = concat(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk)
   images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
-  base_instance_name_prefix = "${var.igm_name}-vm"
+  base_instance_name_prefix = "${var.source_vm}-dr"
   instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
   external_ip_name          = "${local.base_instance_name_prefix}-external-ip"
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
   healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
+  instance_group_name  = "${local.base_instance_name_prefix}-instance-group"
   loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
 }
 
@@ -132,7 +133,7 @@ resource "google_compute_health_check" "tcp_autohealing" {
 }
 
 resource "google_compute_instance_group_manager" "mig" {
-  name               = var.igm_name
+  name               = local.instance_group_name
   base_instance_name = local.base_instance_name_prefix
   zone               = data.google_compute_instance.source_vm.zone
 
@@ -154,7 +155,6 @@ resource "google_compute_instance_group_manager" "mig" {
     }
   }
 }
-
 
 module "gce-lb-http" {
   /* To enable ssl, https proxy
