@@ -10,7 +10,7 @@ inputs = {
   region  = "us-central1"
   zone    = "us-central1-a"
 
-  source_vm = "terraform2"
+  source_vm = "terraform2" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
   # Instance group manager
   igm_initial_delay_sec = "120"
@@ -36,13 +36,16 @@ inputs = {
     }
   ]
 
+  # Snapshot schedule
+  # https://cloud.google.com/compute/docs/disks/scheduled-snapshots
   snapshot = {
-    hours              = 1
+    hours              = 1        # Snapshot frequency
     start_time         = "04:00"
-    max_retention_days = 1
+    max_retention_days = 1        # how long keep snapshots
   }
 
   # Health check for VM
+  # https://cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs#example_health_check_set_up
   http_health_check_enabled = false # 'false' to use TCP protocol, 'true' to use HTTP
   health_check = {
     check_interval_sec  = 10
