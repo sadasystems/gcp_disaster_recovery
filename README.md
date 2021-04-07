@@ -98,3 +98,41 @@ Terragrunt can apply the disaster recovery Terraform script to multiple VMs to a
     type command with `-all` postfix. `terragrunt plan-all` or `terragrunt apply-all`. 
   These commands execute terragrunt for the sub-directory from the current directory the command runs.
   
+# VM provisioning without disaster recovery capability
+
+``` 
+├── infrastructure
+│   ├── rnd
+│   │   ├── mta
+│   │   │   ├── terraform1
+│   │   │   │   └── terragrunt.hcl
+│   │   │   ├── terraform2
+│   │   │   │   └── terragrunt.hcl
+│   │   │   ├── terragrunt.hcl      <=== project level terragrunt script
+│   │   │   └── vm-no-dr            <=== terragrunt script for VM provisioning
+│   │   │       └── terragrunt.hcl
+│   │   └── terragrunt.hcl
+│   └── terragrunt.hcl
+└── modules
+    ├── compute-instance            <=== terraform script for VM provisioning
+    │   ├── main.tf
+    │   ├── output.tf
+    │   ├── variables.tf
+    │   └── versions.tf
+    └── disaster-recovery
+        ├── data.tf
+        ├── main.tf
+        ├── output.tf
+        ├── provider.tf
+        ├── variables.tf
+        └── versions.tf
+```
+Once service accounts for impersonation and VM are ready, you can deploy a VM without disaster recovery capability.
+
+1) Move to the terragrunt directory for the VM. It is `infrastructure/rnd/mta/vm-no-dr` above example.
+
+2) fill out `terragrunt.hcl` file for your VM. It contains configurations for the VM will be deployed.
+
+3) run `terragrunt init`, `terragrunt plan` and `terragrunt apply` in a row.
+
+You can add a directory under `infrastructure/rnd/mta/` for a new VM if you need to deploy a new VM.
