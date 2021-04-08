@@ -1,1 +1,0 @@
-## RnD folder level configuration
