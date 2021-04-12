@@ -3,14 +3,14 @@ include {
 }
 
 terraform {
-  source = "${path_relative_from_include()}/../../..//modules/disaster-recovery"
+  source = "${path_relative_from_include()}/../../../..//modules/disaster-recovery"
 }
 
 inputs = {
   region  = "us-central1"
   zone    = "us-central1-a"
 
-  source_vm = "terraform1" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+  source_vm = "terraform2" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
   # Instance group manager
   igm_initial_delay_sec = "120"
@@ -31,14 +31,6 @@ inputs = {
       auto_delete  = false
       disk_name    = "boot"
       disk_size_gb = 10
-      disk_type    = "pd-balanced"
-      type         = "PERSISTENT"
-    },
-    {
-      boot         = false
-      auto_delete  = false
-      disk_name    = "data1"
-      disk_size_gb = 20
       disk_type    = "pd-balanced"
       type         = "PERSISTENT"
     }

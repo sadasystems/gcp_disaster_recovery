@@ -1,10 +1,51 @@
-# Terraform and Terragrunt script to deploy an managed Instance Group with Health check and snapshot schedule 
+# Terraform and Terragrunt script to manage infrastructure 
 
-## Preparing 
-### Install Terraform and Terragrunt to the machine that runs the command.
+## Preparing
+### Install Terraform, Terragrunt and GCP SDK to the machine that runs the command.
+
 https://www.terraform.io/downloads.html
+
 https://terragrunt.gruntwork.io/docs/getting-started/install/
 
+https://cloud.google.com/sdk/docs/install
+
+Terrgrunt is the Terraform wrapper to avoid repeats.
+
+Terragrunt homepage. https://terragrunt.gruntwork.io/
+
+Terragrunt use cases. https://blog.gruntwork.io/terragrunt-how-to-keep-your-terraform-code-dry-and-maintainable-f61ae06959d8
+
+### Directory structure of this project.
+Directory structure of this repository reflects the GCP folders and projects structure.
+``` 
+├── infrastructure
+│   ├── mta
+│   │   ├── rnd                             <=== folder 
+│   │   │   ├── mtaapp                      <=== project 
+│   │   │   │   ├── terraform1              <=== VM 
+│   │   │   │   │   └── terragrunt.hcl      <=== VM level terragrunt.hcl
+│   │   │   │   ├── terraform2
+│   │   │   │   │   └── terragrunt.hcl
+│   │   │   │   ├── terragrunt.hcl          <=== project level terragrunt.hcl
+│   │   │   │   └── vm-no-dr
+│   │   │   │       └── terragrunt.hcl
+│   │   │   └── terragrunt.hcl
+│   │   └── terragrunt.hcl
+│   └── terragrunt.hcl
+└── modules
+    ├── compute-instance                    <=== Terraform code for VM provisioning without disaster recovery
+    │   ├── main.tf
+    │   ├── output.tf
+    │   ├── variables.tf
+    │   └── versions.tf
+    └── disaster-recovery                   <=== Terraform code for disaster recovery
+        ├── data.tf
+        ├── main.tf
+        ├── output.tf
+        ├── provider.tf
+        ├── variables.tf
+        └── versions.tf
+```
 ### Create two service accounts in the GCP
 In order to execute this script without any GCP keyfile dowloaded, it uses 
 impersonnate service account. 
@@ -14,9 +55,12 @@ Along with the impersonnate service account, it requires a service account to cr
 This service account requires at least three roles, those are `compute instance admin`, 
 `compute network admin` and `compute network user` roles.
 
+You can add service accounts information to a project level terragrunt.hcl file.
+For example, `infrastructure/mta/rnd/mtaapp/terragrunt.hcl` file.
+
 reference: https://cloud.google.com/iam/docs/impersonating-service-accounts
 
-## Stop the VM to take images out of disks 
+### Stop the VM to take images out of disks 
 
 A VM may have multiple disks. 
 You have to take images of all disks.
@@ -25,8 +69,8 @@ If your source VM is still running, this automatic process will be halted.
 
 reference: https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#create_image
 
-## Configuration
-Once you have two service accounts and images, you can fill out variables.tfvars file.
+### Configuration
+Once you have two service accounts and images, you can fill out `terragrunt.hcl` file for a VM.
 You can turn on and off external HTTP/HTTPS load balancer. 
 
 ## execution
@@ -38,52 +82,29 @@ Before typing the command, Google Cloud SDK must be installed on your machine.
 Once your machine is authorized by Google, you can run terragrunt command.
 `terragrunt { init | plan | apply | destroy | plan-all | apply-all | destroy-all }`
 
-## Delete the source VM
+## Clean up - Delete the source VM
 If a new VM has multiple disks, mount them first.
 Restart the new VM and make sure those disks are still mounted.
 Check snapshot schedule and health check are created correctly.
 
 If everything is ok, delete the VM migrated from AWS to GCP.
 
-If you run `terraform destory`, it will destroy all resources except the snapshot scheduled and the disks created.
+If you run `terragrunt destory`, it will destroy all resources except the snapshot scheduled and the disks created.
 It is correct behavior. You can manually delete disks first then delete the snapshot scheduled from Google Cloud Console UI.
 
 # Terragrunt script for a batch job that affects all VMs in a project
 
-Terrgrunt is the Terraform wrapper to avoid repeats.
-Terragrunt homepage. https://terragrunt.gruntwork.io/
-Terragrunt use cases. https://blog.gruntwork.io/terragrunt-how-to-keep-your-terraform-code-dry-and-maintainable-f61ae06959d8
-
 We have multiple VMs that need to have disaster recovery capacity. 
+
 Terraform script applies to a VM only. 
+
 That means a user may run terraform script multiple times. 
+
 Terragrunt can apply the disaster recovery Terraform script to multiple VMs to avoid this repeat.
-
-## Directory structure of this project.
-``` 
-├── infrastructure
-│   ├── rnd                         <=== Folder level
-│   │   ├── mta                      <=== Project level
-│   │   │   ├── terraform1              <=== VM 1
-│   │   │   │   └── terragrunt.hcl      
-│   │   │   ├── terraform2              <=== VM 2
-│   │   │   │   └── terragrunt.hcl
-│   │   │   └── terragrunt.hcl
-│   │   └── terragrunt.hcl
-│   └── terragrunt.hcl
-└── modules                         <=== Terraform script. 
-    └── disaster-recovery
-        ├── data.tf
-        ├── main.tf
-        ├── output.tf
-        ├── variables.tf
-        └── versions.tf
-
-```
 
 ## Apply Terraform script to all VMs in a project.
 
-1) fill out terragrunt.hcl file under a project level directory. ex, `mta`
+1) fill out terragrunt.hcl file under a project level directory. ex, `mtaapp`
    - Put service accounts information.
     
 1) fill out terragurnt.hcl file for a VM.
@@ -94,39 +115,12 @@ Terragrunt can apply the disaster recovery Terraform script to multiple VMs to a
 - To apply a single VM, move to VM level directory first. For example, `cd terraform1` or `cd terraform2` 
   type the command `terragrunt plan` first and then `terragrunt apply`.
   `terragurnt {init | plan | apply}` is equivalent of terraform command `terraform {init | plan| apply}`
-- To apply all the VM in a project, move to the project level directory. For example, `cd mta`.
+- To apply all the VM in a project, move to the project level directory. For example, `cd mtaapp`.
     type command with `-all` postfix. `terragrunt plan-all` or `terragrunt apply-all`. 
   These commands execute terragrunt for the sub-directory from the current directory the command runs.
   
 # VM provisioning without disaster recovery capability
 
-``` 
-├── infrastructure
-│   ├── rnd
-│   │   ├── mta
-│   │   │   ├── terraform1
-│   │   │   │   └── terragrunt.hcl
-│   │   │   ├── terraform2
-│   │   │   │   └── terragrunt.hcl
-│   │   │   ├── terragrunt.hcl      <=== project level terragrunt script
-│   │   │   └── vm-no-dr            <=== terragrunt script for VM provisioning
-│   │   │       └── terragrunt.hcl
-│   │   └── terragrunt.hcl
-│   └── terragrunt.hcl
-└── modules
-    ├── compute-instance            <=== terraform script for VM provisioning
-    │   ├── main.tf
-    │   ├── output.tf
-    │   ├── variables.tf
-    │   └── versions.tf
-    └── disaster-recovery
-        ├── data.tf
-        ├── main.tf
-        ├── output.tf
-        ├── provider.tf
-        ├── variables.tf
-        └── versions.tf
-```
 Once service accounts for impersonation and VM are ready, you can deploy a VM without disaster recovery capability.
 
 1) Move to the terragrunt directory for the VM. It is `infrastructure/rnd/mta/vm-no-dr` above example.
@@ -135,4 +129,4 @@ Once service accounts for impersonation and VM are ready, you can deploy a VM wi
 
 3) run `terragrunt init`, `terragrunt plan` and `terragrunt apply` in a row.
 
-You can add a directory under `infrastructure/rnd/mta/` for a new VM if you need to deploy a new VM.
+You can add a directory under `infrastructure/mta/rnd/mtaapp/` for a new VM if you need to deploy a new VM.

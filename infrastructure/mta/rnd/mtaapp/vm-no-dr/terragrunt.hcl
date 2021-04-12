@@ -3,7 +3,7 @@ include {
 }
 
 terraform {
-  source = "${path_relative_from_include()}/../../..//modules/compute-instance"
+  source = "${path_relative_from_include()}/../../../..//modules/compute-instance"
 }
 
 inputs = {
