@@ -54,15 +54,3 @@ variable "health_check" {
   })
 }
 
-# Load-balancer
-variable "enable_loadbalancer" { type = bool }
-variable "lb_health_check" { type = object({
-  check_interval_sec  = number
-  timeout_sec         = number
-  healthy_threshold   = number
-  unhealthy_threshold = number
-  request_path        = string
-  port                = number
-  host                = string
-  logging             = bool
-}) }
