@@ -1,7 +1,4 @@
-
-
 locals {
-  disks                     = concat(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk)
   images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
   base_instance_name_prefix = "${var.source_vm}-dr"
   instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
@@ -10,12 +7,13 @@ locals {
   healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
   instance_group_name  = "${local.base_instance_name_prefix}-instance-group"
   loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
+  disks =  jsondecode(data.external.vm.result.source_vm).disks
 }
 
 resource "google_compute_image" "images" {
   count = length(local.disks)
 
-  name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].device_name}"
+  name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
   source_disk = local.disks[count.index].source
 }
 
@@ -49,13 +47,13 @@ resource "google_compute_instance_template" "default" {
   metadata_startup_script = var.startup_script
 
   dynamic "disk" {
-    for_each = [for index, d in var.disks : merge(d, local.images[index])]
+    for_each = [for index, d in local.disks : merge(d, local.images[index])]
     content {
       boot              = lookup(disk.value, "boot", null)
-      auto_delete       = lookup(disk.value, "auto_delete", null)
-      disk_name         = "${local.base_instance_name_prefix}-${lookup(disk.value, "disk_name", null)}"
-      disk_size_gb      = lookup(disk.value, "disk_size_gb", null)
-      disk_type         = lookup(disk.value, "disk_type", null)
+      auto_delete       = lookup(disk.value, "autoDelete", null)
+      disk_name         = "${local.base_instance_name_prefix}-${lookup(disk.value, "deviceName", null)}"
+      disk_size_gb      = lookup(disk.value, "diskSizeGb", null)
+      disk_type         = var.disk_type
       source_image      = lookup(disk.value, "source_image", null)
       type              = lookup(disk.value, "type", null)
       resource_policies = [google_compute_resource_policy.hourly_backup.id]
