@@ -24,25 +24,7 @@ inputs = {
     sudo gunicorn3 --bind 0.0.0.0:80 app:app --daemon
   EOF
   */
-
-  disks = [
-    {
-      boot         = true
-      auto_delete  = false
-      disk_name    = "boot"
-      disk_size_gb = 10
-      disk_type    = "pd-balanced"
-      type         = "PERSISTENT"
-    },
-    {
-      boot         = false
-      auto_delete  = false
-      disk_name    = "data1"
-      disk_size_gb = 20
-      disk_type    = "pd-balanced"
-      type         = "PERSISTENT"
-    }
-  ]
+  disk_type = "pd-balanced"
 
   # Snapshot schedule
   # https://cloud.google.com/compute/docs/disks/scheduled-snapshots

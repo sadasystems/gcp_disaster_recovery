@@ -26,18 +26,7 @@ variable "startup_script" {
   description = "User startup script to run when instances spin up"
   default     = ""
 }
-
-variable "disks" {
-  type = list(object({
-    boot         = bool
-    auto_delete  = bool
-    disk_name    = string
-    disk_size_gb = number
-    disk_type    = string
-    source_image = optional(string)
-    type         = string
-  }))
-}
+variable "disk_type" { type = string}
 
 variable "snapshot" {
   type = object({
