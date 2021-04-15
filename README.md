@@ -79,6 +79,12 @@ Before typing the command, Google Cloud SDK must be installed on your machine.
 ``` 
  gcloud auth application-default login 
 ```
+
+To enable Terraform script calls Google Cloud SDK, type the command below
+``` 
+ gcloud auth login
+```
+
 Once your machine is authorized by Google, you can run terragrunt command.
 `terragrunt { init | plan | apply | destroy | plan-all | apply-all | destroy-all }`
 
