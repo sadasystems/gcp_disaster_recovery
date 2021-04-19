@@ -1,9 +1,9 @@
-variable "project" {type = string}
-variable "zone" {type=string}
-variable "enable_loadbalancer" {type = bool}
+variable "project" { type = string }
+variable "zone" { type = string }
+variable "enable_loadbalancer" { type = bool }
 variable "service_account_impersonate" { type = string }
 
-variable "loadbalancer_name" {type = string}
+variable "loadbalancer_name" { type = string }
 
 variable "backends" {
   description = "Map backend indices to list of backend maps."
@@ -52,7 +52,7 @@ variable "backends" {
       max_rate_per_endpoint        = number
       max_utilization              = number
     }))
-    iap_config = optional( object({
+    iap_config = optional(object({
       enable               = bool
       oauth2_client_id     = string
       oauth2_client_secret = string
