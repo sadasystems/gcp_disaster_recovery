@@ -1,5 +1,11 @@
 locals {
   ## create URL out of instance group names
+  # groups = [for be in var.backends: merge(be.groups[0], {group = "${be.groups[0]["group"]}-y"})]
+  backends = {for k, be in var.backends:
+                k => merge(be,
+                  {groups = [merge(be.groups[0],
+                          {group = "https://www.googleapis.com/compute/v1/projects/${var.project}/zones/${var.zone}/instanceGroups/${be.groups[0].group}"})]})}
+
 
 }
 

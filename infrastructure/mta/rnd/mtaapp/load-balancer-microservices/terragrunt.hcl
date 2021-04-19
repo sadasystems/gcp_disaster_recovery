@@ -7,15 +7,13 @@ terraform {
 }
 
 inputs = {
+  zone = "us-central1-a"
   loadbalancer_name = "test"
-
-  # We can't identify which MIG should be behind of this LB
-  managed_instance_groups = ["terraform1-dr-instance-group"]
 
   backends = {
     ## Add more backend services for each managed instance group
     t1 = {
-      description                     = null
+      description                     = "first-instance-group"
       protocol                        = "HTTP"
       port                            = 80
       port_name                       = "http"
@@ -45,7 +43,7 @@ inputs = {
 
       groups = [
         {
-          group                        = "MIG-self-link"
+          group                        = "terraform1-dr-instance-group"
           balancing_mode               = null
           capacity_scaler              = null
           description                  = null
@@ -66,7 +64,7 @@ inputs = {
       }
     },
     t2 = {
-    description                     = null
+    description                     = "terraform2-dr-instance-group"
     protocol                        = "HTTP"
     port                            = 80
     port_name                       = "http"
@@ -96,7 +94,7 @@ inputs = {
 
     groups = [
       {
-        group                        = "MIG-name"
+        group                        = "terraform2-dr-instance-group"
         balancing_mode               = null
         capacity_scaler              = null
         description                  = null

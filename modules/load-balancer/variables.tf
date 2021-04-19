@@ -1,9 +1,9 @@
 variable "project" {type = string}
+variable "zone" {type=string}
 variable "enable_loadbalancer" {type = bool}
 variable "service_account_impersonate" { type = string }
 
 variable "loadbalancer_name" {type = string}
-variable "managed_instance_groups" { type = list(string)}
 
 variable "backends" {
   description = "Map backend indices to list of backend maps."
