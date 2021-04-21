@@ -3,6 +3,7 @@ locals {
   base_instance_name_prefix = "${var.source_vm}-dr"
   instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
   external_ip_name          = "${local.base_instance_name_prefix}-external-ip"
+  internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
   healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
   instance_group_name  = "${local.base_instance_name_prefix}-instance-group"
@@ -20,6 +21,14 @@ resource "google_compute_image" "images" {
 resource "google_compute_address" "external_IP" {
   name   = local.external_ip_name
   region = var.region
+  address_type = "EXTERNAL"
+}
+
+resource "google_compute_address" "internal_IP" {
+  name   = local.internal_ip_name
+  region = var.region
+  subnetwork = data.google_compute_instance.source_vm.network_interface[0].subnetwork
+  address_type = "INTERNAL"
 }
 
 resource "google_compute_resource_policy" "hourly_backup" {
@@ -64,7 +73,7 @@ resource "google_compute_instance_template" "default" {
   network_interface {
     subnetwork_project = data.google_compute_instance.source_vm.network_interface[0].subnetwork_project
     subnetwork         = data.google_compute_instance.source_vm.network_interface[0].subnetwork
-    # To-do Primary IP for internal address should not be changed after re-boot
+    network_ip = google_compute_address.internal_IP.address
     access_config {
       nat_ip = google_compute_address.external_IP.address
     }
