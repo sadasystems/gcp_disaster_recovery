@@ -149,3 +149,22 @@ reference :
 https://github.com/terraform-google-modules/terraform-google-lb-http
 
 https://cloud.google.com/load-balancing/docs/https/ext-http-lb-simple
+
+# Adding Google Filestore (NAS, NFS) for a project.
+
+## Create Filestore to the network host project
+Filestore is a managed service within GCP. It is easy to create and use.
+
+Since our project uses shared VPC network, Filestore instances must be created in the host network project.
+e.g. ent-net-mta-host-fde3 
+
+Once you created a Filestore instance in the host network project, you can access the instance from the service project.
+e.g mtaapp. 
+
+Please, review the reference below
+https://cloud.google.com/filestore/docs/creating-instances
+https://cloud.google.com/filestore/docs/known-issues#no-shared-vpc
+
+## Mount the Filestore share on the VM's directory.
+
+https://cloud.google.com/filestore/docs/mounting-fileshares#mounting_a_file_share_on_a_vm_instance
