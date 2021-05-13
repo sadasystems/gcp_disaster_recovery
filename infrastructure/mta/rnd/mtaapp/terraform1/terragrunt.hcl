@@ -7,6 +7,13 @@ terraform {
 }
 
 inputs = {
+
+  service_account = {
+    // Please, create a new service account.
+    email  = ""
+    scopes = ["cloud-platform"]
+  }
+
   region  = "us-central1"
   zone    = "us-central1-a"
 

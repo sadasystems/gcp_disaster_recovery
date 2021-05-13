@@ -7,6 +7,11 @@ terraform {
 }
 
 inputs = {
+  service_account = {
+    // Please, create a service account for a VM
+    email  = ""
+    scopes = ["cloud-platform"]
+  }
   region  = "us-central1"
   zone    = "us-central1-a"
 
