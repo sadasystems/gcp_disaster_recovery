@@ -7,6 +7,11 @@ terraform {
 }
 
 inputs = {
+  service_account = {
+    // Please, create a service account for a VM
+    email  = ""
+    scopes = ["cloud-platform"]
+  }
   region  = "us-central1"
   zone    = "us-central1-a"
 
@@ -15,16 +20,7 @@ inputs = {
   # Instance group manager
   igm_initial_delay_sec = "120"
   startup_script        = ""
-  /* Star up script to test load balancer
-  <<EOF
-    sudo apt update && sudo apt -y install git gunicorn3 python3-pip
-    git clone https://github.com/GoogleCloudPlatform/python-docs-samples.git
-    cd python-docs-samples/compute/managed-instances/demo
-    sudo pip3 install -r requirements.txt
-    sudo gunicorn3 --bind 0.0.0.0:80 app:app --daemon
-  EOF
-  */
-  disk_type = "pd-balanced"
+  disk_type = "pd-balanced"  # pd-ssd "pd-ssd", "local-ssd", "pd-balanced" or "pd-standard"
 
   # Snapshot schedule
   # https://cloud.google.com/compute/docs/disks/scheduled-snapshots
@@ -44,18 +40,5 @@ inputs = {
     unhealthy_threshold = 3
     request_path        = ""
     port                = 22
-  }
-
-  # Load-balancer
-  enable_loadbalancer = false
-  lb_health_check = {
-    check_interval_sec  = null
-    timeout_sec         = null
-    healthy_threshold   = null
-    unhealthy_threshold = null
-    request_path        = "/health"
-    port                = 80
-    host                = null
-    logging             = null
   }
 }

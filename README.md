@@ -53,7 +53,8 @@ An impersonnate service accout requires twol roles:
 `service account token creator` and `service account user roles`.
 Along with the impersonnate service account, it requires a service account to create a VM.
 This service account requires at least three roles, those are `compute instance admin`, 
-`compute network admin` and `compute network user` roles.
+`compute network admin` and `compute network user` roles. When an application needs to access Google Services,
+please, ensure that permissions and roles to access it. 
 
 You can add service accounts information to a project level terragrunt.hcl file.
 For example, `infrastructure/mta/rnd/mtaapp/terragrunt.hcl` file.
@@ -84,6 +85,10 @@ To enable Terraform script calls Google Cloud SDK, type the command below
 ``` 
  gcloud auth login
 ```
+
+Before executing the command, creating a directory with the name of the VM and copy `terragrunt.hcl` file from
+`terrafor1` or `terraform2`. It ensures that you will create a managed instance group for the VM.
+Once copying is done, modify the copied `terragrunt.hcl` file under the directory for your configurations.
 
 Once your machine is authorized by Google, you can run terragrunt command.
 `terragrunt { init | plan | apply | destroy | plan-all | apply-all | destroy-all }`
@@ -139,7 +144,10 @@ You can add a directory under `infrastructure/mta/rnd/mtaapp/` for a new VM if y
 
 # Adding Load-balancer and putting Managed Instance Group behind of the load-balancer
 
-Load-balancer is a project wide resource. You can enable the load-balancer by modify terragrunt.hcl file under project level folder, e.g. `mtaapp`.
+Load-balancer is a project wide resource. 
+It is disabled by default. If you like to enable it, you have to have managed instance group created previously.
+These managed instance groups are backends of the load-balancer.
+You can enable the load-balancer by modify terragrunt.hcl file under project level folder, e.g. `mtaapp`.
 Once you enable the load-balancer, you can config the load-balancer by modifying terragrunt.hcl file under `mtaapp/load-balancer-microservice` folder.
 
 A backend is a managed instance group. Please, review the documents below
