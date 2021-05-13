@@ -64,7 +64,7 @@ inputs = {
       }
     },
     t2 = {
-    description                     = "terraform2-dr-instance-group"
+    description                     = "second instance group"
     protocol                        = "HTTP"
     port                            = 80
     port_name                       = "http"
