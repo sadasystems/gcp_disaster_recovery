@@ -1,0 +1,1 @@
+## QA folder level configuration

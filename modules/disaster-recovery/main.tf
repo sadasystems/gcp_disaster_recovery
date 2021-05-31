@@ -94,11 +94,11 @@ resource "google_compute_instance_template" "default" {
     scopes = var.service_account.scopes
   }
 
-  shielded_instance_config {
+/*  shielded_instance_config {
     enable_secure_boot          = false
-    enable_vtpm                 = true
-    enable_integrity_monitoring = true
-  }
+    enable_vtpm                 = false
+    enable_integrity_monitoring = false
+  }*/
 
   depends_on = [google_compute_address.external_IP, google_compute_resource_policy.hourly_backup]
 }

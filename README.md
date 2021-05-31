@@ -51,10 +51,15 @@ In order to execute this script without any GCP keyfile dowloaded, it uses
 impersonnate service account. 
 An impersonnate service accout requires twol roles:
 `service account token creator` and `service account user roles`.
+
+The impersonnate service account requires network user permission for the network sub-project at which an instance runs. 
+A network sub-project has the prefix 'ent-net-mta-host'.
+
 Along with the impersonnate service account, it requires a service account to create a VM.
 This service account requires at least three roles, those are `compute instance admin`, 
 `compute network admin` and `compute network user` roles. When an application needs to access Google Services,
 please, ensure that permissions and roles to access it. 
+
 
 You can add service accounts information to a project level terragrunt.hcl file.
 For example, `infrastructure/mta/rnd/mtaapp/terragrunt.hcl` file.
