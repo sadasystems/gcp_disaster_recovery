@@ -15,13 +15,7 @@ This example code will create
  - 3. Load balancer with the backend of the Network Endpoint Group
 
 Case 3. MIG with multiple web endpoints
-- create named port for mig
-- multiple load balancer?
-
-### virtual machine within a managed instance group
-- port name mapping (named port)
-- HTTPS proxy (Frontend 443) to HTTP(Backend 80)
-- Multiple web services running on different ports
-
-## Reference
+- create named ports for mig
+- create backends for named ports
+- mapping sub-domains to backends
 https://faun.pub/google-cloud-htp-htps-load-balancer-backend-service-with-multiple-ports-8478ada41ce5
