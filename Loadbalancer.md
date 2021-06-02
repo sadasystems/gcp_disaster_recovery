@@ -18,4 +18,4 @@ Case 3. MIG with multiple web endpoints
 - create named ports for mig
 - create backends for named ports
 - mapping sub-domains to backends
-https://faun.pub/google-cloud-htp-htps-load-balancer-backend-service-with-multiple-ports-8478ada41ce5
+[Please, click for more information](https://faun.pub/google-cloud-htp-htps-load-balancer-backend-service-with-multiple-ports-8478ada41ce5)
