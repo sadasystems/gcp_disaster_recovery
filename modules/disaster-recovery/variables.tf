@@ -18,6 +18,14 @@ variable "source_vm" {
   default     = ""
 }
 
+variable "network_tag" { type = list(string)}
+variable "named_ports" {
+  type = list(object({
+    name = string
+    port = number
+  }))
+}
+
 # Instance group manager
 #variable "igm_name" { type = string }
 variable "igm_initial_delay_sec" { type = number }

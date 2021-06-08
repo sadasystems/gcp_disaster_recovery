@@ -53,6 +53,8 @@ resource "google_compute_instance_template" "default" {
   region       = var.region
   machine_type = data.google_compute_instance.source_vm.machine_type
 
+  tags = var.network_tag
+
   metadata_startup_script = var.startup_script
 
   dynamic "disk" {
@@ -144,6 +146,14 @@ resource "google_compute_instance_group_manager" "mig" {
   }
 
   target_size = 1
+
+  dynamic "named_port" {
+    for_each = var.named_ports
+    content {
+      name = named_port.value["name"]
+      port = named_port.value["port"]
+    }
+  }
 
   auto_healing_policies {
     health_check      = var.http_health_check_enabled ? google_compute_health_check.http_autohealing[0].id : google_compute_health_check.tcp_autohealing[0].id
