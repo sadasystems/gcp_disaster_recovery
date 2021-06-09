@@ -2,7 +2,6 @@ locals {
   images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
   base_instance_name_prefix = "${var.source_vm}-dr"
   instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
-  external_ip_name          = "${local.base_instance_name_prefix}-external-ip"
   internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
   healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
@@ -16,12 +15,6 @@ resource "google_compute_image" "images" {
 
   name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
   source_disk = local.disks[count.index].source
-}
-
-resource "google_compute_address" "external_IP" {
-  name   = local.external_ip_name
-  region = var.region
-  address_type = "EXTERNAL"
 }
 
 resource "google_compute_address" "internal_IP" {
@@ -96,13 +89,7 @@ resource "google_compute_instance_template" "default" {
     scopes = var.service_account.scopes
   }
 
-/*  shielded_instance_config {
-    enable_secure_boot          = false
-    enable_vtpm                 = false
-    enable_integrity_monitoring = false
-  }*/
-
-  depends_on = [google_compute_address.external_IP, google_compute_resource_policy.hourly_backup]
+  depends_on = [google_compute_resource_policy.hourly_backup]
 }
 
 resource "google_compute_health_check" "http_autohealing" {
