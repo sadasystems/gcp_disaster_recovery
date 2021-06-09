@@ -6,6 +6,7 @@ locals {
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
   healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
   instance_group_name  = "${local.base_instance_name_prefix}-instance-group"
+  autoscaler_name = "${local.base_instance_name_prefix}-auto-scaler"
   loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
   disks =  jsondecode(data.external.vm.result.source_vm).disks
 }
@@ -120,6 +121,18 @@ resource "google_compute_health_check" "tcp_autohealing" {
   depends_on = [google_compute_instance_template.default]
 }
 
+resource "google_compute_autoscaler" "default" {
+  name   = local.autoscaler_name
+  zone   = var.zone
+  target = google_compute_instance_group_manager.mig.id
+
+  autoscaling_policy {
+    max_replicas    = 1
+    min_replicas    = 1
+    cooldown_period = 60
+  }
+}
+
 resource "google_compute_instance_group_manager" "mig" {
   name               = local.instance_group_name
   base_instance_name = local.base_instance_name_prefix
@@ -128,8 +141,6 @@ resource "google_compute_instance_group_manager" "mig" {
   version {
     instance_template = google_compute_instance_template.default.id
   }
-
-  target_size = 1
 
   dynamic "named_port" {
     for_each = var.named_ports
