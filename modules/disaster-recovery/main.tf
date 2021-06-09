@@ -69,9 +69,6 @@ resource "google_compute_instance_template" "default" {
     subnetwork_project = data.google_compute_instance.source_vm.network_interface[0].subnetwork_project
     subnetwork         = data.google_compute_instance.source_vm.network_interface[0].subnetwork
     network_ip = google_compute_address.internal_IP.address
-    access_config {
-      nat_ip = google_compute_address.external_IP.address
-    }
   }
 
   lifecycle {
