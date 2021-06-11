@@ -5,17 +5,25 @@ variable "region" {type = string}
 variable "zone" { type = string }
 variable "name" {type =string}
 
+/*
 variable "network_interfaces" {
   type = list(object({
     network = string
     subnetwork = string
   }))
 }
+*/
 
-variable "instance_group" { type = string}
+variable "port_names" {
+  type = list(object({
+    name = string
+    port = number
+  }))
+}
 
 variable "host_path_rules" {
   type = list(object({
+    port_name = string
     host_rule = object({
       host = list(string)
       path_matcher = string

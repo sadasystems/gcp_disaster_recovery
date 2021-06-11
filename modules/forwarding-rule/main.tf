@@ -1,5 +1,4 @@
 locals {
-  network_interface = var.network_interfaces[0]
   http_proxy_name = "${var.name}-http-proxy"
   url_map_name = "${var.name}-url-map"
   backend_name = "${var.name}-backend"
@@ -12,36 +11,32 @@ resource "google_compute_global_address" "lb-ip" {
   ip_version = "IPV4"
 }
 
-resource "google_compute_forwarding_rule" "default" {
+resource "google_compute_global_forwarding_rule" "default" {
   provider = google-beta
   name   = var.name
-  region = var.region
+  project = var.project
 
   ip_protocol           = "TCP"
   port_range            = "80"
-  target                = google_compute_region_target_http_proxy.default.id
-  network               = local.network_interface.network
-  subnetwork            = local.network_interface.subnetwork
-  network_tier          = "PREMIUM"
-  ip_address = google_compute_global_address.lb-ip.self_link
+  target                = google_compute_target_http_proxy.default.id
+  ip_address = google_compute_global_address.lb-ip.address
 }
 
-resource "google_compute_region_target_http_proxy" "default" {
+resource "google_compute_target_http_proxy" "default" {
   provider = google-beta
 
-  region  = var.region
+  project = var.project
   name    = local.http_proxy_name
-  url_map = google_compute_region_url_map.default.id
+  url_map = google_compute_url_map.default.id
 }
 
-resource "google_compute_region_url_map" "default" {
+resource "google_compute_url_map" "default" {
   provider = google-beta
 
-  region          = var.region
+  project = var.project
   name            = local.url_map_name
-  default_service = google_compute_region_backend_service.default.id
+  default_service = google_compute_backend_service.default[0].id
 
-  /*Should be multiple*/
   dynamic "host_rule" {
     for_each = var.host_path_rules
     content {
@@ -54,37 +49,40 @@ resource "google_compute_region_url_map" "default" {
     for_each = var.host_path_rules
     content {
       name = path_matcher.value["path_matcher"].name
-      default_service = path_matcher.value["path_matcher"].default_service
+      default_service = google_compute_backend_service.default[0].id
 
       dynamic "path_rule" {
         for_each = path_matcher.value["path_matcher"].path_rule
         content {
           paths = path_rule.value["paths"]
-          service = path_rule.value["service"]
-        }
+          service = [for be in google_compute_backend_service.default: be if be.port_name == path_matcher.value["port_name"]][0].id
+       }
       }
     }
   }
+
+  depends_on = [google_compute_backend_service.default]
 }
 
-/*Should be multiple*/
-resource "google_compute_region_backend_service" "default" {
+resource "google_compute_backend_service" "default" {
+  count = length(var.host_path_rules)
   provider = google-beta
-  region      = var.region
-  name        = local.backend_name
+  project = var.project
+  name        = "${local.backend_name}-${var.host_path_rules[count.index].path_matcher["name"]}"
   protocol    = "HTTP"
   timeout_sec = 10
+  load_balancing_scheme = "EXTERNAL"
 
-  port_name = ""
+  port_name = var.host_path_rules[count.index].port_name
 
-  health_checks = [google_compute_region_health_check.default.id]
+  health_checks = [google_compute_health_check.default.id]
 }
 
 /*should be manual*/
-resource "google_compute_region_health_check" "default" {
+resource "google_compute_health_check" "default" {
   provider = google-beta
 
-  region = var.region
+  project = var.project
   name   = local.healthcheck_name
   http_health_check {
     port_specification = "USE_SERVING_PORT"
