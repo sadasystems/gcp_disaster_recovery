@@ -25,11 +25,9 @@ variable "host_path_rules" {
     })
     path_matcher = object({
       name = string
-      default_service = string
 
       path_rule = list(object({
         paths = list(string)
-        service = string
       }))
     })
   }))
