@@ -75,7 +75,7 @@ resource "google_compute_backend_service" "default" {
   port_name = var.host_path_rules[count.index].port_name
 
   backend {
-    group = var.instance_group
+    group = var.host_path_rules[count.index].instance_group
   }
 
   health_checks = [google_compute_health_check.default.id]
