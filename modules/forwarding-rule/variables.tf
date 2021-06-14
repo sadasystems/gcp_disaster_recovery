@@ -14,12 +14,7 @@ variable "network_interfaces" {
 }
 */
 
-variable "port_names" {
-  type = list(object({
-    name = string
-    port = number
-  }))
-}
+variable "instance_group" { type = string }
 
 variable "host_path_rules" {
   type = list(object({

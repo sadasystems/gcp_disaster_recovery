@@ -49,7 +49,7 @@ resource "google_compute_url_map" "default" {
     for_each = var.host_path_rules
     content {
       name = path_matcher.value["path_matcher"].name
-      default_service = google_compute_backend_service.default[0].id
+      default_service = [for be in google_compute_backend_service.default: be if be.port_name == path_matcher.value["port_name"]][0].id
 
       dynamic "path_rule" {
         for_each = path_matcher.value["path_matcher"].path_rule
@@ -68,17 +68,19 @@ resource "google_compute_backend_service" "default" {
   count = length(var.host_path_rules)
   provider = google-beta
   project = var.project
-  name        = "${local.backend_name}-${var.host_path_rules[count.index].path_matcher["name"]}"
+  name        = "${local.backend_name}-${var.host_path_rules[count.index].port_name}"
   protocol    = "HTTP"
   timeout_sec = 10
   load_balancing_scheme = "EXTERNAL"
-
   port_name = var.host_path_rules[count.index].port_name
+
+  backend {
+    group = var.instance_group
+  }
 
   health_checks = [google_compute_health_check.default.id]
 }
 
-/*should be manual*/
 resource "google_compute_health_check" "default" {
   provider = google-beta
 
