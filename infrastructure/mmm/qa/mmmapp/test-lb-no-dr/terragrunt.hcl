@@ -3,7 +3,7 @@ include {
 }
 
 terraform {
-  source = "${path_relative_from_include()}/../../../..//modules/attach-load-balancer-on-vm"
+  source = "${path_relative_from_include()}/../../../..//modules/add-network-endpoint-to-vm"
 }
 
 inputs = {
@@ -11,8 +11,7 @@ inputs = {
   service_account = {
     // Please, create a new service account.
     email = "svc-qa-mmmapp@mmm-mmm-qa-mmmapp-ac0c.iam.gserviceaccount.com"
-    scopes = [
-      "cloud-platform"]
+    scopes = ["cloud-platform"]
   }
 
   zone = "us-central1-a"
