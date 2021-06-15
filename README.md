@@ -147,22 +147,6 @@ Once service accounts for impersonation and VM are ready, you can deploy a VM wi
 
 You can add a directory under `infrastructure/mta/rnd/mtaapp/` for a new VM if you need to deploy a new VM.
 
-# Adding Load-balancer and putting Managed Instance Group behind of the load-balancer
-
-Load-balancer is a project wide resource. 
-It is disabled by default. If you like to enable it, you have to have managed instance group created previously.
-These managed instance groups are backends of the load-balancer.
-You can enable the load-balancer by modify terragrunt.hcl file under project level folder, e.g. `mtaapp`.
-Once you enable the load-balancer, you can config the load-balancer by modifying terragrunt.hcl file under `mtaapp/load-balancer-microservice` folder.
-
-A backend is a managed instance group. Please, review the documents below
-
-reference :
-
-https://github.com/terraform-google-modules/terraform-google-lb-http
-
-https://cloud.google.com/load-balancing/docs/https/ext-http-lb-simple
-
 # Adding Google Filestore (NAS, NFS) for a project.
 
 ## Create Filestore to the network host project
