@@ -26,10 +26,11 @@ This example code will create
 [Please, click for more information](https://faun.pub/google-cloud-htp-htps-load-balancer-backend-service-with-multiple-ports-8478ada41ce5)
 
 # How load balancer is built
-- every module outputs 'named port' or 'network endpoint group'
-- at the last stage of `terrafor apply`, load-balancer module aggregates all 'named port' and 'network endpoint group' to build load balancer backends.
+- every disater-recovery module outputs 'named port'
+- at the last stage of `terrafor apply`, load-balancer module aggregates all 'named port' 
 
 # How to expose your service to the Internet
 -1. modify `project-level-folder/load-balancer/terragrunt.hcl` to include your module as a dependency.
+  - [add dependency block to the terragrunt.hcl file.](https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#dependency)
 -2. Add host-and-path rules below the existing host-and-path rule.
 -3. In case of using HTTPS front end, your impersonate service account should have 'roles/compute.loadBalancerAdmin' 

@@ -7,9 +7,13 @@ terraform {
 }
 
 dependency "test-strategy" {
-  # 1. Add your instance to be connected to the load balancer
   config_path = "../test-strategy"
 }
+/* 1. Add your instance to be connected to the load balancer
+dependency "vm_name" {
+  config_path = "../vm_name"
+}
+*/
 
 inputs = {
   region = "us-central1"
