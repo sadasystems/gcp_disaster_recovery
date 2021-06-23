@@ -17,10 +17,10 @@ inputs = {
 
   zone = "us-central1-a"
 
-  source_vm = "test-lb-no-dr"
+  source_vm = "test-strategy"
   #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
-  name = "test-lb-no-dr"
+  name = "test"
   default_port = "80"
 }
 

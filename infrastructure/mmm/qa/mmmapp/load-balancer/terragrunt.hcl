@@ -16,6 +16,9 @@ inputs = {
   zone = "us-central1-a"
   name = "test-strategy"
 
+  # HTTPS
+  private_key_path = "path/to/private.key"
+  certificate_path = "path/to/certificate"
 
   /*The first host_rule is the default*/
   host_path_rules = [

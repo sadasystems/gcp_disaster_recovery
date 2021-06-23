@@ -32,3 +32,4 @@ This example code will create
 # How to expose your service to the Internet
 -1. modify `project-level-folder/load-balancer/terragrunt.hcl` to include your module as a dependency.
 -2. Add host-and-path rules below the existing host-and-path rule.
+-3. In case of using HTTPS front end, your impersonate service account should have 'roles/compute.loadBalancerAdmin' 

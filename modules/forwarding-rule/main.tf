@@ -1,5 +1,6 @@
 locals {
   http_proxy_name = "${var.name}-http-proxy"
+  https_proxy_name = "${var.name}-https-proxy"
   url_map_name = "${var.name}-url-map"
   backend_name = "${var.name}-backend"
   healthcheck_name = "${var.name}-healthcheck"
@@ -10,15 +11,14 @@ resource "google_compute_global_address" "lb-ip" {
   name = local.loadbalancer_ip
   ip_version = "IPV4"
 }
-
-resource "google_compute_global_forwarding_rule" "default" {
+resource "google_compute_global_forwarding_rule" "https" {
   provider = google-beta
-  name   = var.name
+  name   = "${var.name}-https"
   project = var.project
 
   ip_protocol           = "TCP"
-  port_range            = "80"
-  target                = google_compute_target_http_proxy.default.id
+  port_range            = "443"
+  target                = google_compute_target_https_proxy.default.id
   ip_address = google_compute_global_address.lb-ip.address
 }
 
@@ -28,6 +28,18 @@ resource "google_compute_target_http_proxy" "default" {
   project = var.project
   name    = local.http_proxy_name
   url_map = google_compute_url_map.default.id
+}
+
+resource "google_compute_ssl_certificate" "default" {
+  name_prefix = var.name
+  private_key = file(var.private_key_path)
+  certificate = file(var.certificate_path)
+}
+
+resource "google_compute_target_https_proxy" "default" {
+  name  = local.https_proxy_name
+  url_map = google_compute_url_map.default.id
+  ssl_certificates = [google_compute_ssl_certificate.default.id]
 }
 
 resource "google_compute_url_map" "default" {
