@@ -19,7 +19,23 @@ inputs = {
 
   source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
+  network_tag = ["allow-all-gfe"]
+
   # Named ports
+  named_ports = [
+    {
+      name = "http8201"
+      port = 8201
+    },
+    {
+      name = "http8202"
+      port = 8202
+    },
+    {
+      name = "http8203"
+      port = 8203
+    }
+  ]
 
 
   # Instance group manager

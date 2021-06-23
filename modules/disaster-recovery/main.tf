@@ -2,11 +2,11 @@ locals {
   images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
   base_instance_name_prefix = "${var.source_vm}-dr"
   instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
-  external_ip_name          = "${local.base_instance_name_prefix}-external-ip"
   internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
   healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
   instance_group_name  = "${local.base_instance_name_prefix}-instance-group"
+  autoscaler_name = "${local.base_instance_name_prefix}-auto-scaler"
   loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
   disks =  jsondecode(data.external.vm.result.source_vm).disks
 }
@@ -16,12 +16,6 @@ resource "google_compute_image" "images" {
 
   name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
   source_disk = local.disks[count.index].source
-}
-
-resource "google_compute_address" "external_IP" {
-  name   = local.external_ip_name
-  region = var.region
-  address_type = "EXTERNAL"
 }
 
 resource "google_compute_address" "internal_IP" {
@@ -53,6 +47,8 @@ resource "google_compute_instance_template" "default" {
   region       = var.region
   machine_type = data.google_compute_instance.source_vm.machine_type
 
+  tags = var.network_tag
+
   metadata_startup_script = var.startup_script
 
   dynamic "disk" {
@@ -74,9 +70,6 @@ resource "google_compute_instance_template" "default" {
     subnetwork_project = data.google_compute_instance.source_vm.network_interface[0].subnetwork_project
     subnetwork         = data.google_compute_instance.source_vm.network_interface[0].subnetwork
     network_ip = google_compute_address.internal_IP.address
-    access_config {
-      nat_ip = google_compute_address.external_IP.address
-    }
   }
 
   lifecycle {
@@ -94,13 +87,7 @@ resource "google_compute_instance_template" "default" {
     scopes = var.service_account.scopes
   }
 
-/*  shielded_instance_config {
-    enable_secure_boot          = false
-    enable_vtpm                 = false
-    enable_integrity_monitoring = false
-  }*/
-
-  depends_on = [google_compute_address.external_IP, google_compute_resource_policy.hourly_backup]
+  depends_on = [google_compute_resource_policy.hourly_backup]
 }
 
 resource "google_compute_health_check" "http_autohealing" {
@@ -134,6 +121,18 @@ resource "google_compute_health_check" "tcp_autohealing" {
   depends_on = [google_compute_instance_template.default]
 }
 
+resource "google_compute_autoscaler" "default" {
+  name   = local.autoscaler_name
+  zone   = var.zone
+  target = google_compute_instance_group_manager.mig.id
+
+  autoscaling_policy {
+    max_replicas    = 1
+    min_replicas    = 1
+    cooldown_period = 60
+  }
+}
+
 resource "google_compute_instance_group_manager" "mig" {
   name               = local.instance_group_name
   base_instance_name = local.base_instance_name_prefix
@@ -143,7 +142,13 @@ resource "google_compute_instance_group_manager" "mig" {
     instance_template = google_compute_instance_template.default.id
   }
 
-  target_size = 1
+  dynamic "named_port" {
+    for_each = var.named_ports
+    content {
+      name = named_port.value["name"]
+      port = named_port.value["port"]
+    }
+  }
 
   auto_healing_policies {
     health_check      = var.http_health_check_enabled ? google_compute_health_check.http_autohealing[0].id : google_compute_health_check.tcp_autohealing[0].id

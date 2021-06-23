@@ -3,117 +3,72 @@ include {
 }
 
 terraform {
-  source = "${path_relative_from_include()}/../../../..//modules/load-balancer"
+  source = "${path_relative_from_include()}/../../../..//modules/forwarding-rule"
+}
+
+dependency "test-strategy" {
+  # 1. Add your instance to be connected to the load balancer
+  config_path = "../test-strategy"
 }
 
 inputs = {
+  region = "us-central1"
   zone = "us-central1-a"
-  loadbalancer_name = "test"
+  name = "test-strategy"
 
-  backends = {
-    ## Add more backend services for each managed instance group
-    t1 = {
-      description                     = "first-instance-group"
-      protocol                        = "HTTP"
-      port                            = 80
-      port_name                       = "http"
-      timeout_sec                     = 10
-      enable_cdn                      = false
-      custom_request_headers          = null
-      security_policy                 = null
-      connection_draining_timeout_sec = null
-      session_affinity                = null
-      affinity_cookie_ttl_sec         = null
+  # HTTPS
+  private_key_path = "path/to/private.key"
+  certificate_path = "path/to/certificate"
 
-      health_check = {
-        check_interval_sec  = 10
-        timeout_sec         = 5
-        healthy_threshold   = 2
-        unhealthy_threshold = 3
-        request_path        = "/health"
-        port                = 80
-        host                = ""
-        logging             = true
+  /*The first host_rule is the default*/
+  host_path_rules = [
+    {
+      /*named_port or NE name*/
+      # 2. Add the output of your instance module's Managed Instance Group for each host_path_rule
+      instance_group = dependency.test-strategy.outputs.instance_group_manager.instance_group
+      port_name = "http8202"
+      host_rule = {
+        host = ["strategy-qa-two-gcp.marketshare.com"]
+        path_matcher = "p1"
       }
+      path_matcher = {
+        name = "p1"
 
-      log_config = {
-        enable      = true
-        sample_rate = 1.0
+        path_rule = [{
+          paths = ["/*"]
+        }]
       }
-
-      groups = [
-        {
-          group                        = "terraform1-dr-instance-group"
-          balancing_mode               = null
-          capacity_scaler              = null
-          description                  = null
-          max_connections              = null
-          max_connections_per_instance = null
-          max_connections_per_endpoint = null
-          max_rate                     = null
-          max_rate_per_instance        = null
-          max_rate_per_endpoint        = null
-          max_utilization              = null
-        }
-      ]
-
-      iap_config = {
-        enable               = false
-        oauth2_client_id     = ""
-        oauth2_client_secret = ""
-      }
-    },
-    t2 = {
-    description                     = "second instance group"
-    protocol                        = "HTTP"
-    port                            = 80
-    port_name                       = "http"
-    timeout_sec                     = 10
-    enable_cdn                      = false
-    custom_request_headers          = null
-    security_policy                 = null
-    connection_draining_timeout_sec = null
-    session_affinity                = null
-    affinity_cookie_ttl_sec         = null
-
-    health_check = {
-      check_interval_sec  = 10
-      timeout_sec         = 5
-      healthy_threshold   = 2
-      unhealthy_threshold = 3
-      request_path        = "/health"
-      port                = 80
-      host                = ""
-      logging             = true
+    }, {
+    # 2. Add the output of your instance module's Managed Instance Group for each host_path_rule
+    instance_group = dependency.test-strategy.outputs.instance_group_manager.instance_group
+    port_name = "http8201"
+    host_rule = {
+      host = ["strategy-qa-six-gcp.marketshare.com"]
+      path_matcher= "p2"
     }
+    path_matcher = {
+      name = "p2"
 
-    log_config = {
-      enable      = true
-      sample_rate = 1.0
+      path_rule = [{
+        paths = ["/*"]
+      }]
     }
-
-    groups = [
-      {
-        group                        = "terraform2-dr-instance-group"
-        balancing_mode               = null
-        capacity_scaler              = null
-        description                  = null
-        max_connections              = null
-        max_connections_per_instance = null
-        max_connections_per_endpoint = null
-        max_rate                     = null
-        max_rate_per_instance        = null
-        max_rate_per_endpoint        = null
-        max_utilization              = null
-      }
-    ]
-
-    iap_config = {
-      enable               = false
-      oauth2_client_id     = ""
-      oauth2_client_secret = ""
+  },{
+    # 2. Add the output of your instance module's Managed Instance Group for each host_path_rule
+    instance_group = dependency.test-strategy.outputs.instance_group_manager.instance_group
+    port_name = "http8203"
+    host_rule = {
+      host = ["strategy-qa-one-gcp.marketshare.com"]
+      path_matcher= "p3"
     }
-  }
+    path_matcher = {
+      name = "p3"
 
-  }
+      path_rule = [{
+        paths = ["/*"]
+      }]
+    }
+  }]
 }
+
+
