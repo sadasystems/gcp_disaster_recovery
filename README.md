@@ -49,17 +49,34 @@ Directory structure of this repository reflects the GCP folders and projects str
 ### Create two service accounts in the GCP
 In order to execute this script without any GCP keyfile dowloaded, it uses 
 impersonnate service account. 
-An impersonnate service accout requires twol roles:
+An impersonnate service account requires two roles:
 `service account token creator` and `service account user roles`.
+(If you like to create a load balancer with HTTPS frontend, you need 'loadBalancerAdmin' as well)
 
 The impersonnate service account requires network user permission for the network sub-project at which an instance runs. 
 A network sub-project has the prefix 'ent-net-mta-host'.
 
-Along with the impersonnate service account, it requires a service account to create a VM.
-This service account requires at least three roles, those are `compute instance admin`, 
-`compute network admin` and `compute network user` roles. When an application needs to access Google Services,
-please, ensure that permissions and roles to access it. 
+#### List of roles for an impersonnate service account
+For the target project it requires at least 5 roles below.
+```
+Compute Instance Admin (v1)
+Compute Network Admin
+Compute Network User
+Service Account Token Creator
+Service Account User
+Compute Load Balancer Admin (optional)
+```
 
+For the host network project it requires at least 2 roles below.
+``` 
+Compute network admin 
+compute network user roles
+```
+
+Along with the impersonnate service account, it requires a service account for a VM being created.
+This service account requires at least two roles, those are `compute network admin` and `compute network user` roles. 
+When an application needs to access Google Services,
+please, ensure that permissions and roles to access it. 
 
 You can add service accounts information to a project level terragrunt.hcl file.
 For example, `infrastructure/mta/rnd/mtaapp/terragrunt.hcl` file.
@@ -123,11 +140,11 @@ Terragrunt can apply the disaster recovery Terraform script to multiple VMs to a
 1) fill out terragrunt.hcl file under a project level directory. ex, `mtaapp`
    - Put service accounts information.
     
-1) fill out terragurnt.hcl file for a VM.
+2) fill out terragurnt.hcl file for a VM.
    In this example, names of the VMs are `terraform1` and `terraform2`.
    ex, terragrunt.hcl files under `terraform1` and `terraform2` directories. 
 
-1) run terragrunt script 
+3) run terragrunt script 
 - To apply a single VM, move to VM level directory first. For example, `cd terraform1` or `cd terraform2` 
   type the command `terragrunt plan` first and then `terragrunt apply`.
   `terragurnt {init | plan | apply}` is equivalent of terraform command `terraform {init | plan| apply}`
