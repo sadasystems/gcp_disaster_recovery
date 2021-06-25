@@ -22,8 +22,8 @@ inputs = {
   name = "test-strategy"
 
   # HTTPS
-  private_key_path = "rootCA"
-  certificate_path = "rootCSR.cert"
+  private_key_path = "path/to/private.key"
+  certificate_path = "path/to/cert"
 
   /*The first host_rule is the default*/
   host_path_rules = [
