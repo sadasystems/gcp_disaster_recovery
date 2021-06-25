@@ -24,16 +24,8 @@ inputs = {
   # Named ports
   named_ports = [
     {
-      name = "http8201"
-      port = 8201
-    },
-    {
-      name = "http8202"
-      port = 8202
-    },
-    {
-      name = "http8203"
-      port = 8203
+      name = "https"
+      port = 443
     }
   ]
 
