@@ -81,7 +81,7 @@ resource "google_compute_backend_service" "default" {
   provider = google-beta
   project = var.project
   name        = "${local.backend_name}-${var.host_path_rules[count.index].port_name}"
-  protocol    = "HTTP"
+  protocol    = "HTTPS"
   timeout_sec = 10
   load_balancing_scheme = "EXTERNAL"
   port_name = var.host_path_rules[count.index].port_name
@@ -98,7 +98,9 @@ resource "google_compute_health_check" "default" {
 
   project = var.project
   name   = local.healthcheck_name
-  http_health_check {
-    port_specification = "USE_SERVING_PORT"
+  tcp_health_check {
+    port_name = "https"
+    port_specification = "USE_NAMED_PORT"
   }
+
 }
