@@ -18,5 +18,5 @@ variable "source_vm" {
   default     = ""
 }
 
-variable "name" { type = string }
-variable "default_port" { type = string }
+variable "port_name" { type = string }
+variable "port_number" { type = string }

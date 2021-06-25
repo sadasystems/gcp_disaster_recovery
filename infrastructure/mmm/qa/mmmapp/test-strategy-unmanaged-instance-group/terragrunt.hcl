@@ -3,7 +3,7 @@ include {
 }
 
 terraform {
-  source = "${path_relative_from_include()}/../../../..//modules/add-network-endpoint-to-vm"
+  source = "${path_relative_from_include()}/../../../..//modules/unmanaged-instance-group-to-vm"
 }
 
 inputs = {
@@ -17,10 +17,10 @@ inputs = {
 
   zone = "us-central1-a"
 
-  source_vm = "test-strategy"
+  source_vm = "test-strategy-unmanaged-instance-group"
   #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
-  name = "test"
-  default_port = "80"
+  port_name = "https"
+  port_number = "443"
 }
 

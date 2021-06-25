@@ -3,11 +3,11 @@ include {
 }
 
 terraform {
-  source = "${path_relative_from_include()}/../../../..//modules/forwarding-rule"
+  source = "${path_relative_from_include()}/../../../..//modules/load-balancer"
 }
 
-dependency "test-strategy" {
-  config_path = "../test-strategy"
+dependency "test-strategy-unmanaged-instance-group" {
+  config_path = "../test-strategy-unmanaged-instance-group"
 }
 
 /* 1. Add your instance to be connected to the load balancer
@@ -22,8 +22,8 @@ inputs = {
   name = "test-strategy"
 
   # HTTPS
-  private_key_path = "path/to/private.key"
-  certificate_path = "path/to/certificate"
+  private_key_path = "rootCA"
+  certificate_path = "rootCSR.cert"
 
   /*The first host_rule is the default*/
   host_path_rules = [

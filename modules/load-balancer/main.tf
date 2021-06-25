@@ -102,5 +102,4 @@ resource "google_compute_health_check" "default" {
     port_name = "https"
     port_specification = "USE_NAMED_PORT"
   }
-
 }
