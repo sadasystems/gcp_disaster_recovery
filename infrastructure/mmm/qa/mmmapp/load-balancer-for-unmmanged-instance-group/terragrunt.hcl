@@ -19,7 +19,7 @@ dependency "vm_name" {
 inputs = {
   region = "us-central1"
   zone = "us-central1-a"
-  name = "test-strategy"
+  name = "test-strategy-unmanaged"
 
   # HTTPS
   private_key_path = "rootCA"
@@ -30,7 +30,7 @@ inputs = {
     {
       /*named_port or NE name*/
       # 2. Add the output of your instance module's Managed Instance Group for each host_path_rule
-      instance_group = dependency.test-strategy.outputs.instance_group_manager.instance_group
+      instance_group = dependency.test-strategy-unmanaged-instance-group.outputs.instance_group.id
       port_name = "https"
       host_rule = {
         host = ["*"]
