@@ -1,7 +1,7 @@
 # OS Patch management
-Required permission for impersonate service account: 
-role : patch deployment admin
-permission: osconfig.patchDeployments.create
+Required permission for impersonate service account 
+
+role : patch deployment admin, permission: osconfig.patchDeployments.create
 
 1. You can set up OS patch management for all VMs or a specific VM in a project 
 by setting up metadata value [reference](https://cloud.google.com/compute/docs/manage-os#console_1)
