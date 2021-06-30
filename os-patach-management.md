@@ -1,6 +1,8 @@
 # OS Patch management
-Required permission for impersonate service account: 
+Required permission for impersonate service account 
+
 role : patch deployment admin
+
 permission: osconfig.patchDeployments.create
 
 1. You can set up OS patch management for all VMs or a specific VM in a project 
