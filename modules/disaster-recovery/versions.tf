@@ -4,8 +4,8 @@ terraform {
   required_providers {
     google = {
       version = ">= 3.62.0"
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
     }
   }
-  experiments      = [module_variable_optional_attrs]
+  experiments = [module_variable_optional_attrs]
 }

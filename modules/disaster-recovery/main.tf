@@ -5,10 +5,10 @@ locals {
   internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
   healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
-  instance_group_name  = "${local.base_instance_name_prefix}-instance-group"
-  autoscaler_name = "${local.base_instance_name_prefix}-auto-scaler"
+  instance_group_name       = "${local.base_instance_name_prefix}-instance-group"
+  autoscaler_name           = "${local.base_instance_name_prefix}-auto-scaler"
   loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
-  disks =  jsondecode(data.external.vm.result.source_vm).disks
+  disks                     = jsondecode(data.external.vm.result.source_vm).disks
 }
 
 resource "google_compute_image" "images" {
@@ -19,9 +19,9 @@ resource "google_compute_image" "images" {
 }
 
 resource "google_compute_address" "internal_IP" {
-  name   = local.internal_ip_name
-  region = var.region
-  subnetwork = data.google_compute_instance.source_vm.network_interface[0].subnetwork
+  name         = local.internal_ip_name
+  region       = var.region
+  subnetwork   = data.google_compute_instance.source_vm.network_interface[0].subnetwork
   address_type = "INTERNAL"
 }
 
@@ -54,10 +54,10 @@ resource "google_compute_instance_template" "default" {
   dynamic "disk" {
     for_each = [for index, d in local.disks : merge(d, local.images[index])]
     content {
-      boot              = lookup(disk.value, "boot", null)
-      auto_delete       = lookup(disk.value, "autoDelete", null)
-      disk_name         = "${local.base_instance_name_prefix}-${lookup(disk.value, "deviceName", null)}"
-      disk_size_gb      = lookup(disk.value, "diskSizeGb", null)
+      boot         = lookup(disk.value, "boot", null)
+      auto_delete  = lookup(disk.value, "autoDelete", null)
+      disk_name    = "${local.base_instance_name_prefix}-${lookup(disk.value, "deviceName", null)}"
+      disk_size_gb = lookup(disk.value, "diskSizeGb", null)
       # To-do: If it is a boot-disk, disk_type is pd-ssd by default
       disk_type         = var.disk_type
       source_image      = lookup(disk.value, "source_image", null)
@@ -69,7 +69,7 @@ resource "google_compute_instance_template" "default" {
   network_interface {
     subnetwork_project = data.google_compute_instance.source_vm.network_interface[0].subnetwork_project
     subnetwork         = data.google_compute_instance.source_vm.network_interface[0].subnetwork
-    network_ip = google_compute_address.internal_IP.address
+    network_ip         = google_compute_address.internal_IP.address
   }
 
   lifecycle {

@@ -18,7 +18,7 @@ variable "source_vm" {
   default     = ""
 }
 
-variable "network_tag" { type = list(string)}
+variable "network_tag" { type = list(string) }
 variable "named_ports" {
   type = list(object({
     name = string
@@ -34,7 +34,7 @@ variable "startup_script" {
   description = "User startup script to run when instances spin up"
   default     = ""
 }
-variable "disk_type" { type = string}
+variable "disk_type" { type = string }
 
 variable "snapshot" {
   type = object({
