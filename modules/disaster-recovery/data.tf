@@ -19,7 +19,7 @@ data "external" "vm" {
 
   query = {
     source_vm = var.source_vm
-    project = var.project
-    zone = var.zone
+    project   = var.project
+    zone      = var.zone
   }
 }
