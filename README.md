@@ -18,7 +18,7 @@ Terragrunt use cases. https://blog.gruntwork.io/terragrunt-how-to-keep-your-terr
 ### Directory structure of this project.
 Directory structure of this repository reflects the GCP folders and projects structure.
 ``` 
-├── infrastructure
+├── infrastructure                          <= Terragrunt folder
 │   ├── mta
 │   │   ├── rnd                             <=== folder 
 │   │   │   ├── mtaapp                      <=== project 
@@ -32,19 +32,58 @@ Directory structure of this repository reflects the GCP folders and projects str
 │   │   │   └── terragrunt.hcl
 │   │   └── terragrunt.hcl
 │   └── terragrunt.hcl
-└── modules
-    ├── compute-instance                    <=== Terraform code for VM provisioning without disaster recovery
+└── modules                              <== Terraform folder
+    ├── compute-instance                 <== Launch Compute Instance
+    │   ├── data.tf
     │   ├── main.tf
     │   ├── output.tf
+    │   ├── provider.tf
     │   ├── variables.tf
     │   └── versions.tf
-    └── disaster-recovery                   <=== Terraform code for disaster recovery
+    ├── disaster-recovery
+    │   ├── compute.sh
+    │   ├── data.tf
+    │   ├── main.tf
+    │   ├── mmm
+    │   │   └── qa
+    │   │       └── mmmapp
+    │   │           └── test-strategy.tfvars  <== example
+    │   ├── output.tf
+    │   ├── provider.tf
+    │   ├── variables.tf
+    │   └── versions.tf
+    ├── load-balancer
+    │   ├── data.tf
+    │   ├── main.tf
+    │   ├── mmm
+    │   │   └── qa
+    │   │       └── mmmapp
+    │   │           ├── lb-for-managed-instance-group.tfvars    <== examples
+    │   │           └── lb-for-unmanaged-instance-group.tfvars
+    │   ├── output.tf
+    │   ├── provider.tf
+    │   ├── variables.tf
+    │   └── versions.tf
+    ├── os-patch-management
+    │   ├── data.tf
+    │   ├── main.tf
+    │   ├── output.tf
+    │   ├── provider.tf
+    │   ├── variables.tf
+    │   └── versions.tf
+    └── unmanaged-instance-group-to-vm  <== To create instance group for VM to connect load balancer
+        ├── compute.sh
         ├── data.tf
         ├── main.tf
+        ├── mmm
+        │   └── qa
+        │       └── mmmapp
+        │           └── test-strategy-unmanaged-instance-group.tfvars
         ├── output.tf
         ├── provider.tf
         ├── variables.tf
         └── versions.tf
+
 ```
 ### Create two service accounts in the GCP
 In order to execute this script without any GCP keyfile dowloaded, it uses 
@@ -92,10 +131,6 @@ If your source VM is still running, this automatic process will be halted.
 
 reference: https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#create_image
 
-### Configuration
-Once you have two service accounts and images, you can fill out `terragrunt.hcl` file for a VM.
-You can turn on and off external HTTP/HTTPS load balancer. 
-
 ## execution
 To impersonnate a service account, type the command below in the terminal.
 Before typing the command, Google Cloud SDK must be installed on your machine.
@@ -112,12 +147,38 @@ To enable Terraform script calls Google Cloud SDK, type the command below
 There are example .tfvars files under `disater-recovery`, `unmanaged-instance-group-to-vm` and `load-balancer` directory.
 
 load-balancer terraform module depends on `disaster-recovery` or `unmanaged-instance-group-to-vm` module to fetch `named-port` information.
+![loadbalancer.png](loadbalancer.png). 
+If you like to how to create a load-balancer, [click link](Loadbalancer.md)
 
-You can run `terraform apply -var-file=/path/to/*.tfvars-file` to create resources.
+You can run `terraform {plan|apply|destroy} -var-file=/path/to/*.tfvars-file` to create resources.
 
 Load-balancer module fetches a .tfstate file. You should modify load-balancer modules `data.tf` file to fetch the correct .tfstate.
+``` 
+data "terraform_remote_state" "backend" {
+  backend = "local" 
 
+  config = {
+    path = "${path.module}/../disaster-recovery/terraform.tfstate"
+      or 
+    path = "${path.module}/../unmanaged-instance-group-to-vm/terraform.tfstate"
+  }
+}
+
+// In case of using Terraform Enterprise workspace
+data "terraform_remote_state" "vpc" {
+  backend = "remote"
+
+  config = {
+    organization = "hashicorp"
+    workspaces = {
+      name = "vpc-prod"
+    }
+  }
+}
+```
 You can fetch terraform workspace's .tfstate as well.
+
+Please, refer to the official document. https://www.terraform.io/docs/language/state/remote-state-data.html#example-usage-remote-backend-
 
 Please, refer to https://www.terraform.io/docs/language/state/remote-state-data.html#example-usage-remote-backend-
 
