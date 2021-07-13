@@ -127,6 +127,9 @@ resource "google_compute_autoscaler" "default" {
   target = google_compute_instance_group_manager.mig.id
 
   autoscaling_policy {
+    cpu_utilization {
+      target = 1
+    }
     max_replicas    = 1
     min_replicas    = 1
     cooldown_period = 60

@@ -87,7 +87,13 @@ resource "google_compute_backend_service" "default" {
   port_name = var.host_path_rules[count.index].port_name
 
   backend {
-    group = var.host_path_rules[count.index].instance_group
+    group = data.terraform_remote_state.backend.outputs.instance_group
+    max_utilization = 1
+  }
+
+  log_config {
+    enable = "true"
+    sample_rate = 1
   }
 
   health_checks = [google_compute_health_check.default.id]

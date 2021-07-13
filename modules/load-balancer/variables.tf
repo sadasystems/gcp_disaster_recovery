@@ -10,7 +10,6 @@ variable "certificate_path" { type = string}
 
 variable "host_path_rules" {
   type = list(object({
-    instance_group = string
     port_name = string
     host_rule = object({
       host = list(string)

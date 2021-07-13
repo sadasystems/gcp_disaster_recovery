@@ -1,5 +1,5 @@
-output "instance_group_manager" {
-  value = google_compute_instance_group_manager.mig
+output "instance_group" {
+  value = google_compute_instance_group_manager.mig.instance_group
 }
 
 output "network_interface" {
