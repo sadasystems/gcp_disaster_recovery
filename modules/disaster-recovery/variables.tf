@@ -48,16 +48,11 @@ variable "snapshot" {
 variable "http_health_check_enabled" { type = bool }
 variable "health_check" {
   type = object({
-    type                = optional(string)
-    initial_delay_sec   = optional(number)
     check_interval_sec  = number
     healthy_threshold   = number
     timeout_sec         = number
     unhealthy_threshold = number
-    response            = optional(string)
-    proxy_header        = optional(string)
     port                = number
-    request             = optional(string)
     request_path        = string
   })
 }
