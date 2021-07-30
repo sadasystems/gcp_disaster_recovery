@@ -3,8 +3,6 @@ set -e
 
 curl -o jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
 chmod 0755 jq
-curl -s https://storage.googleapis.com/oauth2l/latest/linux_amd64.tgz
-tar xvzf
 
 eval "$(jq -r '@sh "SOURCE_VM=\(.source_vm) PROJECT=\(.project) ZONE=\(.zone)"')"
 
