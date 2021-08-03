@@ -13,6 +13,7 @@ locals {
 
 resource "google_compute_image" "images" {
   count = length(local.disks)
+  project = var.project
 
   name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
   source_disk = local.disks[count.index].source
@@ -21,12 +22,14 @@ resource "google_compute_image" "images" {
 resource "google_compute_address" "internal_IP" {
   name         = local.internal_ip_name
   region       = var.region
+  project = var.project
   subnetwork   = data.google_compute_instance.source_vm.network_interface[0].subnetwork
   address_type = "INTERNAL"
 }
 
 resource "google_compute_resource_policy" "hourly_backup" {
   name   = local.snapshot_schedule_name
+  project = var.project
   region = var.region
   snapshot_schedule_policy {
     schedule {
@@ -57,6 +60,8 @@ resource "google_compute_instance_template" "default" {
       boot         = lookup(disk.value, "boot", null)
       auto_delete  = lookup(disk.value, "autoDelete", null)
       disk_name    = "${local.base_instance_name_prefix}-${lookup(disk.value, "deviceName", null)}"
+      device_name = lookup(disk.value, "deviceName")
+      labels = lookup(disk.value, "labels")
       disk_size_gb = lookup(disk.value, "diskSizeGb", null)
       # To-do: If it is a boot-disk, disk_type is pd-ssd by default
       disk_type         = var.disk_type
