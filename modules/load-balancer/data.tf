@@ -5,7 +5,7 @@ https://www.terraform.io/docs/language/state/remote-state-data.html#example-usag
 data "terraform_remote_state" "backend" {
   backend = "remote"
 
-  config {
+  config = {
     organization = "hashicorp"
     workspaces = {
       name = "gcp_disaster_recovery"
