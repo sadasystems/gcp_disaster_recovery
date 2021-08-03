@@ -1,7 +1,5 @@
 project = "mta-mta-rnd-mtaapp-6155"
 
-service_account_impersonate = "terraform@mmm-mmm-qa-mmmapp-ac0c.iam.gserviceaccount.com"
-
 // leave it blank if you like to use the same service account of source VM.
 service_account = {
   email  = ""
