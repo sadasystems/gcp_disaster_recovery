@@ -4,7 +4,7 @@ service_account_impersonate = "terraform@mmm-mmm-qa-mmmapp-ac0c.iam.gserviceacco
 
   service_account = {
     // Please, create a new service account.
-    email  = ""
+    email  = "368797111421-compute@developer.gserviceaccount.com"
     scopes = ["cloud-platform"]
   }
 
