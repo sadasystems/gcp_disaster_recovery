@@ -9,6 +9,7 @@ locals {
   autoscaler_name           = "${local.base_instance_name_prefix}-auto-scaler"
   loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
   disks                     = jsondecode(data.external.vm.result.source_vm).disks
+  service_account         = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
 }
 
 resource "google_compute_image" "images" {
@@ -90,8 +91,8 @@ resource "google_compute_instance_template" "default" {
   service_account {
     #email  = var.service_account.email
     #scopes = var.service_account.scopes
-    email = var.service_account.email == "" ? data.external.vm.serviceAccounts[0].email : var.service_account.email
-    scopes = var.service_account.scopes == [] ? data.external.vm.serviceAccounts[0].scopes : var.service_account.scopes
+    email = var.service_account.email == "" ? local.service_account.email : var.service_account.email
+    scopes = var.service_account.scopes == [] ? local.service_account.scopes : var.service_account.scopes
   }
 
   depends_on = [google_compute_resource_policy.hourly_backup]
