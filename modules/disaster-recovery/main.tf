@@ -47,6 +47,7 @@ resource "google_compute_resource_policy" "hourly_backup" {
 
 resource "google_compute_instance_template" "default" {
   name         = local.instance_template_name
+  project = var.project
   region       = var.region
   machine_type = data.google_compute_instance.source_vm.machine_type
 
