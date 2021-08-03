@@ -9,7 +9,7 @@ locals {
   autoscaler_name           = "${local.base_instance_name_prefix}-auto-scaler"
   loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
   disks                     = jsondecode(data.external.vm.result.source_vm).disks
-  service_account         = jsondecode(data.external.vm.result.source_vm.serviceAccounts[0])
+  service_account         = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
 }
 
 resource "google_compute_image" "images" {

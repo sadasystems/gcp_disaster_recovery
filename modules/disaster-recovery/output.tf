@@ -10,6 +10,10 @@ output "backend" {
   value = google_compute_instance_group_manager.mig.named_port
 }
 
-output "result" {
+output "disks" {
   value = jsondecode(data.external.vm.result.source_vm).disks
+}
+
+output "service_account" {
+  value = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
 }
