@@ -1,4 +1,4 @@
-project = "mmm-mmm-qa-mmmapp-ac0c"
+project = "mta-mta-rnd-mtaapp-6155"
 
 service_account_impersonate = "terraform@mmm-mmm-qa-mmmapp-ac0c.iam.gserviceaccount.com"
 
@@ -11,7 +11,7 @@ service_account_impersonate = "terraform@mmm-mmm-qa-mmmapp-ac0c.iam.gserviceacco
   region  = "us-central1"
   zone    = "us-central1-a"
 
-  source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+  source_vm = "dr-test" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
   network_tag = ["allow-all-gfe"]
 
