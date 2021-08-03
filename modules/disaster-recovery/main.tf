@@ -113,6 +113,7 @@ resource "google_compute_health_check" "http_autohealing" {
 
 resource "google_compute_health_check" "tcp_autohealing" {
   count               = var.http_health_check_enabled ? 0 : 1
+  project = var.project
   name                = local.healthcheck_name
   check_interval_sec  = var.health_check["check_interval_sec"]
   timeout_sec         = var.health_check["timeout_sec"]
@@ -129,6 +130,7 @@ resource "google_compute_health_check" "tcp_autohealing" {
 resource "google_compute_autoscaler" "default" {
   name   = local.autoscaler_name
   zone   = var.zone
+  project = var.project
   target = google_compute_instance_group_manager.mig.id
 
   autoscaling_policy {
@@ -145,6 +147,7 @@ resource "google_compute_instance_group_manager" "mig" {
   name               = local.instance_group_name
   base_instance_name = local.base_instance_name_prefix
   zone               = data.google_compute_instance.source_vm.zone
+  project = var.project
 
   version {
     instance_template = google_compute_instance_template.default.id
