@@ -61,7 +61,6 @@ resource "google_compute_instance_template" "default" {
       auto_delete  = lookup(disk.value, "autoDelete", null)
       disk_name    = "${local.base_instance_name_prefix}-${lookup(disk.value, "deviceName", null)}"
       device_name = lookup(disk.value, "deviceName")
-      labels = lookup(disk.value, "labels")
       disk_size_gb = lookup(disk.value, "diskSizeGb", null)
       # To-do: If it is a boot-disk, disk_type is pd-ssd by default
       disk_type         = var.disk_type
