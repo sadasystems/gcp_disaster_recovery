@@ -1,6 +1,6 @@
 data "google_compute_instance" "source_vm" {
-  name = var.source_vm
-  zone = var.zone
+  name    = var.source_vm
+  zone    = var.zone
   project = var.project
 }
 

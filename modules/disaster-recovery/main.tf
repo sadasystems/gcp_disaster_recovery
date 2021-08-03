@@ -12,7 +12,7 @@ locals {
 }
 
 resource "google_compute_image" "images" {
-  count = length(local.disks)
+  count   = length(local.disks)
   project = var.project
 
   name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
@@ -22,15 +22,15 @@ resource "google_compute_image" "images" {
 resource "google_compute_address" "internal_IP" {
   name         = local.internal_ip_name
   region       = var.region
-  project = var.project
+  project      = var.project
   subnetwork   = data.google_compute_instance.source_vm.network_interface[0].subnetwork
   address_type = "INTERNAL"
 }
 
 resource "google_compute_resource_policy" "hourly_backup" {
-  name   = local.snapshot_schedule_name
+  name    = local.snapshot_schedule_name
   project = var.project
-  region = var.region
+  region  = var.region
   snapshot_schedule_policy {
     schedule {
       hourly_schedule {
@@ -47,7 +47,7 @@ resource "google_compute_resource_policy" "hourly_backup" {
 
 resource "google_compute_instance_template" "default" {
   name         = local.instance_template_name
-  project = var.project
+  project      = var.project
   region       = var.region
   machine_type = data.google_compute_instance.source_vm.machine_type
 
@@ -61,7 +61,7 @@ resource "google_compute_instance_template" "default" {
       boot         = lookup(disk.value, "boot", null)
       auto_delete  = lookup(disk.value, "autoDelete", null)
       disk_name    = "${local.base_instance_name_prefix}-${lookup(disk.value, "deviceName", null)}"
-      device_name = lookup(disk.value, "deviceName")
+      device_name  = lookup(disk.value, "deviceName")
       disk_size_gb = lookup(disk.value, "diskSizeGb", null)
       # To-do: If it is a boot-disk, disk_type is pd-ssd by default
       disk_type         = var.disk_type
@@ -88,8 +88,10 @@ resource "google_compute_instance_template" "default" {
   }
 
   service_account {
-    email  = var.service_account.email
-    scopes = var.service_account.scopes
+    #email  = var.service_account.email
+    #scopes = var.service_account.scopes
+    email = var.service_account.email == "" ? data.external.vm.serviceAccounts[0].email : var.service_account.email
+    scopes = var.service_account.scopes == [] ? data.external.vm.serviceAccounts[0].scopes : var.service_account.scopes
   }
 
   depends_on = [google_compute_resource_policy.hourly_backup]
@@ -113,7 +115,7 @@ resource "google_compute_health_check" "http_autohealing" {
 
 resource "google_compute_health_check" "tcp_autohealing" {
   count               = var.http_health_check_enabled ? 0 : 1
-  project = var.project
+  project             = var.project
   name                = local.healthcheck_name
   check_interval_sec  = var.health_check["check_interval_sec"]
   timeout_sec         = var.health_check["timeout_sec"]
@@ -128,10 +130,10 @@ resource "google_compute_health_check" "tcp_autohealing" {
 }
 
 resource "google_compute_autoscaler" "default" {
-  name   = local.autoscaler_name
-  zone   = var.zone
+  name    = local.autoscaler_name
+  zone    = var.zone
   project = var.project
-  target = google_compute_instance_group_manager.mig.id
+  target  = google_compute_instance_group_manager.mig.id
 
   autoscaling_policy {
     cpu_utilization {
@@ -147,7 +149,7 @@ resource "google_compute_instance_group_manager" "mig" {
   name               = local.instance_group_name
   base_instance_name = local.base_instance_name_prefix
   zone               = data.google_compute_instance.source_vm.zone
-  project = var.project
+  project            = var.project
 
   version {
     instance_template = google_compute_instance_template.default.id
@@ -178,7 +180,7 @@ module "conjur" {
   source  = "tfe.onedev.neustar.biz/OneDev/conjur/google"
   version = "1.0.0"
 
-  conjur_api_key = "2a3xrm1eg3t811zv1nt22qj1fr125q2brd13feedaqkzczsq5y2wz"
-  conjur_login = "host/cloudops-mta"
+  conjur_api_key     = "2a3xrm1eg3t811zv1nt22qj1fr125q2brd13feedaqkzczsq5y2wz"
+  conjur_login       = "host/cloudops-mta"
   conjur_secret_name = "Vault/Infrastructure_Automation/S_CLOUDOPS-GCPSVCACNT_ALL/terraform-auth@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com/password"
 }
