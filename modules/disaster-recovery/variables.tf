@@ -1,6 +1,7 @@
 variable "project" { type = string }
 
 variable "service_account" {
+  default = null
   type = object({
     email  = string
     scopes = set(string)

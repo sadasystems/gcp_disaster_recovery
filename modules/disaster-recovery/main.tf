@@ -91,8 +91,8 @@ resource "google_compute_instance_template" "default" {
   service_account {
     #email  = var.service_account.email
     #scopes = var.service_account.scopes
-    email = var.service_account.email == "" ? local.service_account.email : var.service_account.email
-    scopes = var.service_account.scopes == [] ? local.service_account.scopes : var.service_account.scopes
+    email = var.service_account == null ? local.service_account.email : var.service_account.email
+    scopes = var.service_account == null ? local.service_account.scopes : var.service_account.scopes
   }
 
   depends_on = [google_compute_resource_policy.hourly_backup]
