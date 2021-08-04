@@ -6,7 +6,7 @@ data "terraform_remote_state" "backend" {
   backend = "remote"
 
   config = {
-    organization = "hashicorp"
+    organization = "MarketingSolutions-CA"
     workspaces = {
       name = "gcp_disaster_recovery"
     }
