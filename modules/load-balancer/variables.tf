@@ -5,9 +5,6 @@ variable "region" {type = string}
 variable "zone" { type = string }
 variable "name" {type =string}
 
-variable "TFE_HOSTNAME" {type = string}
-variable "TFE_TOKEN" {type = string}
-
 variable "private_key_path" { type = string}
 variable "certificate_path" { type = string}
 
