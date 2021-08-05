@@ -12,8 +12,3 @@ data "terraform_remote_state" "backend" {
     }
   }
 }
-
-resource "tfe_workspace" "gcp_disaster_recovery" {
-  name = "gcp_load_balancer"
-  organization = "MarketingSolutions-CA"
-}
