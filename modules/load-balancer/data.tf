@@ -12,6 +12,11 @@ data "terraform_remote_state" "backend" {
     }
   }
 }
+
+resource "tfe_workspace" "gcp_disaster_recovery" {
+  name = "gcp_disaster_recovery"
+  organization = "MarketingSolutions-CA"
+}
 /*
 data "terraform_remote_state" "backend" {
   backend = "local"
