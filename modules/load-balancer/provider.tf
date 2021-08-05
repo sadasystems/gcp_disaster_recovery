@@ -9,5 +9,6 @@ provider "google-beta" {
 }
 
 provider "tfe" {
-  hostname = "tfe.onedev.neustar.biz"
+  hostname = var.TFE_HOSTNAME
+  token = var.TFE_TOKEN
 }
