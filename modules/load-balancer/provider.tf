@@ -11,7 +11,3 @@ provider "google-beta" {
 provider "tfe" {
   hostname = "tfe.onedev.neustar.biz"
 }
-
-provider "conjur" {
-  hostname = "tfe.onedev.neustar.biz"
-}
