@@ -1,6 +1,15 @@
 terraform {
   required_version = ">=0.13.5"
 
+  backend "remote" {
+    hostname = "tfe.onedev.neustar.biz"
+    organization = "MarketingSolutions-CA"
+
+    workspaces {
+      name = "gcp_disaster_recovery-load-balancer-cli"
+    }
+  }
+
   required_providers {
     google = {
       version = ">= 3.0"
