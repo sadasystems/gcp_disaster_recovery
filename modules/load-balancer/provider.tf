@@ -9,6 +9,6 @@ provider "google-beta" {
 }
 
 provider "tfe" {
-  hostname = var.TFE_HOSTNAME
-  token = var.TFE_TOKEN
+  hostname = "{$env.TFE_HOSTNAME}"
+  token = "{$env.TFE_TOKEN}"
 }
