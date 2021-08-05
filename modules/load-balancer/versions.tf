@@ -6,7 +6,7 @@ terraform {
     organization = "MarketingSolutions-CA"
 
     workspaces {
-      name = "gcp_disaster_recovery-load-balancer"
+      name = "gcp_disaster_recovery"
     }
   }
 
