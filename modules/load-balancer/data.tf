@@ -14,16 +14,6 @@ data "terraform_remote_state" "backend" {
 }
 
 resource "tfe_workspace" "gcp_disaster_recovery" {
-  name = "gcp_disaster_recovery"
+  name = "gcp_load_balancer"
   organization = "MarketingSolutions-CA"
 }
-/*
-data "terraform_remote_state" "backend" {
-  backend = "local"
-
-  config = {
-    //path = "${path.module}/../disaster-recovery/terraform.tfstate"
-    path = "${path.module}/../unmanaged-instance-group-to-vm/terraform.tfstate"
-  }
-}
-*/
