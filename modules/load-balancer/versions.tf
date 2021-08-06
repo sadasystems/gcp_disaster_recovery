@@ -5,9 +5,6 @@ terraform {
     google = {
       version = ">= 3.0"
     }
-/*    tfe = {
-      version = "~> 0.25.0"
-    }*/
    /*
     conjur = {
       source  = "tfe.onedev.neustar.biz/OneDev/conjur/google"
