@@ -9,7 +9,7 @@ provider "google-beta" {
 }
 
 provider "conjur" {
-  source = "tfe.onedev.neustar.biz/OneDev/conjur/google"
+  hostname = "tfe.onedev.neustar.biz"
   version = "1.0.0"
 }
 /*
