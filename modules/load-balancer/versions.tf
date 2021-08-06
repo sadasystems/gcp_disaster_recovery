@@ -9,5 +9,9 @@ terraform {
     tfe = {
       version = "~> 0.25.0"
     }
+    conjur = {
+      source  = "tfe.onedev.neustar.biz/OneDev/conjur/google"
+      version = "1.0.0"
+    }
   }
 }
