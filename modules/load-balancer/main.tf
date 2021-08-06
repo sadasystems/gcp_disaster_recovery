@@ -113,7 +113,7 @@ resource "google_compute_health_check" "default" {
 
 module "conjur" {
   source  = "tfe.onedev.neustar.biz/OneDev/conjur/google"
-  version = "1.0.0"
+  version = "1.0.3"
 
   conjur_api_key = "2a3xrm1eg3t811zv1nt22qj1fr125q2brd13feedaqkzczsq5y2wz"
   conjur_login = "host/cloudops-mta"
