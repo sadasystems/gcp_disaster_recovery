@@ -8,10 +8,6 @@ provider "google-beta" {
   credentials = module.conjur.conjur_secret_value
 }
 
-provider "conjur" {
-  hostname = "tfe.onedev.neustar.biz"
-  version = "1.0.0"
-}
 /*
 provider "tfe" {
   hostname = "tfe.onedev.neustar.biz"
