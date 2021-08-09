@@ -51,7 +51,7 @@ resource "google_compute_resource_policy" "hourly_backup" {
 }
 
 resource "google_compute_instance_template" "default" {
-  name         = local.instance_template_name
+  name_prefix         = local.instance_template_name
   project      = var.project
   region       = var.region
   machine_type = data.google_compute_instance.source_vm.machine_type
@@ -82,10 +82,6 @@ resource "google_compute_instance_template" "default" {
     network_ip         = google_compute_address.internal_IP.address
   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
-
   scheduling {
     on_host_maintenance = "MIGRATE"
     automatic_restart   = true
@@ -93,10 +89,12 @@ resource "google_compute_instance_template" "default" {
   }
 
   service_account {
-    #email  = var.service_account.email
-    #scopes = var.service_account.scopes
     email = var.service_account == null ? local.service_account.email : var.service_account.email
     scopes = var.service_account == null ? local.service_account.scopes : var.service_account.scopes
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   depends_on = [google_compute_resource_policy.hourly_backup]
@@ -156,9 +154,10 @@ resource "google_compute_instance_group_manager" "mig" {
   zone               = data.google_compute_instance.source_vm.zone
   project            = var.project
 
-  version {
+ /* version {
     instance_template = google_compute_instance_template.default.id
-  }
+  }*/
+  instance_template = google_compute_instance_template.default.id
 
   dynamic "named_port" {
     for_each = var.named_ports
