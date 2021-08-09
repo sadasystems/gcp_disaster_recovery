@@ -154,10 +154,9 @@ resource "google_compute_instance_group_manager" "mig" {
   zone               = data.google_compute_instance.source_vm.zone
   project            = var.project
 
- /* version {
+  version {
     instance_template = google_compute_instance_template.default.id
-  }*/
-  instance_template = google_compute_instance_template.default.id
+  }
 
   dynamic "named_port" {
     for_each = var.named_ports
