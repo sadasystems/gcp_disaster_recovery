@@ -9,9 +9,27 @@ service_account = {
 region = "us-central1"
 zone   = "us-central1-a"
 
-source_vm = "dr-test" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
 network_tag = ["allow-all-gfe"]
+
+/*
+// Only used for updating
+// if there is no source_vm then provision and dr,  otherwise modifying
+// modify volume
+// add volume
+// machine type change
+volumes = {
+  name = ""
+  size = ""
+}
+
+enable_dr=true
+
+machine_type = "n2-"
+
+update_restart = true
+*/
 
 # Named ports
 named_ports = [

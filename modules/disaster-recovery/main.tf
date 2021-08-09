@@ -12,6 +12,10 @@ locals {
   service_account         = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
 }
 
+// Create a DR
+// Resize disk with Terraform
+// Reboot VM
+
 resource "google_compute_image" "images" {
   count   = length(local.disks)
   project = var.project
