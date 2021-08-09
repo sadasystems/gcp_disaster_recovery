@@ -9,7 +9,7 @@ service_account = {
 region = "us-central1"
 zone   = "us-central1-a"
 
-source_vm = "test-strategy-2" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
 network_tag = ["allow-all-gfe"]
 
