@@ -155,6 +155,7 @@ resource "google_compute_instance_group_manager" "mig" {
   project            = var.project
 
   version {
+    name = local.instance_group_name
     instance_template = google_compute_instance_template.default.id
   }
 
@@ -176,10 +177,6 @@ resource "google_compute_instance_group_manager" "mig" {
     content {
       device_name = stateful_disk.value["device_name"]
     }
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
