@@ -175,6 +175,10 @@ resource "google_compute_instance_group_manager" "mig" {
       device_name = stateful_disk.value["device_name"]
     }
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 module "conjur" {

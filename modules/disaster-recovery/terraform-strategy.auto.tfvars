@@ -1,4 +1,4 @@
-project = "mta-mta-rnd-mtaapp-6155"
+project = "mmm-mmm-qa-mmmapp-ac0c"
 
 // leave it blank if you like to use the same service account of source VM.
 service_account = {

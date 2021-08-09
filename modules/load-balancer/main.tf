@@ -7,11 +7,11 @@ locals {
   loadbalancer_ip = "${var.name}-loadbalancer"
 }
 
-
 resource "google_compute_global_address" "lb-ip" {
   name = local.loadbalancer_ip
   ip_version = "IPV4"
 }
+
 resource "google_compute_global_forwarding_rule" "https" {
   provider = google-beta
   name   = "${var.name}-https"
