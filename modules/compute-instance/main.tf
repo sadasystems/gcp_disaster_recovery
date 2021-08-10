@@ -90,9 +90,8 @@ resource "google_compute_instance" "default" {
   network_interface {
     subnetwork_project = local.subnetwork_project
     subnetwork         = var.subnetwork
-    access_config {
-      nat_ip = google_compute_address.internal_IP.address
-    }
+    network_ip = google_compute_address.internal_IP.address
+
   }
 
   lifecycle {

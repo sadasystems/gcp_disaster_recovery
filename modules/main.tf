@@ -96,7 +96,6 @@ module "new-vm" {
 
   subnetwork_project = "ent-net-mta-host-fde3"
   subnetwork = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
-
   startup_script        = ""
 
   vm_name = "vm-no-dr"
