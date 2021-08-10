@@ -59,7 +59,7 @@ module "test-strategy-dr" {
   igm_initial_delay_sec = "120" # booting time
   startup_script        = ""
 
-  disk_type = "local-ssd" # pd-ssd "pd-ssd", "local-ssd", "pd-balanced" or "pd-standard"
+  disk_type = "pd-ssd" # "pd-ssd", "local-ssd", "pd-balanced" or "pd-standard"
 
   # Snapshot schedule
   # https://cloud.google.com/compute/docs/disks/scheduled-snapshots
