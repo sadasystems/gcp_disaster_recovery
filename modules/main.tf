@@ -95,7 +95,7 @@ module "new-vm" {
   zone    = "us-central1-a"
 
   subnetwork_project = "ent-net-mta-host-fde3"
-  subnetwork = "neustar-shared-prod-usc1-mta-qa-subnet-26ee"
+  subnetwork = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
 
   startup_script        = ""
 

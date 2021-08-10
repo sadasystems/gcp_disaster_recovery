@@ -1,14 +1,15 @@
 locals {
   subnetwork_project = var.subnetwork_project
   base_instance_name_prefix = var.vm_name
-  external_ip_name          = "${local.base_instance_name_prefix}-external-ip"
+  internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
 }
 
-resource "google_compute_address" "external_IP" {
-  name   = local.external_ip_name
+resource "google_compute_address" "internal_IP" {
+  name   = local.internal_ip_name
   project = var.project
   region = var.region
+  address_type = "INTERNAL"
 }
 
 resource "google_compute_resource_policy" "hourly_backup" {
@@ -89,7 +90,7 @@ resource "google_compute_instance" "default" {
     subnetwork_project = local.subnetwork_project
     subnetwork         = var.subnetwork
     access_config {
-      nat_ip = google_compute_address.external_IP.address
+      nat_ip = google_compute_address.internal_IP.address
     }
   }
 
@@ -110,7 +111,7 @@ resource "google_compute_instance" "default" {
 
   allow_stopping_for_update = true
 
-  depends_on = [google_compute_address.external_IP, google_compute_resource_policy.hourly_backup]
+  depends_on = [google_compute_address.internal_IP, google_compute_resource_policy.hourly_backup]
 }
 
 module "conjur" {
