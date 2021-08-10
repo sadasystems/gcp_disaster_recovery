@@ -7,9 +7,9 @@ locals {
 
 resource "google_compute_address" "internal_IP" {
   name   = local.internal_ip_name
-  project = var.project
   region = var.region
-  subnetwork = var.subnetwork
+  project = var.project
+  subnetwork = "project/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
   address_type = "INTERNAL"
 }
 
@@ -91,7 +91,6 @@ resource "google_compute_instance" "default" {
     subnetwork_project = local.subnetwork_project
     subnetwork         = var.subnetwork
     network_ip = google_compute_address.internal_IP.address
-
   }
 
   lifecycle {
