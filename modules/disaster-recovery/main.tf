@@ -182,6 +182,15 @@ resource "google_compute_instance_group_manager" "mig" {
       device_name = stateful_disk.value["device_name"]
     }
   }
+
+  update_policy {
+    // default is proactive
+    // Check the disk size via SSH. (Unsued volume and total volume)
+    minimal_action = "REPLACE"
+    min_ready_sec = 60
+    type = "PROACTIVE"
+    replacement_method = "RECREATE"
+  }
 }
 
 module "conjur" {
