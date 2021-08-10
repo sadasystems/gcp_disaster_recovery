@@ -9,7 +9,7 @@ resource "google_compute_address" "internal_IP" {
   name   = local.internal_ip_name
   region = var.region
   project = var.project
-  subnetwork = "project/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
+  subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
   address_type = "INTERNAL"
 }
 
