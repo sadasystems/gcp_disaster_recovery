@@ -12,9 +12,12 @@ locals {
   service_account         = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
 }
 
-// Create a DR
+// Create a DR (selective update on managed instance group)
 // Resize disk with Terraform
+// Update re
+// Added extra disk
 // Reboot VM
+
 
 resource "google_compute_image" "images" {
   count   = length(local.disks)
@@ -52,6 +55,7 @@ resource "google_compute_resource_policy" "hourly_backup" {
 
 resource "google_compute_instance_template" "default" {
   name_prefix         = local.instance_template_name
+
   project      = var.project
   region       = var.region
   machine_type = data.google_compute_instance.source_vm.machine_type
@@ -67,7 +71,7 @@ resource "google_compute_instance_template" "default" {
       auto_delete  = lookup(disk.value, "autoDelete", null)
       disk_name    = "${local.base_instance_name_prefix}-${lookup(disk.value, "deviceName", null)}"
       device_name  = lookup(disk.value, "deviceName")
-      disk_size_gb = lookup(disk.value, "diskSizeGb", null)
+      disk_size_gb = 120#lookup(disk.value, "diskSizeGb", null)
       # To-do: If it is a boot-disk, disk_type is pd-ssd by default
       disk_type         = var.disk_type
       source_image      = lookup(disk.value, "source_image", null)
