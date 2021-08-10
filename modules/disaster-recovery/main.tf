@@ -75,7 +75,7 @@ resource "google_compute_instance_template" "default" {
       # To-do: If it is a boot-disk, disk_type is pd-ssd by default
       disk_type         = var.disk_type
       source_image      = lookup(disk.value, "source_image", null)
-      type              = lookup(disk.value, "type", null)
+      type              = "local-ssd"#lookup(disk.value, "type", null)
       resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
