@@ -188,6 +188,8 @@ resource "google_compute_instance_group_manager" "mig" {
     // Check the disk size via SSH. (Unsued volume and total volume)
     minimal_action = "REPLACE"
     min_ready_sec = 60
+    max_surge_fixed = 1
+    max_unavailable_fixed = 1
     type = "PROACTIVE"
     replacement_method = "RECREATE"
   }
