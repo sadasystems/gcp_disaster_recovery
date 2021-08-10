@@ -5,7 +5,7 @@ data "google_compute_instance" "source_vm" {
 }
 
 data "external" "vm" {
-  program = ["bash", "${path.cwd}/compute.sh"]
+  program = ["bash", "${path.cwd}/disaster-recovery/compute.sh"]
 
   query = {
     source_vm = var.source_vm
