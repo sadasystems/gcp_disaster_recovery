@@ -1,3 +1,6 @@
+/*
+Please, add all your applications under a project here.
+*/
 locals {
   project =  "mmm-mmm-qa-mmmapp-ac0c"
 }
