@@ -31,8 +31,8 @@ variable "boot_disk" {
       size = number
       type = string
     })
-    mode = optional(string)
-    source = optional(string)
+    mode = string
+    source = string
   })
 }
 variable "disks" {
