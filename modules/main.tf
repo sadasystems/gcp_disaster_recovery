@@ -3,7 +3,7 @@ locals {
 }
 
 module "test-strategy-dr" {
-  source = "disaster-recovery"
+  source = "./disaster-recovery"
   project = local.project
 
   // leave it blank if you like to use the same service account of source VM.
