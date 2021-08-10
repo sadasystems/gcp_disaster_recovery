@@ -1,5 +1,14 @@
 /*
 Please, add all your applications under a project here.
+
+If you like to provision a new VM,
+  select source repo 'compute-instance'
+
+If you like to provision a new VM and enable Disaster Recovery for the VM,
+  select source repo 'compute-instance-disaster-recovery'
+
+If you like to enable Disaster Recovery,
+  select source repo 'disaster-recovery'
 */
 locals {
   project =  "mmm-mmm-qa-mmmapp-ac0c"
@@ -34,9 +43,7 @@ module "test-strategy-dr" {
   }
 
   enable_dr=true
-
   machine_type = "n2-"
-
   update_restart = true
   */
 
@@ -47,7 +54,6 @@ module "test-strategy-dr" {
       port = 443
     }
   ]
-
 
   # Instance group manager
   igm_initial_delay_sec = "120" # booting time
@@ -73,5 +79,63 @@ module "test-strategy-dr" {
     unhealthy_threshold = 3
     request_path        = ""
     port                = 22
+  }
+}
+
+module "new-vm" {
+  source = "./compute-instance"  # If you like to provision
+  project = local.project
+  service_account = {
+    // Please, create a new service account.
+    email  = ""
+    scopes = ["cloud-platform"]
+  }
+
+  region  = "us-central1"
+  zone    = "us-central1-a"
+
+  subnetwork_project = "ent-net-mta-host-fde3"
+  subnetwork = "neustar-shared-prod-usc1-mta-rnd-subnet-26ee"
+
+  startup_script        = ""
+
+  vm_name = "vm-no-dr"
+  machine_type = "e2-medium"
+  allow_stopping_for_update = true
+
+  boot_disk = {
+    auto_delete = false
+    device_name = "boot-disk"
+    initialize_params = {
+      image = "ubuntu-os-cloud/ubuntu-1804-lts"
+      size = 10
+      type = "pd-ssd"
+    }
+  }
+
+  disks = [
+    {
+      boot         = false
+      auto_delete  = false
+      disk_name    = "d1"
+      disk_size_gb = 10
+      disk_type    = "pd-ssd"
+      source_image = ""
+    },    {
+      boot         = false
+      auto_delete  = false
+      disk_name    = "d2"
+      disk_size_gb = 20
+      disk_type    = "pd-ssd"
+      source_image = ""
+    }
+  ]
+
+  # Snapshot schedule
+  # https://cloud.google.com/compute/docs/disks/scheduled-snapshots
+  snapshot = {
+    hours              = 1        # Snapshot frequency
+    start_time         = "04:00"
+    max_retention_days = 1        # how long keep snapshots
   }
 }

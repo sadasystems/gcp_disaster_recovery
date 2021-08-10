@@ -9,7 +9,7 @@ terraform {
 inputs = {
   service_account = {
     // Please, create a new service account.
-    email  = "
+    email  = ""
     scopes = ["cloud-platform"]
   }
 

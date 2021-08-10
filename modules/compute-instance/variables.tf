@@ -1,6 +1,5 @@
 variable "project" { type = string }
 
-variable "service_account_impersonate" { type = string }
 variable "service_account" {
   default = null
   type = object({
@@ -42,9 +41,9 @@ variable "disks" {
     auto_delete  = bool
     disk_name    = string
     disk_size_gb = number
-    disk_type    = optional(string)   #pd-ssd, local-ssd or pd-standard
-    source_image = optional(string)
-    type         = optional(string)  # SCRATCH or PERSISTENT
+    disk_type    = string   #pd-ssd, local-ssd or pd-standard
+    source_image = string
+    type         = string  # SCRATCH or PERSISTENT
   }))
 }
 
