@@ -41,7 +41,6 @@ variable "disks" {
     disk_size_gb = number
     disk_type    = string   #pd-ssd, local-ssd or pd-standard
     source_image = string
-    type         = string  # SCRATCH or PERSISTENT
   }))
 }
 
