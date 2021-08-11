@@ -14,6 +14,73 @@ locals {
   project =  "mmm-mmm-qa-mmmapp-ac0c"
 }
 
+module "new-vm-dr" {
+  source = "./compute-instance-disaster-recovery"
+  project = local.project
+  service_account = {
+    // Please, create a new service account.
+    email  = ""
+    scopes = ["cloud-platform"]
+  }
+
+  region  = "us-central1"
+  zone    = "us-central1-a"
+
+  subnetwork_project = "ent-net-mta-host-fde3"
+  subnetwork = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
+  startup_script        = ""
+
+  vm_name = "vm-no-dr"
+  machine_type = "e2-medium"
+  igm_initial_delay_sec = 30
+  network_tag = ["allow-all-gfe"]
+
+  named_ports = [
+    {
+      name = "https"
+      port = 443
+    }
+  ]
+
+  disks = [
+    {
+      boot         = true
+      auto_delete  = false
+      disk_name    = "d1"
+      disk_size_gb = 10
+      disk_type    = "pd-ssd"
+      source_image = "ubuntu-os-cloud/ubuntu-1804-lts" #image_family/image_name
+    },    {
+      boot         = false
+      auto_delete  = false
+      disk_name    = "d2"
+      disk_size_gb = 20
+      disk_type    = "pd-ssd"
+      source_image = ""
+    }
+  ]
+
+  # Snapshot schedule
+  # https://cloud.google.com/compute/docs/disks/scheduled-snapshots
+  snapshot = {
+    hours              = 1        # Snapshot frequency
+    start_time         = "04:00"
+    max_retention_days = 1        # how long keep snapshots
+  }
+
+  # Health check for VM
+  # https://cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs#example_health_check_set_up
+  http_health_check_enabled = false # 'false' to use TCP protocol, 'true' to use HTTP
+  health_check = {
+    check_interval_sec  = 10
+    timeout_sec         = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    request_path        = ""
+    port                = 22
+  }
+}
+
 module "test-strategy-dr" {
   source = "./disaster-recovery"
   project = local.project
