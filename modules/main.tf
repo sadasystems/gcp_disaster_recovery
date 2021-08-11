@@ -30,7 +30,7 @@ module "new-vm-dr" {
   subnetwork = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
   startup_script        = ""
 
-  vm_name = "vm-no-dr"
+  vm_name = "vm-dr"
   machine_type = "e2-medium"
   igm_initial_delay_sec = 30
   network_tag = ["allow-all-gfe"]
@@ -46,14 +46,14 @@ module "new-vm-dr" {
     {
       boot         = true
       auto_delete  = false
-      disk_name    = "d1"
+      disk_name    = "disk1"
       disk_size_gb = 10
       disk_type    = "pd-ssd"
       source_image = "ubuntu-os-cloud/ubuntu-1804-lts" #image_family/image_name
     },    {
       boot         = false
       auto_delete  = false
-      disk_name    = "d2"
+      disk_name    = "disk2"
       disk_size_gb = 20
       disk_type    = "pd-ssd"
       source_image = ""
