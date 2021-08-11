@@ -26,21 +26,11 @@ module "new-vm-dr" {
   region  = "us-central1"
   zone    = "us-central1-a"
 
-  subnetwork_project = "ent-net-mta-host-fde3"
-  subnetwork = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
-  startup_script        = ""
-
-  vm_name = "vm-dr"
-  machine_type = "e2-medium"
-  igm_initial_delay_sec = 30
-  network_tag = ["allow-all-gfe"]
-
-  named_ports = [
-    {
-      name = "https"
-      port = 443
-    }
-  ]
+  snapshot = {
+    hours              = 1        # Snapshot frequency
+    start_time         = "04:00"
+    max_retention_days = 1        # how long keep snapshots
+  }
 
   disks = [
     {
@@ -60,16 +50,22 @@ module "new-vm-dr" {
     }
   ]
 
-  # Snapshot schedule
-  # https://cloud.google.com/compute/docs/disks/scheduled-snapshots
-  snapshot = {
-    hours              = 1        # Snapshot frequency
-    start_time         = "04:00"
-    max_retention_days = 1        # how long keep snapshots
-  }
+  subnetwork_project = "ent-net-mta-host-fde3"
+  subnetwork = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
 
-  # Health check for VM
-  # https://cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs#example_health_check_set_up
+  vm_name = "vm-dr"
+  machine_type = "e2-medium"
+
+  network_tag = ["allow-all-gfe"]
+  named_ports = [
+    {
+      name = "https"
+      port = 443
+    }
+  ]
+
+  igm_initial_delay_sec = 30
+
   http_health_check_enabled = false # 'false' to use TCP protocol, 'true' to use HTTP
   health_check = {
     check_interval_sec  = 10
@@ -94,27 +90,31 @@ module "test-strategy-dr" {
   region = "us-central1"
   zone   = "us-central1-a"
 
-  source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
-
-  network_tag = ["allow-all-gfe"]
-
-  /*
-  // Only used for updating
-  // if there is no source_vm then provision and dr,  otherwise modifying
-  // modify volume
-  // add volume
-  // machine type change
-  volumes = {
-    name = ""
-    size = ""
+  snapshot = {
+    hours              = 1 # Snapshot frequency
+    start_time         = "04:00"
+    max_retention_days = 1 # how long keep snapshots
   }
 
-  enable_dr=true
-  machine_type = "n2-"
-  update_restart = true
-  */
+  disk_type = "pd-ssd" # "pd-ssd", "local-ssd", "pd-balanced" or "pd-standard"
 
-  # Named ports
+  source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+  /*
+    // Only used for updating
+    // if there is no source_vm then provision and dr,  otherwise modifying
+    // modify volume
+    // add volume
+    // machine type change
+    volumes = {
+      name = ""
+      size = ""
+    }
+
+    enable_dr=true
+    machine_type = "n2-"
+    */
+
+  network_tag = ["allow-all-gfe"]
   named_ports = [
     {
       name = "https"
@@ -124,20 +124,7 @@ module "test-strategy-dr" {
 
   # Instance group manager
   igm_initial_delay_sec = "120" # booting time
-  startup_script        = ""
 
-  disk_type = "pd-ssd" # "pd-ssd", "local-ssd", "pd-balanced" or "pd-standard"
-
-  # Snapshot schedule
-  # https://cloud.google.com/compute/docs/disks/scheduled-snapshots
-  snapshot = {
-    hours              = 1 # Snapshot frequency
-    start_time         = "04:00"
-    max_retention_days = 1 # how long keep snapshots
-  }
-
-  # Health check for VM
-  # https://cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs#example_health_check_set_up
   http_health_check_enabled = false # 'false' to use TCP protocol, 'true' to use HTTP
   health_check = {
     check_interval_sec  = 10
@@ -150,7 +137,7 @@ module "test-strategy-dr" {
 }
 
 module "new-vm" {
-  source = "./compute-instance"  # If you like to provision
+  source = "./compute-instance"  # If you like to provision only
   project = local.project
   service_account = {
     // Please, create a new service account.
@@ -161,32 +148,20 @@ module "new-vm" {
   region  = "us-central1"
   zone    = "us-central1-a"
 
-  subnetwork_project = "ent-net-mta-host-fde3"
-  subnetwork = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
-  startup_script        = ""
-
-  vm_name = "vm-no-dr"
-  machine_type = "e2-medium"
-  allow_stopping_for_update = true
-
-  boot_disk = {
-    auto_delete = false
-    device_name = "boot-disk"
-    initialize_params = {
-      image = "ubuntu-os-cloud/ubuntu-1804-lts"
-      size = 10
-      type = "pd-ssd"
-    }
+  snapshot = {
+    hours              = 1        # Snapshot frequency
+    start_time         = "04:00"
+    max_retention_days = 1        # how long keep snapshots
   }
 
   disks = [
     {
-      boot         = false
+      boot         = true
       auto_delete  = false
       disk_name    = "d1"
       disk_size_gb = 10
       disk_type    = "pd-ssd"
-      source_image = ""
+      source_image = "ubuntu-os-cloud/ubuntu-1804-lts"
     },    {
       boot         = false
       auto_delete  = false
@@ -197,11 +172,11 @@ module "new-vm" {
     }
   ]
 
-  # Snapshot schedule
-  # https://cloud.google.com/compute/docs/disks/scheduled-snapshots
-  snapshot = {
-    hours              = 1        # Snapshot frequency
-    start_time         = "04:00"
-    max_retention_days = 1        # how long keep snapshots
-  }
+  subnetwork_project = "ent-net-mta-host-fde3"
+  subnetwork = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
+
+  vm_name = "vm-no-dr"
+  machine_type = "e2-medium"
+
+  allow_stopping_for_update = true
 }

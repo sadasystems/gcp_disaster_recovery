@@ -11,26 +11,20 @@ variable "service_account" {
 
 variable "region" { type = string }
 variable "zone" { type = string }
-variable "subnetwork_project" {type =string}
-variable "subnetwork" {type = string}
-
-variable "vm_name" { type = string }
-variable "machine_type" { type = string }
-variable "network_tag" { type = list(string) }
-variable "named_ports" {
-  type = list(object({
-    name = string
-    port = number
-  }))
-}
-
-# Instance group manager
-#variable "igm_name" { type = string }
-variable "igm_initial_delay_sec" { type = number }
 
 variable "startup_script" {
   description = "User startup script to run when instances spin up"
   default     = ""
+}
+
+# Snapshot schedule
+# https://cloud.google.com/compute/docs/disks/scheduled-snapshots
+variable "snapshot" {
+  type = object({
+    hours              = number
+    start_time         = string
+    max_retention_days = number
+  })
 }
 
 variable "disks" {
@@ -44,15 +38,26 @@ variable "disks" {
   }))
 }
 
-variable "snapshot" {
-  type = object({
-    hours              = number
-    start_time         = string
-    max_retention_days = number
-  })
+variable "subnetwork_project" {type =string}
+variable "subnetwork" {type = string}
+
+variable "vm_name" { type = string }
+variable "machine_type" { type = string }
+
+variable "network_tag" { type = list(string) }
+variable "named_ports" {
+  type = list(object({
+    name = string
+    port = number
+  }))
 }
 
-# Health check
+/* Configuration for Disaster Recovery */
+# Instance group manager
+variable "igm_initial_delay_sec" { type = number }
+
+# Health check for VM
+# https://cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs#example_health_check_set_up
 variable "http_health_check_enabled" { type = bool }
 variable "health_check" {
   type = object({

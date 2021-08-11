@@ -11,28 +11,12 @@ variable "service_account" {
 
 variable "region" { type = string }
 variable "zone" { type = string }
-variable "subnetwork_project" {type =string}
-variable "subnetwork" {type = string}
-
-variable "vm_name" { type = string }
-variable "machine_type" { type = string }
-variable "allow_stopping_for_update" {type = bool}
 
 variable "startup_script" {
   description = "User startup script to run when instances spin up"
   default     = ""
 }
-variable "boot_disk" {
-  type = object({
-    auto_delete = string
-    device_name = string
-    initialize_params = object({
-      image = string
-      size = number
-      type = string
-    })
-  })
-}
+
 variable "disks" {
   type = list(object({
     boot         = bool
@@ -44,6 +28,8 @@ variable "disks" {
   }))
 }
 
+# Snapshot schedule
+# https://cloud.google.com/compute/docs/disks/scheduled-snapshots
 variable "snapshot" {
   type = object({
     hours              = number
@@ -51,3 +37,11 @@ variable "snapshot" {
     max_retention_days = number
   })
 }
+
+variable "subnetwork_project" {type =string}
+variable "subnetwork" {type = string}
+
+variable "vm_name" { type = string }
+variable "machine_type" { type = string }
+
+variable "allow_stopping_for_update" {type = bool}
