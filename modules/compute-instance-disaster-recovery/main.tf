@@ -61,8 +61,8 @@ resource "google_compute_instance_template" "default" {
   dynamic "disk" {
     for_each = google_compute_disk.default
     content {
-      source = google_compute_disk.default[count.index].name
-      source_image = google_compute_disk.default[count.index].source_image_id
+      source = disk.value["name"]
+      source_image = disk.value["source_image_id"]
       resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
