@@ -44,7 +44,10 @@ variable "subnetwork" {type = string}
 variable "vm_name" { type = string }
 variable "machine_type" { type = string }
 
-variable "network_tag" { type = list(string) }
+variable "network_tag" {
+  type = list(string)
+  default = null
+}
 variable "named_ports" {
   type = list(object({
     name = string

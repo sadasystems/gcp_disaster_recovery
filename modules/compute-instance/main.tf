@@ -44,13 +44,13 @@ resource "google_compute_resource_policy" "hourly_backup" {
 }
 
 resource "google_compute_instance_template" "default" {
-  name         = local.instance_template_name
+  name_prefix         = local.instance_template_name
 
   project      = var.project
   region       = var.region
   machine_type = var.machine_type
 
-  tags = null
+  tags = var.network_tag
 
   metadata_startup_script = var.startup_script
 

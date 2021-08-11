@@ -35,7 +35,11 @@ variable "source_vm" {
   default     = ""
 }
 
-variable "network_tag" { type = list(string) }
+variable "network_tag" {
+  type = list(string)
+  default = null
+}
+
 variable "named_ports" {
   type = list(object({
     name = string

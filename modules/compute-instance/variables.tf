@@ -44,4 +44,9 @@ variable "subnetwork" {type = string}
 variable "vm_name" { type = string }
 variable "machine_type" { type = string }
 
+variable "network_tag" {
+  type = list(string)
+  default = null
+}
+
 variable "allow_stopping_for_update" {type = bool}
