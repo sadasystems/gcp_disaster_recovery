@@ -9,7 +9,6 @@ locals {
   subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
 }
 
-// Build disks from var.disks
 resource "google_compute_disk" "default" {
   count = length(var.disks)
 
@@ -62,7 +61,6 @@ resource "google_compute_instance_template" "default" {
     for_each = google_compute_disk.default
     content {
       source = disk.value["name"]
-      source_image = disk.value["source_image_id"]
       resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
