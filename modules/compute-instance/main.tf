@@ -1,15 +1,27 @@
 locals {
-  subnetwork_project = var.subnetwork_project
   base_instance_name_prefix = var.vm_name
+  instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
   internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
+  subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
+}
+
+resource "google_compute_disk" "default" {
+  count = length(var.disks)
+
+  project = var.project
+  name = var.disks[count.index].disk_name
+  type = var.disks[count.index].disk_type
+  size = var.disks[count.index].disk_size_gb
+  zone = var.zone
+  image = var.disks[count.index].source_image
 }
 
 resource "google_compute_address" "internal_IP" {
   name   = local.internal_ip_name
   region = var.region
   project = var.project
-  subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
+  subnetwork = local.subnetwork
   address_type = "INTERNAL"
 }
 
@@ -31,70 +43,29 @@ resource "google_compute_resource_policy" "hourly_backup" {
   }
 }
 
-resource "google_compute_disk_resource_policy_attachment" "boot_disk" {
-  project = var.project
-  zone = var.zone
-  disk = google_compute_disk.boot.name
-  name = google_compute_resource_policy.hourly_backup.name
-}
+resource "google_compute_instance_template" "default" {
+  name         = local.instance_template_name
 
-resource "google_compute_disk_resource_policy_attachment" "default" {
-  count = length(var.disks)
-
-  project = var.project
-  zone = var.zone
-  disk = google_compute_disk.default[count.index].name
-  name = google_compute_resource_policy.hourly_backup.name
-}
-
-resource "google_compute_disk" "boot" {
-  project = var.project
-  zone = var.zone
-  name = var.boot_disk.device_name
-  type = var.boot_disk.initialize_params.type
-  size = var.boot_disk.initialize_params.size
-  image = var.boot_disk.initialize_params.image
-}
-
-resource "google_compute_disk" "default" {
-  count = length(var.disks)
-
-  project = var.project
-  name = var.disks[count.index].disk_name
-  type = var.disks[count.index].disk_type
-  size = var.disks[count.index].disk_size_gb
-  zone = var.zone
-  image = var.disks[count.index].source_image
-}
-
-resource "google_compute_attached_disk" "default" {
-  count = length(google_compute_disk.default)
-
-  disk     = google_compute_disk.default[count.index].id
-  instance = google_compute_instance.default.id
-}
-
-resource "google_compute_instance" "default" {
-  name         = local.base_instance_name_prefix
-  project = var.project
-  zone = var.zone
+  project      = var.project
+  region       = var.region
   machine_type = var.machine_type
+
+  tags = null
 
   metadata_startup_script = var.startup_script
 
-  boot_disk {
-    auto_delete = var.boot_disk.auto_delete
-    source = google_compute_disk.boot.self_link
+  dynamic "disk" {
+    for_each = google_compute_disk.default
+    content {
+      source = disk.value["name"]
+      resource_policies = [google_compute_resource_policy.hourly_backup.id]
+    }
   }
 
   network_interface {
-    subnetwork_project = local.subnetwork_project
-    subnetwork         = var.subnetwork
-    network_ip = google_compute_address.internal_IP.address
-  }
-
-  lifecycle {
-    ignore_changes = [attached_disk]
+    subnetwork_project = var.subnetwork_project
+    subnetwork         = local.subnetwork
+    network_ip         = google_compute_address.internal_IP.address
   }
 
   scheduling {
@@ -104,13 +75,28 @@ resource "google_compute_instance" "default" {
   }
 
   service_account {
-    email  = var.service_account.email
+    email = var.service_account.email
     scopes = var.service_account.scopes
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  depends_on = [google_compute_resource_policy.hourly_backup]
+}
+
+resource "google_compute_instance_from_template" "default" {
+  name         = local.base_instance_name_prefix
+  project = var.project
+  zone = var.zone
+  machine_type = var.machine_type
+
+  source_instance_template = google_compute_instance_template.default.id
+
   allow_stopping_for_update = true
 
-  depends_on = [google_compute_address.internal_IP, google_compute_resource_policy.hourly_backup]
+  depends_on = [google_compute_instance_template.default]
 }
 
 module "conjur" {
