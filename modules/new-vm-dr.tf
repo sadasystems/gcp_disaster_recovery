@@ -1,5 +1,5 @@
 module "new-vm-dr" {
-  source = "./compute-instance-disaster-recovery"
+  source  = "./compute-instance-disaster-recovery"
   project = var.project
   service_account = {
     // Please, create a new service account.
@@ -7,13 +7,13 @@ module "new-vm-dr" {
     scopes = ["cloud-platform"]
   }
 
-  region  = "us-central1"
-  zone    = "us-central1-a"
+  region = "us-central1"
+  zone   = "us-central1-a"
 
   snapshot = {
-    hours              = 1        # Snapshot frequency
+    hours              = 1 # Snapshot frequency
     start_time         = "04:00"
-    max_retention_days = 1        # how long keep snapshots
+    max_retention_days = 1 # how long keep snapshots
   }
 
   disks = [
@@ -24,7 +24,7 @@ module "new-vm-dr" {
       disk_size_gb = 10
       disk_type    = "pd-ssd"
       source_image = "ubuntu-os-cloud/ubuntu-1804-lts" #image_family/image_name
-    },    {
+      }, {
       boot         = false
       auto_delete  = false
       disk_name    = "disk2"
@@ -35,9 +35,9 @@ module "new-vm-dr" {
   ]
 
   subnetwork_project = "ent-net-mta-host-fde3"
-  subnetwork = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
+  subnetwork         = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
 
-  vm_name = "vm-dr"
+  vm_name      = "vm-dr"
   machine_type = "e2-medium"
 
   network_tag = ["allow-all-gfe"]

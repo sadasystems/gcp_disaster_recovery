@@ -1,5 +1,3 @@
-/*
-
 module "test-strategy-dr" {
   source = "./disaster-recovery"
   project = var.project
@@ -43,4 +41,4 @@ module "test-strategy-dr" {
     request_path        = ""
     port                = 22
   }
-}*/
+}
