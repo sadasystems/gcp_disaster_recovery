@@ -15,6 +15,7 @@ resource "google_compute_disk" "default" {
   size = var.disks[count.index].disk_size_gb
   zone = var.zone
   image = var.disks[count.index].source_image
+  // label
 }
 
 resource "google_compute_address" "internal_IP" {
@@ -53,6 +54,9 @@ resource "google_compute_instance_template" "default" {
   tags = var.network_tag
 
   metadata_startup_script = var.startup_script
+
+  // label
+  labels = var.labels
 
   dynamic "disk" {
     for_each = google_compute_disk.default

@@ -17,6 +17,8 @@ variable "startup_script" {
   default     = ""
 }
 
+variable "labels" { type = "map" }
+
 variable "disks" {
   type = list(object({
     boot         = bool
