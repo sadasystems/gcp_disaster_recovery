@@ -1,9 +1,5 @@
 locals {
   base_instance_name_prefix = "${var.vm_name}-dr"
-  instance_template_name    = local.base_instance_name_prefix
-  internal_ip_name          = local.base_instance_name_prefix
-  snapshot_schedule_name    = local.base_instance_name_prefix
-  subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
   healthcheck_name          = local.base_instance_name_prefix
   instance_group_name       = local.base_instance_name_prefix
   autoscaler_name           = local.base_instance_name_prefix
@@ -22,7 +18,7 @@ module "compute-instance" {
   disks = var.disks
   snapshot = var.snapshot
   subnetwork_project = var.subnetwork_project
-  subnetwork = local.subnetwork
+  subnetwork = var.subnetwork
   vm_name = var.vm_name
   machine_type = var.machine_type
   network_tag = var.network_tag
