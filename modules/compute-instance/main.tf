@@ -27,7 +27,7 @@ resource "google_compute_resource_policy" "hourly_backup" {
 
 resource "google_compute_disk" "default" {
   count = length(var.disks)
-  provider = "google-beta"
+  provider = google-beta
 
   project = var.project
   name = var.disks[count.index].disk_name
