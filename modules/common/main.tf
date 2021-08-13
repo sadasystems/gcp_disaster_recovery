@@ -6,26 +6,6 @@ locals {
   subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
 }
 
-resource "google_compute_disk" "default" {
-  count = length(var.disks)
-
-  project = var.project
-  name = var.disks[count.index].disk_name
-  type = var.disks[count.index].disk_type
-  size = var.disks[count.index].disk_size_gb
-  zone = var.zone
-  image = var.disks[count.index].source_image
-  labels = var.labels
-}
-
-resource "google_compute_address" "internal_IP" {
-  name   = local.internal_ip_name
-  region = var.region
-  project = var.project
-  subnetwork = local.subnetwork
-  address_type = "INTERNAL"
-}
-
 resource "google_compute_resource_policy" "hourly_backup" {
   name   = local.snapshot_schedule_name
   project = var.project
@@ -42,8 +22,28 @@ resource "google_compute_resource_policy" "hourly_backup" {
       on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
     }
   }
+}
 
-  depends_on = [google_compute_disk.default]
+resource "google_compute_disk" "default" {
+  count = length(var.disks)
+
+  project = var.project
+  name = var.disks[count.index].disk_name
+  type = var.disks[count.index].disk_type
+  size = var.disks[count.index].disk_size_gb
+  zone = var.zone
+  image = var.disks[count.index].source_image
+  labels = var.labels
+  resource_policies = [google_compute_resource_policy.hourly_backup.self_link]
+  depends_on = [google_compute_resource_policy.hourly_backup]
+}
+
+resource "google_compute_address" "internal_IP" {
+  name   = local.internal_ip_name
+  region = var.region
+  project = var.project
+  subnetwork = local.subnetwork
+  address_type = "INTERNAL"
 }
 
 resource "google_compute_instance_template" "default" {
@@ -64,7 +64,6 @@ resource "google_compute_instance_template" "default" {
     content {
       source = disk.value["name"]
       device_name = disk.value["device_name"]
-      resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
 
