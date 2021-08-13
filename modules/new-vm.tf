@@ -28,21 +28,12 @@ module "new-vm" {
       boot         = true
       auto_delete  = false
       disk_name    = "dsk1"
-      disk_size_gb = 10
+      disk_size_gb = 20
       disk_type    = "pd-ssd"
       device_name = "device-1"
       labels = { k1 = "v1"}
       source_image = "ubuntu-os-cloud/ubuntu-1804-lts"
-      }, {
-      boot         = false
-      auto_delete  = false
-      disk_name    = "dsk2"
-      disk_size_gb = 20
-      disk_type    = "pd-ssd"
-      device_name = "device-2"
-      labels = { k1 = "v1"}
-      source_image = ""
-    }
+      }
   ]
 
   subnetwork_project = "ent-net-mta-host-fde3"
