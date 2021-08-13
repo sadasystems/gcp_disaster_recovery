@@ -42,6 +42,15 @@ module "new-vm" {
       device_name = "device-2"
       labels = { k1 = "v1"}
       source_image = ""
+    }, {
+      boot         = false
+      auto_delete  = false
+      disk_name    = "dsk3"
+      disk_size_gb = 10
+      disk_type    = "pd-ssd"
+      device_name = "device-3"
+      labels = { k1 = "v1"}
+      source_image = ""
     }
   ]
 
