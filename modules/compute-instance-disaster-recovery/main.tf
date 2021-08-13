@@ -118,6 +118,8 @@ resource "google_compute_instance_group_manager" "mig" {
     type = "PROACTIVE"
     replacement_method = "RECREATE"
   }
+
+  depends_on = [module.compute-instance]
 }
 
 module "conjur" {
