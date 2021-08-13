@@ -52,6 +52,7 @@ resource "google_compute_instance" "default" {
   name = var.vm_name
 
   project      = var.project
+  zone = var.zone
   machine_type = var.machine_type
 
   tags = var.network_tag
