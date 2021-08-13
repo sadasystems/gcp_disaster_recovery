@@ -62,7 +62,7 @@ resource "google_compute_instance" "default" {
 
 
   boot_disk {
-    source = [for d in local.disks: d if d.boot == true][0]
+    source = [for d in local.disks: d if d.boot == true][0].name
   }
 
   dynamic "attached_disk" {
