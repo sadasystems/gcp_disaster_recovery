@@ -56,7 +56,7 @@ resource "google_compute_instance_template" "default" {
   tags = var.network_tag
 
   metadata_startup_script = var.startup_script
-
+  labels = var.labels
   metadata = var.metadata
 
   dynamic "disk" {

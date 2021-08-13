@@ -10,6 +10,9 @@ module "new-vm-dr" {
   region = "us-central1"
   zone   = "us-central1-a"
 
+  labels = {
+    l1 = k1
+  }
   metadata = {
     enalbe_oslogin = true
   }

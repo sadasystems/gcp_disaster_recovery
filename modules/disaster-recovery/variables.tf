@@ -18,6 +18,7 @@ variable "startup_script" {
 }
 
 variable "metadata" { type = map(string) }
+variable "labels" { type = map(string) }
 
 # Snapshot schedule
 # https://cloud.google.com/compute/docs/disks/scheduled-snapshots
