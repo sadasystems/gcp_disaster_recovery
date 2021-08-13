@@ -6,7 +6,7 @@ locals {
 }
 
 module "compute-instance" {
-  source = "../compute-instance"
+  source = "../common"
 
   project = var.project
   service_account = var.service_account
