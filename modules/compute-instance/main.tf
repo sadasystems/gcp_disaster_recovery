@@ -89,7 +89,7 @@ resource "google_compute_instance_template" "default" {
     create_before_destroy = true
   }
 
-  depends_on = [google_compute_disk.default, google_compute_resource_policy.hourly_backup]
+  depends_on = [google_compute_resource_policy.hourly_backup]
 }
 
 resource "google_compute_instance_from_template" "default" {
