@@ -7,26 +7,6 @@ locals {
   disks = [for index, d in var.disks: merge(d, google_compute_disk.default[index])]
 }
 
-resource "google_compute_disk" "default" {
-  count = length(var.disks)
-
-  project = var.project
-  name = var.disks[count.index].disk_name
-  type = var.disks[count.index].disk_type
-  size = var.disks[count.index].disk_size_gb
-  zone = var.zone
-  image = var.disks[count.index].source_image
-  labels = var.labels
-}
-
-resource "google_compute_address" "internal_IP" {
-  name   = local.internal_ip_name
-  region = var.region
-  project = var.project
-  subnetwork = local.subnetwork
-  address_type = "INTERNAL"
-}
-
 resource "google_compute_resource_policy" "hourly_backup" {
   name   = local.snapshot_schedule_name
   project = var.project
@@ -43,8 +23,28 @@ resource "google_compute_resource_policy" "hourly_backup" {
       on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
     }
   }
+}
 
-  depends_on = [google_compute_disk.default]
+resource "google_compute_disk" "default" {
+  count = length(var.disks)
+
+  project = var.project
+  name = var.disks[count.index].disk_name
+  type = var.disks[count.index].disk_type
+  size = var.disks[count.index].disk_size_gb
+  zone = var.zone
+  image = var.disks[count.index].source_image
+  labels = var.labels
+  resource_policies = [google_compute_resource_policy.hourly_backup]
+  depends_on = [google_compute_resource_policy.hourly_backup]
+}
+
+resource "google_compute_address" "internal_IP" {
+  name   = local.internal_ip_name
+  region = var.region
+  project = var.project
+  subnetwork = local.subnetwork
+  address_type = "INTERNAL"
 }
 
 resource "google_compute_instance" "default" {
@@ -63,7 +63,6 @@ resource "google_compute_instance" "default" {
 
   boot_disk {
     source = [for d in local.disks: d if d.boot_disk == true][0]
-    resource_policies = [google_compute_resource_policy.hourly_backup.id]
   }
 
   dynamic "attached_disk" {
@@ -71,7 +70,6 @@ resource "google_compute_instance" "default" {
     content {
       source = attached_disk.value["name"]
       device_name = attached_disk.value["device_name"]
-      resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
 
