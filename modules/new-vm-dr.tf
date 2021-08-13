@@ -14,7 +14,7 @@ module "new-vm-dr" {
     l1 = "k1"
   }
   metadata = {
-    enalbe_oslogin = true
+    enable_oslogin = true
   }
 
   snapshot = {
