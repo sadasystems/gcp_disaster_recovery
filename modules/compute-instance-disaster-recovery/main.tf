@@ -12,18 +12,21 @@ locals {
 module "compute-instance" {
   source = "../compute-instance"
 
-  zone = var.zone
-  allow_stopping_for_update = false
-  disks = var.disks
-  labels = var.labels
-  machine_type = var.machine_type
-  metadata = var.metadata
   project = var.project
+  service_account = var.service_account
+  zone = var.zone
   region = var.region
+  startup_script = var.startup_script
+  metadata = var.metadata
+  labels = var.labels
+  disks = var.disks
   snapshot = var.snapshot
-  subnetwork = local.subnetwork
   subnetwork_project = var.subnetwork_project
+  subnetwork = local.subnetwork
   vm_name = var.vm_name
+  machine_type = var.machine_type
+  network_tag = var.network_tag
+  allow_stopping_for_update = false
 }
 
 resource "google_compute_health_check" "http_autohealing" {
