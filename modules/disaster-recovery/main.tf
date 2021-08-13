@@ -1,7 +1,7 @@
 locals {
   images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
   base_instance_name_prefix = "${var.source_vm}-dr"
-  instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
+  instance_template_name    = "${local.base_instance_name_prefix}-"
   internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
   healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
@@ -18,6 +18,11 @@ locals {
 // Added extra disk
 // Reboot VM
 
+/*
+ build disks from local.disks
+ - how do I solve conflict between *.tf and patched info
+ - if disk name exist in *.tf => update
+*/
 
 resource "google_compute_image" "images" {
   count   = length(local.disks)

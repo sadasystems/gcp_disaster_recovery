@@ -30,6 +30,7 @@ module "new-vm-dr" {
       disk_name    = "disk1"
       disk_size_gb = 10
       disk_type    = "pd-ssd"
+      labels = { l1 = "k1" }
       source_image = "ubuntu-os-cloud/ubuntu-1804-lts" #image_family/image_name
       }, {
       boot         = false
@@ -37,6 +38,7 @@ module "new-vm-dr" {
       disk_name    = "disk2"
       disk_size_gb = 20
       disk_type    = "pd-ssd"
+      labels = { l1 = "k1" }
       source_image = ""
     }
   ]

@@ -15,7 +15,7 @@ resource "google_compute_disk" "default" {
   size = var.disks[count.index].disk_size_gb
   zone = var.zone
   image = var.disks[count.index].source_image
-  // label
+  labels = var.labels
 }
 
 resource "google_compute_address" "internal_IP" {

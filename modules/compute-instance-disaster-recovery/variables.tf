@@ -37,6 +37,7 @@ variable "disks" {
     disk_name    = string
     disk_size_gb = number
     disk_type    = string   #pd-ssd, local-ssd or pd-standard
+    labels = map(string)
     source_image = string
   }))
 }
