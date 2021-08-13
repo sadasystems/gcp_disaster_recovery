@@ -37,7 +37,7 @@ module "new-vm-dr" {
       boot         = false
       auto_delete  = false
       disk_name    = "disk2"
-      disk_size_gb = 20
+      disk_size_gb = 30
       disk_type    = "pd-ssd"
       device_name = "dv2"
       labels = { l1 = "k1" }
