@@ -1,12 +1,12 @@
 locals {
   base_instance_name_prefix = "${var.vm_name}-dr"
-  instance_template_name    = "${local.base_instance_name_prefix}-instance-template"
-  internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
-  snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
-  healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
-  instance_group_name       = "${local.base_instance_name_prefix}-instance-group"
-  autoscaler_name           = "${local.base_instance_name_prefix}-auto-scaler"
+  instance_template_name    = "${local.base_instance_name_prefix}-"
+  internal_ip_name          = "${local.base_instance_name_prefix}-"
+  snapshot_schedule_name    = "${local.base_instance_name_prefix}-"
   subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
+  healthcheck_name          = "${local.base_instance_name_prefix}-"
+  instance_group_name       = "${local.base_instance_name_prefix}-"
+  autoscaler_name           = "${local.base_instance_name_prefix}-"
 }
 
 resource "google_compute_disk" "default" {
@@ -61,9 +61,10 @@ resource "google_compute_instance_template" "default" {
   metadata = var.metadata
 
   dynamic "disk" {
-    for_each = google_compute_disk.default
+    for_each = [for index, d in google_compute_disk.default: merge(d, var.disks[index])]
     content {
       source = disk.value["name"]
+      device_name = disk.value["device_name"]
       resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
