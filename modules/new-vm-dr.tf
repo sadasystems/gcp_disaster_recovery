@@ -40,6 +40,14 @@ module "new-vm-dr" {
       disk_type    = "pd-ssd"
       labels = { l1 = "k1" }
       source_image = ""
+    }, {
+      boot         = false
+      auto_delete  = false
+      disk_name    = "disk3"
+      disk_size_gb = 30
+      disk_type    = "pd-ssd"
+      labels = { l1 = "k1" }
+      source_image = ""
     }
   ]
 
