@@ -88,6 +88,8 @@ resource "google_compute_instance_template" "default" {
   lifecycle {
     create_before_destroy = true
   }
+
+  depends_on = [google_compute_address.internal_IP]
 }
 
 resource "google_compute_instance_from_template" "default" {
