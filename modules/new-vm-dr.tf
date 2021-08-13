@@ -1,3 +1,4 @@
+/*
 module "new-vm-dr" {
   source  = "./compute-instance-disaster-recovery"
   project = var.project
@@ -71,3 +72,4 @@ module "new-vm-dr" {
     port                = 22
   }
 }
+*/
