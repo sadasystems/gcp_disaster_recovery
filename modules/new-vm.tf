@@ -37,7 +37,7 @@ module "new-vm" {
       boot         = false
       auto_delete  = false
       disk_name    = "dsk2"
-      disk_size_gb = 30
+      disk_size_gb = 20
       disk_type    = "pd-ssd"
       device_name = "device-2"
       labels = { k1 = "v1"}
