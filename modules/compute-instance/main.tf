@@ -62,11 +62,11 @@ resource "google_compute_instance" "default" {
 
 
   boot_disk {
-    source = [for d in local.disks: d if d.boot_disk == true][0]
+    source = [for d in local.disks: d if d.boot == true][0]
   }
 
   dynamic "attached_disk" {
-    for_each = [for d in local.disks: d if d.boot_disk == false]
+    for_each = [for d in local.disks: d if d.boot == false]
     content {
       source = attached_disk.value["name"]
       device_name = attached_disk.value["device_name"]
