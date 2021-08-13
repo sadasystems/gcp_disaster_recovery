@@ -36,7 +36,7 @@ resource "google_compute_disk" "default" {
   zone = var.zone
   image = var.disks[count.index].source_image
   labels = var.labels
-  resource_policies = [google_compute_resource_policy.hourly_backup.id]
+  resource_policies = [google_compute_resource_policy.hourly_backup.self_link]
   depends_on = [google_compute_resource_policy.hourly_backup]
 }
 
