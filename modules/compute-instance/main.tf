@@ -73,17 +73,6 @@ resource "google_compute_instance" "default" {
     }
   }
 
-/*
-  dynamic "disk" {
-    for_each = [for index, d in google_compute_disk.default: merge(d, var.disks[index])]
-    content {
-      source = disk.value["name"]
-      device_name = disk.value["device_name"]
-      resource_policies = [google_compute_resource_policy.hourly_backup.id]
-    }
-  }
-*/
-
   network_interface {
     subnetwork_project = var.subnetwork_project
     subnetwork         = local.subnetwork
@@ -100,6 +89,8 @@ resource "google_compute_instance" "default" {
     email = var.service_account.email
     scopes = var.service_account.scopes
   }
+
+  deletion_protection = var.
 
   depends_on = [google_compute_disk.default]
 }

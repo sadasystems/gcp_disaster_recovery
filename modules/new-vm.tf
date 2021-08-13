@@ -51,5 +51,6 @@ module "new-vm" {
   vm_name      = "vm-no-dr"
   machine_type = "e2-medium"    # You have to stop the VM manually before change this value.
 
-  allow_stopping_for_update = true
+  allow_stopping_for_update = false
+  deletion_protection = true
 }
