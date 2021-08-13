@@ -58,10 +58,10 @@ resource "google_compute_instance_template" "default" {
   metadata = var.metadata
 
   dynamic "disk" {
-    for_each = google_compute_disk.default
+    for_each = [for index, d in google_compute_disk.default: merge(d, var.disks[index])]
     content {
       source = disk.value["name"]
-      device_name = var.disks[count.index].device_name
+      device_name = disk.value["device_name"]
       resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
