@@ -1,4 +1,3 @@
-/*
 module "new-vm-dr" {
   source  = "./compute-instance-disaster-recovery"
   project = var.project
@@ -38,7 +37,7 @@ module "new-vm-dr" {
       boot         = false
       auto_delete  = false
       disk_name    = "disk2"
-      disk_size_gb = 30
+      disk_size_gb = 10
       disk_type    = "pd-ssd"
       device_name = "dv2"
       labels = { l1 = "k1" }
@@ -72,4 +71,3 @@ module "new-vm-dr" {
     port                = 22
   }
 }
-*/
