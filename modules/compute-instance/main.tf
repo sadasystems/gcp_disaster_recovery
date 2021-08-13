@@ -34,7 +34,7 @@ resource "google_compute_instance_from_template" "default" {
 
   source_instance_template = module.compute-instance.instance_template.id
 
-  allow_stopping_for_update = true
+  allow_stopping_for_update = false
 
   depends_on = [module.compute-instance.instance_template]
 }
