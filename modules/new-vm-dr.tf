@@ -10,6 +10,10 @@ module "new-vm-dr" {
   region = "us-central1"
   zone   = "us-central1-a"
 
+  labels = {
+    enalbe_oslogin = true
+  }
+
   snapshot = {
     hours              = 1 # Snapshot frequency
     start_time         = "04:00"

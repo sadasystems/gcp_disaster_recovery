@@ -57,6 +57,8 @@ resource "google_compute_instance_template" "default" {
 
   metadata_startup_script = var.startup_script
 
+  labels = var.labels
+
   dynamic "disk" {
     for_each = google_compute_disk.default
     content {

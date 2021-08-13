@@ -63,6 +63,7 @@ resource "google_compute_instance_template" "default" {
   tags = var.network_tag
 
   metadata_startup_script = var.startup_script
+  labels = var.labels
 
   dynamic "disk" {
     for_each = [for index, d in local.disks : merge(d, local.images[index])]

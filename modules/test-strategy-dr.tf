@@ -11,6 +11,10 @@ module "test-strategy-dr" {
   region = "us-central1"
   zone   = "us-central1-a"
 
+  labels = {
+    enable_oslogin = true
+  }
+
   snapshot = {
     hours              = 1 # Snapshot frequency
     start_time         = "04:00"
