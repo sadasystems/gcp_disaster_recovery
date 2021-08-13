@@ -39,7 +39,7 @@ resource "google_compute_health_check" "http_autohealing" {
     port         = var.health_check["port"]
   }
 
-  depends_on = [module.compute-instance.google_compute_instance_template.default]
+  depends_on = [module.compute-instance]
 }
 
 resource "google_compute_health_check" "tcp_autohealing" {
@@ -55,7 +55,7 @@ resource "google_compute_health_check" "tcp_autohealing" {
     port = var.health_check["port"]
   }
 
-  depends_on = [module.compute-instance.google_compute_instance_template.default]
+  depends_on = [module.compute-instance.instance_template]
 }
 
 resource "google_compute_autoscaler" "default" {
@@ -82,7 +82,7 @@ resource "google_compute_instance_group_manager" "mig" {
 
   version {
     name = local.instance_group_name
-    instance_template = module.compute-instance.google_compute_instance_template.default.id
+    instance_template = module.compute-instance.instance_template.id
   }
 
   dynamic "named_port" {
@@ -99,7 +99,7 @@ resource "google_compute_instance_group_manager" "mig" {
   }
 
   dynamic "stateful_disk" {
-    for_each = module.compute-instance.google_compute_instance_template.default.disk
+    for_each = module.compute-instance.instance_template.disk
     content {
       device_name = stateful_disk.value["device_name"]
     }
