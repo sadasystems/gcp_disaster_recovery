@@ -4,7 +4,6 @@ locals {
   internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
   snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
   subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
-  disks = [for d in google_compute_disk.default: { "device_name": d.device_name} ]
 }
 
 resource "google_compute_disk" "default" {
@@ -59,10 +58,10 @@ resource "google_compute_instance_template" "default" {
   metadata = var.metadata
 
   dynamic "disk" {
-    for_each = local.disks
+    for_each = google_compute_disk.default
     content {
       source = disk.value["name"]
-      device_name = disk.value["device_name"]
+      device_name = var.disks[count.index].device_name
       resource_policies = [google_compute_resource_policy.hourly_backup.id]
     }
   }
