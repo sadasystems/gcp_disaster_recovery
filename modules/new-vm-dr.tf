@@ -11,7 +11,7 @@ module "new-vm-dr" {
   zone   = "us-central1-a"
 
   labels = {
-    l1 = k1
+    l1 = "k1"
   }
   metadata = {
     enalbe_oslogin = true

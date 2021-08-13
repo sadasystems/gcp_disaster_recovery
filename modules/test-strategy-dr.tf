@@ -12,7 +12,7 @@ module "test-strategy-dr" {
   zone   = "us-central1-a"
 
   labels = {
-    l1 = k1
+    l1 = "k1"
   }
   metadata = {
     enable_oslogin = true
