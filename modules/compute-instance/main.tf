@@ -1,8 +1,8 @@
 locals {
   base_instance_name_prefix = var.vm_name
-  instance_template_name    = "${local.base_instance_name_prefix}-"
-  internal_ip_name          = "${local.base_instance_name_prefix}-"
-  snapshot_schedule_name    = "${local.base_instance_name_prefix}-"
+  instance_template_name    = "${local.base_instance_name_prefix}"
+  internal_ip_name          = "${local.base_instance_name_prefix}"
+  snapshot_schedule_name    = "${local.base_instance_name_prefix}"
   subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
 }
 
