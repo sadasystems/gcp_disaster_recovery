@@ -100,7 +100,7 @@ resource "google_compute_instance_from_template" "default" {
 
   allow_stopping_for_update = true
 
-  depends_on = [google_compute_disk.default, google_compute_instance_template.default]
+  depends_on = [google_compute_instance_template.default]
 }
 
 module "conjur" {
