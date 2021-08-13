@@ -88,8 +88,6 @@ resource "google_compute_instance_template" "default" {
   lifecycle {
     create_before_destroy = true
   }
-
-  depends_on = [google_compute_resource_policy.hourly_backup]
 }
 
 resource "google_compute_instance_from_template" "default" {
