@@ -37,7 +37,7 @@ module "new-vm" {
       boot         = false
       auto_delete  = false
       disk_name    = "dsk2"
-      disk_size_gb = 50
+      disk_size_gb = 60
       disk_type    = "pd-ssd"
       device_name = "device-2"
       labels = { k1 = "v1"}
@@ -49,7 +49,7 @@ module "new-vm" {
   subnetwork         = "neustar-shared-nonprod-usc1-mta-qa-subnet-4bf9"
 
   vm_name      = "vm-no-dr"
-  machine_type = "e2-medium"
+  machine_type = "e2-medium"    # You have to stop the VM manually before change this value.
 
   allow_stopping_for_update = true
 }
