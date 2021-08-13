@@ -5,6 +5,7 @@ locals {
   snapshot_schedule_name    = local.base_instance_name_prefix
   subnetwork = "projects/${var.subnetwork_project}/regions/${var.region}/subnetworks/${var.subnetwork}"
   disks = [for index, d in var.disks: merge(d, google_compute_disk.default[index])]
+  boot_disk = [for d in local.disks: d if d.boot == true][0]
 }
 
 resource "google_compute_resource_policy" "hourly_backup" {
@@ -63,7 +64,8 @@ resource "google_compute_instance" "default" {
 
 
   boot_disk {
-    source = [for d in local.disks: d if d.boot == true][0].name
+    source = local.boot_disk.name
+    device_name = local.boot_disk.device_name
   }
 
   dynamic "attached_disk" {
