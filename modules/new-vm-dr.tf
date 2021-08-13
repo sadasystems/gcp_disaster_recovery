@@ -3,7 +3,7 @@ module "new-vm-dr" {
   project = var.project
   service_account = {
     // Please, create a new service account.
-    email  = ""
+    email  = "845545614666-compute@developer.gserviceaccount.com"
     scopes = ["cloud-platform"]
   }
 
