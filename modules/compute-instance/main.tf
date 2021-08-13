@@ -42,8 +42,6 @@ resource "google_compute_resource_policy" "hourly_backup" {
       on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
     }
   }
-
-  depends_on = [google_compute_disk.default]
 }
 
 resource "google_compute_instance_template" "default" {
@@ -88,8 +86,6 @@ resource "google_compute_instance_template" "default" {
   lifecycle {
     create_before_destroy = true
   }
-
-  depends_on = [google_compute_address.internal_IP, google_compute_resource_policy.hourly_backup]
 }
 
 resource "google_compute_instance_from_template" "default" {
