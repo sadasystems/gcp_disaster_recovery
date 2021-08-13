@@ -1,43 +1,15 @@
 locals {
-  images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
   base_instance_name_prefix = "${var.source_vm}-dr"
-  instance_template_name    = "${local.base_instance_name_prefix}-"
-  internal_ip_name          = "${local.base_instance_name_prefix}-internal-ip"
-  snapshot_schedule_name    = "${local.base_instance_name_prefix}-snapshot-schedule"
-  healthcheck_name          = "${local.base_instance_name_prefix}-healthcheck"
-  instance_group_name       = "${local.base_instance_name_prefix}-instance-group"
-  autoscaler_name           = "${local.base_instance_name_prefix}-auto-scaler"
-  loadbalancer_name         = "${local.base_instance_name_prefix}-loadbalancer"
+  instance_template_name    = local.base_instance_name_prefix
+  internal_ip_name          = local.base_instance_name_prefix
+  snapshot_schedule_name    = local.base_instance_name_prefix
+  healthcheck_name          = local.base_instance_name_prefix
+  instance_group_name       = local.base_instance_name_prefix
+  autoscaler_name           = local.base_instance_name_prefix
+  loadbalancer_name         = local.base_instance_name_prefix
+  images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
   disks                     = jsondecode(data.external.vm.result.source_vm).disks
   service_account         = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
-}
-
-// Create a DR (selective update on managed instance group)
-// Resize disk with Terraform
-// Update re
-// Added extra disk
-// Reboot VM
-
-/*
- build disks from local.disks
- - how do I solve conflict between *.tf and patched info
- - if disk name exist in *.tf => update
-*/
-
-resource "google_compute_image" "images" {
-  count   = length(local.disks)
-  project = var.project
-
-  name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
-  source_disk = local.disks[count.index].source
-}
-
-resource "google_compute_address" "internal_IP" {
-  name         = local.internal_ip_name
-  region       = var.region
-  project      = var.project
-  subnetwork   = data.google_compute_instance.source_vm.network_interface[0].subnetwork
-  address_type = "INTERNAL"
 }
 
 resource "google_compute_resource_policy" "hourly_backup" {
@@ -57,6 +29,16 @@ resource "google_compute_resource_policy" "hourly_backup" {
     }
   }
 }
+
+resource "google_compute_address" "internal_IP" {
+  name         = local.internal_ip_name
+  region       = var.region
+  project      = var.project
+  subnetwork   = data.google_compute_instance.source_vm.network_interface[0].subnetwork
+  address_type = "INTERNAL"
+}
+
+
 
 resource "google_compute_instance_template" "default" {
   name_prefix         = local.instance_template_name
@@ -109,6 +91,14 @@ resource "google_compute_instance_template" "default" {
   }
 
   depends_on = [google_compute_resource_policy.hourly_backup]
+}
+
+resource "google_compute_image" "images" {
+  count   = length(local.disks)
+  project = var.project
+
+  name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
+  source_disk = local.disks[count.index].source
 }
 
 resource "google_compute_health_check" "http_autohealing" {
