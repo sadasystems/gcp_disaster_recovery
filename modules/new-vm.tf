@@ -30,6 +30,7 @@ module "new-vm" {
       disk_name    = "dsk1"
       disk_size_gb = 10
       disk_type    = "pd-ssd"
+      labels = { k1 = "v1"}
       source_image = "ubuntu-os-cloud/ubuntu-1804-lts"
       }, {
       boot         = false
@@ -37,6 +38,7 @@ module "new-vm" {
       disk_name    = "dsk2"
       disk_size_gb = 20
       disk_type    = "pd-ssd"
+      labels = { k1 = "v1"}
       source_image = ""
     }
   ]
