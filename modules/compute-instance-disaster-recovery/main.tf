@@ -111,7 +111,7 @@ resource "google_compute_instance_group_manager" "mig" {
     min_ready_sec = 60
     max_surge_fixed = 0
     max_unavailable_fixed = 1
-    type = "PROACTIVE"
+    type = "OPPORTUNISTIC"
     replacement_method = "RECREATE"
   }
 
