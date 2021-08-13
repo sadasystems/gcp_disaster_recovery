@@ -90,11 +90,10 @@ resource "google_compute_instance" "default" {
     scopes = var.service_account.scopes
   }
 
-  deletion_protection = var.
+  deletion_protection = var.deletion_protection
 
   depends_on = [google_compute_disk.default]
 }
-
 
 module "conjur" {
   source  = "tfe.onedev.neustar.biz/OneDev/conjur/google"

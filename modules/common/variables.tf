@@ -55,4 +55,3 @@ variable "network_tag" {
 }
 
 variable "allow_stopping_for_update" {type = bool}
-variable "deletion_protection" { type = bool }
