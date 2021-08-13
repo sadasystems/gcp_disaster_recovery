@@ -10,7 +10,7 @@ module "new-vm" {
   region = "us-central1"
   zone   = "us-central1-a"
 
-  labels = {
+  metadata = {
     enable_oslogin = true
   }
 

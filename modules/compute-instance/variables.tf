@@ -17,7 +17,7 @@ variable "startup_script" {
   default     = ""
 }
 
-variable "labels" { type = map(string) }
+variable "metadata" { type = map(string) }
 
 variable "disks" {
   type = list(object({
