@@ -42,6 +42,8 @@ resource "google_compute_resource_policy" "hourly_backup" {
       on_source_disk_delete = "KEEP_AUTO_SNAPSHOTS"
     }
   }
+
+  depends_on = [google_compute_disk.default]
 }
 
 resource "google_compute_instance_template" "default" {
