@@ -18,7 +18,7 @@ variable "startup_script" {
 }
 
 variable "metadata" { type = map(string) }
-variable "labels" { type = map(string)}
+variable "labels" { type = map(string) }
 
 variable "disks" {
   type = list(object({
@@ -31,6 +31,18 @@ variable "disks" {
     labels = map(string)
     source_image = string
   }))
+  default = [
+    {
+      boot = null
+      auto_delete = null
+      disk_name = null
+      disk_size_gb = null
+      disk_type = null
+      device_name = null
+      labels = null
+      source_image = null
+    }
+  ]
 }
 
 # Snapshot schedule
@@ -43,11 +55,36 @@ variable "snapshot" {
   })
 }
 
-variable "subnetwork_project" {type =string}
-variable "subnetwork" {type = string}
+variable "disk_type" {
+  type = string
+  default = "pd-ssd"
+}
 
-variable "vm_name" { type = string }
-variable "machine_type" { type = string }
+variable "subnetwork_project" {
+  type =string
+  default = null
+}
+
+variable "subnetwork" {
+  type = string
+  default = null
+}
+
+variable "vm_name" {
+  type = string
+  default = null
+}
+
+variable "machine_type" {
+  type = string
+  default = null
+}
+
+variable "source_vm" {
+  description = "Name of the VM migrated from AWS to GCP"
+  type        = string
+  default     = ""
+}
 
 variable "network_tag" {
   type = list(string)
