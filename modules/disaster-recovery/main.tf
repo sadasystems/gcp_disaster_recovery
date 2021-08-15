@@ -21,6 +21,7 @@ resource "google_compute_image" "images" {
 }
 
 /*
+To-Do:
 module "common" {
   source = "../common"
 
