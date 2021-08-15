@@ -6,6 +6,10 @@ locals {
   healthcheck_name          = local.base_instance_name_prefix
   instance_group_name       = local.base_instance_name_prefix
   autoscaler_name           = local.base_instance_name_prefix
+  /*
+  To-Do: Convert data.external.vm.result.source_vm to variables 'disk' type
+
+  */
 
   disks = jsondecode(data.external.vm.result.source_vm).disks
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
