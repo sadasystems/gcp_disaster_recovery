@@ -11,8 +11,8 @@ locals {
   subnetwork   = var.subnetwork == null ? data.google_compute_instance.source_vm.network_interface[0].subnetwork : var.subnetwork
   subnetwork_project =  var.subnetwork_project == null ? data.google_compute_instance.source_vm.network_interface[0].subnetwork_project : var.subnetwork_project
   // it must have type information to convert it to 'object'
-  source_disks = jsondecode(data.external.vm.result.source_vm).disks[0] # Tuple with 2 elements
-  disks = var.disks[0].disk_name == null ? local.source_disks : var.disks
+  source_disks = jsondecode(data.external.vm.result.source_vm).disks # Tuple with 2 elements
+  disks = var.disks[0].disk_name == null ? [local.source_disks[0]] : var.disks
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
   images = var.disks[0].disk_name == null ? [for x in google_compute_image.images : { "source_image" = x.self_link }] : null
 }
