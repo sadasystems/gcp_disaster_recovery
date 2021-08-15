@@ -31,13 +31,7 @@ locals {
   */
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
-  temp_disks = [for i, disk in local.source_disks:
-    tomap({
-      boot = disk.boot
-      auto_delete = disk.autoDelete
-      disk_name = "hehe"
-    })
-  ]
+  temp_disks = [for i, disk in local.source_disks: merge(disk, {"k" = i})]
   disks = var.disks[0].disk_name == null ? local.temp_disks : var.disks
 
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
