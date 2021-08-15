@@ -1,3 +1,4 @@
+/*
 output "instance_group" {
   value = google_compute_instance_group_manager.mig.instance_group
 }
@@ -16,4 +17,4 @@ output "disks" {
 
 output "service_account" {
   value = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
-}
+}*/
