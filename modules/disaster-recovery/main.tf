@@ -31,7 +31,7 @@ locals {
   */
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
-  temp_disks = flatten([for index, disk in local.source_disks: [
+  temp_disks = flatten([for disk in local.source_disks: [
                         for x in disk: {boot = x["boot"]}]
   ])
   disks = var.disks[0] == null ? local.temp_disks : var.disks
