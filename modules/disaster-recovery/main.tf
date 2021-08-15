@@ -32,11 +32,11 @@ locals {
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
   temp_disks = [for d in local.source_disks:
-                {for x in d:
-                  boot => x.boot
-                  auto_delete => x.autoDelete
-        disk_name => x.deviceName
-}
+                [for x in d:{
+boot = x.boot
+auto_delete = x.autoDelete
+disk_name = x.deviceName
+}]
   ]
 
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
