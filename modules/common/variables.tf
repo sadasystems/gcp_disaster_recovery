@@ -31,18 +31,6 @@ variable "disks" {
     labels = map(string)
     source_image = string
   }))
-  default = [
-    {
-      boot = null
-      auto_delete = null
-      disk_name = null
-      disk_size_gb = null
-      disk_type = null
-      device_name = null
-      labels = null
-      source_image = null
-    }
-  ]
 }
 
 # Snapshot schedule
