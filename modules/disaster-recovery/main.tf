@@ -38,6 +38,7 @@ auto_delete = x.autoDelete
 disk_name = x.deviceName
 }]
   ]
+  disks = var.disks[0] == null ? local.temp_disks : var.disks
 
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
   images = [for x in google_compute_image.images : { "source_image" = x.self_link }]
