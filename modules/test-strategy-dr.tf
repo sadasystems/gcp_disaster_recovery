@@ -30,7 +30,6 @@ module "test-strategy-dr" {
   Important : Please click Google Console's `Compute Engine -> VM Instances` and `Compute Engine -> Disks` menu and select
   `EQUIVALENT REST` link. Any value different from the `EQUIVALENT REST` link will be applied to the disk.
 
-  */
   disks = [
     {
       boot         = true
@@ -41,18 +40,9 @@ module "test-strategy-dr" {
       device_name = "dv1"
       labels = { l1 = "k1" }
       source_image = "ubuntu-os-cloud/ubuntu-1804-lts" #image_family/image_name
-    },
-    {
-      boot         = false
-      auto_delete  = false
-      disk_name    = "disk1"
-      disk_size_gb = 10
-      disk_type    = "pd-ssd"
-      device_name = "dv1"
-      labels = { l1 = "k1" }
-      source_image = "ubuntu-os-cloud/ubuntu-1804-lts" #image_family/image_name
     }
   ]
+  */
 
   source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
