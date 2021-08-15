@@ -22,7 +22,6 @@ module "common" {
   vm_name = var.vm_name
   machine_type = var.machine_type
   network_tag = var.network_tag
-  allow_stopping_for_update = false
 }
 
 resource "google_compute_health_check" "http_autohealing" {

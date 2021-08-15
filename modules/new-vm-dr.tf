@@ -1,5 +1,6 @@
 module "new-vm-dr" {
-  source  = "./compute-instance-disaster-recovery"
+  #source  = "./compute-instance-disaster-recovery"
+  source  = "./common"
   project = var.project
   service_account = {
     // Please, create a new service account.

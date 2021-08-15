@@ -20,16 +20,6 @@ variable "startup_script" {
 variable "metadata" { type = map(string) }
 variable "labels" { type = map(string) }
 
-# Snapshot schedule
-# https://cloud.google.com/compute/docs/disks/scheduled-snapshots
-variable "snapshot" {
-  type = object({
-    hours              = number
-    start_time         = string
-    max_retention_days = number
-  })
-}
-
 variable "disks" {
   type = list(object({
     boot         = bool
@@ -43,6 +33,16 @@ variable "disks" {
   }))
 }
 
+# Snapshot schedule
+# https://cloud.google.com/compute/docs/disks/scheduled-snapshots
+variable "snapshot" {
+  type = object({
+    hours              = number
+    start_time         = string
+    max_retention_days = number
+  })
+}
+
 variable "subnetwork_project" {type =string}
 variable "subnetwork" {type = string}
 
@@ -53,6 +53,7 @@ variable "network_tag" {
   type = list(string)
   default = null
 }
+
 variable "named_ports" {
   type = list(object({
     name = string
