@@ -71,7 +71,7 @@ variable "machine_type" {
 variable "source_vm" {
   description = "Name of the VM migrated from AWS to GCP"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "network_tag" {
