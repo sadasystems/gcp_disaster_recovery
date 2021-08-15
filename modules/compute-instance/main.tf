@@ -106,19 +106,3 @@ module "conjur" {
   conjur_login = "host/cloudops-mta"
   conjur_secret_name = "Vault/Infrastructure_Automation/S_CLOUDOPS-GCPSVCACNT_ALL/terraform-auth@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com/password"
 }
-
-/*
-resource "google_compute_instance_from_template" "default" {
-  name         = local.base_instance_name_prefix
-  project = var.project
-  zone = var.zone
-  machine_type = var.machine_type
-
-  source_instance_template = module.compute-instance.instance_template.id
-
-  allow_stopping_for_update = false
-  deletion_protection = true
-
-  depends_on = [module.compute-instance.instance_template]
-}
-*/

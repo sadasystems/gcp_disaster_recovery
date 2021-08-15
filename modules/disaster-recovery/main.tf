@@ -8,9 +8,21 @@ locals {
   autoscaler_name           = local.base_instance_name_prefix
   loadbalancer_name         = local.base_instance_name_prefix
   images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
+  /*
+  Any attribute from data should be here.
+  attribute == null ? jsondecode(data.external.vm.result.source_vm) : var.attribute
+  */
+
   disks                     = jsondecode(data.external.vm.result.source_vm).disks
   service_account         = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
 }
+
+/*
+module "common" {
+
+  attribute = local.attribute
+}
+*/
 
 resource "google_compute_resource_policy" "hourly_backup" {
   name    = local.snapshot_schedule_name
@@ -37,8 +49,6 @@ resource "google_compute_address" "internal_IP" {
   subnetwork   = data.google_compute_instance.source_vm.network_interface[0].subnetwork
   address_type = "INTERNAL"
 }
-
-
 
 resource "google_compute_instance_template" "default" {
   name_prefix         = local.instance_template_name
