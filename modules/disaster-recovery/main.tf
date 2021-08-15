@@ -14,7 +14,7 @@ locals {
 /*  source_disks = [for d in jsondecode(data.external.vm.result.source_vm).disks:
   {for k, v in d: k => "${v}" }
 ]*/
-  source_disks = data.google_compute_instance.source_vm.attached_disk
+  source_disks = [data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk]
   disks = var.disks[0].disk_name == null ? local.source_disks : var.disks
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
   images = var.disks[0].disk_name == null ? [for x in google_compute_image.images : { "source_image" = x.self_link }] : null
