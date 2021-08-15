@@ -29,6 +29,7 @@ module "test-strategy-dr" {
   Important : Please click Google Console's `Compute Engine -> VM Instances` and `Compute Engine -> Disks` menu and select
   `EQUIVALENT REST` link. Any value different from the `EQUIVALENT REST` link will be applied to the disk.
   The number of disks must be the same as the number of source_vm's disks
+  */
 
   disks = [
     {
@@ -51,7 +52,6 @@ module "test-strategy-dr" {
       source_image = null
     }
   ]
-  */
 
   source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
