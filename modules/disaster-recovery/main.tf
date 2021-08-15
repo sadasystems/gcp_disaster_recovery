@@ -31,7 +31,7 @@ locals {
   */
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
-  temp_disks = [for disk in local.source_disks:
+  temp_disks = [for i, disk in local.source_disks:
     {
       boot = disk.boot
       auto_delete = disk.autoDelete
