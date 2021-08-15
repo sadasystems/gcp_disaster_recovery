@@ -7,11 +7,10 @@ locals {
   instance_group_name       = local.base_instance_name_prefix
   autoscaler_name           = local.base_instance_name_prefix
 
-
   subnetwork   = var.subnetwork == null ? data.google_compute_instance.source_vm.network_interface[0].subnetwork : var.subnetwork
   subnetwork_project =  var.subnetwork_project == null ? data.google_compute_instance.source_vm.network_interface[0].subnetwork_project : var.subnetwork_project
 
-  source_disks = [data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk]
+  source_disks = list(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk)
   temp_disks = var.disks[0].disk_name == null ? local.source_disks : var.disks
   disks = flatten(local.temp_disks)
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
