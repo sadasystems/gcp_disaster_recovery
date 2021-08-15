@@ -12,7 +12,7 @@ locals {
   subnetwork_project =  var.subnetwork_project == null ? data.google_compute_instance.source_vm.network_interface[0].subnetwork_project : var.subnetwork_project
   // : => =
   source_disks = [for d in jsondecode(data.external.vm.result.source_vm).disks:
-  {for k, v in d: k => v }
+  {for k, v in d: k => tostring(v) }
 ]
   disks = var.disks[0].disk_name == null ? local.source_disks : var.disks
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
