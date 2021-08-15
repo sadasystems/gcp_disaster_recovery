@@ -32,11 +32,11 @@ locals {
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
   temp_disks = [for i, disk in local.source_disks:
-    {
+    tomap({
       boot = disk.boot
       auto_delete = disk.autoDelete
       disk_name = "hehe"
-    }
+    })
   ]
   disks = var.disks[0].disk_name == null ? local.temp_disks : var.disks
 
