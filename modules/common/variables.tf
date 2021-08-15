@@ -21,7 +21,7 @@ variable "metadata" { type = map(string) }
 variable "labels" { type = map(string) }
 
 variable "disks" {
- /* type = list(object({
+    type = list(object({
     boot         = bool
     auto_delete  = bool
     disk_name    = string
@@ -30,8 +30,7 @@ variable "disks" {
     device_name = string
     labels = map(string)
     source_image = string
-  }))*/
-  type = tuple([bool, bool, string, number, string, map(string), string])
+  }))
 }
 
 # Snapshot schedule
