@@ -7,14 +7,9 @@ locals {
   instance_group_name       = local.base_instance_name_prefix
   autoscaler_name           = local.base_instance_name_prefix
 
-  subnetwork   = var.subnetwork == null ? data.google_compute_instance.source_vm.network_interface[0].subnetwork : var.subnetwork
-  subnetwork_project =  var.subnetwork_project == null ? data.google_compute_instance.source_vm.network_interface[0].subnetwork_project : var.subnetwork_project
-
-  source_disks = flatten(list(data.google_compute_instance.source_vm.boot_disk, data.google_compute_instance.source_vm.attached_disk))
-  temp_disks = var.disks[0].disk_name == null ? local.source_disks : var.disks
-  disks = flatten(local.temp_disks)
+  disks = jsondecode(data.external.vm.result.source_vm).disks
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
-  images = var.disks[0].disk_name == null ? [for x in google_compute_image.images : { "source_image" = x.self_link }] : null
+  images = [for x in google_compute_image.images : { "source_image" = x.self_link }]
 }
 
 resource "google_compute_image" "images" {
@@ -25,6 +20,7 @@ resource "google_compute_image" "images" {
   source_disk = local.disks[count.index].source
 }
 
+/*
 module "common" {
   source = "../common"
 
@@ -51,8 +47,8 @@ module "common" {
   http_health_check_enabled = var.http_health_check_enabled
   health_check = var.health_check
 }
+*/
 
-/*
 resource "google_compute_resource_policy" "hourly_backup" {
   name    = local.snapshot_schedule_name
   project = var.project
@@ -231,4 +227,3 @@ module "conjur" {
   conjur_login       = "host/cloudops-mta"
   conjur_secret_name = "Vault/Infrastructure_Automation/S_CLOUDOPS-GCPSVCACNT_ALL/terraform-auth@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com/password"
 }
-*/
