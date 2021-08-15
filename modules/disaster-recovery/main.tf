@@ -31,9 +31,13 @@ locals {
   */
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
-  temp_disks = flatten([for disk in local.source_disks: [
-                        for x in tomap(disk): {boot = x.boot}]
-  ])
+  temp_disks = [for disk in local.source_disks:
+    {
+      boot = disk.boot
+      auto_delete = disk.autoDelete
+      disk_name = "hehe"
+    }
+  ]
   disks = var.disks[0] == null ? local.temp_disks : var.disks
 
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
