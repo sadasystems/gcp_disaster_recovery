@@ -7,19 +7,49 @@ locals {
   instance_group_name       = local.base_instance_name_prefix
   autoscaler_name           = local.base_instance_name_prefix
 
-  disks                     = jsondecode(data.external.vm.result.source_vm).disks
-  service_account         = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
+  subnetwork   = var.subnetwork == null ? data.google_compute_instance.source_vm.network_interface[0].subnetwork : var.subnetwork
+  subnetwork_project =  var.subnetwork_project == null ? data.google_compute_instance.source_vm.network_interface[0].subnetwork_project : var.subnetwork_project
+  disks = var.disks[0].disk_name == null ? jsondecode(data.external.vm.result.source_vm).disks : var.disks
+  service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
+  images = var.disks[0].disk_name == null ? [for x in google_compute_image.images : { "source_image" = x.self_link }] : null
+}
 
-  images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
+resource "google_compute_image" "images" {
+  count   = length(local.disks)
+  project = var.project
+
+  name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
+  source_disk = local.disks[count.index].source
+}
+
+module "common" {
+  source = "../common"
+
+  project = var.project
+  service_account = local.service_account
+  region = var.region
+  zone = var.zone
+  startup_script = var.startup_script
+  metadata = var.metadata
+  labels = var.labels
+  snapshot = var.snapshot
+
+  disks = local.disks
+  disk_type = var.disk_type
+  subnetwork_project = local.subnetwork_project
+  subnetwork = local.subnetwork
+  source_vm = var.source_vm
+  vm_name =  var.vm_name == null ? "${var.source_vm}-dr" : var.vm_name
+
+  machine_type = var.machine_type == null ? data.google_compute_instance.source_vm.machine_type : var.machine_type
+  network_tag = var.network_tag
+  named_ports = var.named_ports
+  igm_initial_delay_sec = var.igm_initial_delay_sec
+  http_health_check_enabled = var.http_health_check_enabled
+  health_check = var.health_check
 }
 
 /*
-module "common" {
-
-  attribute = local.attribute
-}
-*/
-
 resource "google_compute_resource_policy" "hourly_backup" {
   name    = local.snapshot_schedule_name
   project = var.project
@@ -97,14 +127,6 @@ resource "google_compute_instance_template" "default" {
   }
 
   depends_on = [google_compute_resource_policy.hourly_backup]
-}
-
-resource "google_compute_image" "images" {
-  count   = length(local.disks)
-  project = var.project
-
-  name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
-  source_disk = local.disks[count.index].source
 }
 
 resource "google_compute_health_check" "http_autohealing" {
@@ -206,3 +228,4 @@ module "conjur" {
   conjur_login       = "host/cloudops-mta"
   conjur_secret_name = "Vault/Infrastructure_Automation/S_CLOUDOPS-GCPSVCACNT_ALL/terraform-auth@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com/password"
 }
+*/
