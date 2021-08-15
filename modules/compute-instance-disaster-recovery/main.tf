@@ -5,7 +5,7 @@ locals {
   autoscaler_name           = local.base_instance_name_prefix
 }
 
-module "compute-instance" {
+module "common" {
   source = "../common"
 
   project = var.project
@@ -38,7 +38,7 @@ resource "google_compute_health_check" "http_autohealing" {
     port         = var.health_check["port"]
   }
 
-  depends_on = [module.compute-instance]
+  depends_on = [module.common]
 }
 
 resource "google_compute_health_check" "tcp_autohealing" {
@@ -54,7 +54,7 @@ resource "google_compute_health_check" "tcp_autohealing" {
     port = var.health_check["port"]
   }
 
-  depends_on = [module.compute-instance.instance_template]
+  depends_on = [module.common.instance_template]
 }
 
 resource "google_compute_autoscaler" "default" {
@@ -81,7 +81,7 @@ resource "google_compute_instance_group_manager" "mig" {
 
   version {
     name = local.instance_group_name
-    instance_template = module.compute-instance.instance_template.id
+    instance_template = module.common.instance_template.id
   }
 
   dynamic "named_port" {
@@ -98,15 +98,13 @@ resource "google_compute_instance_group_manager" "mig" {
   }
 
   dynamic "stateful_disk" {
-    for_each = module.compute-instance.instance_template.disk
+    for_each = module.common.instance_template.disk
     content {
       device_name = stateful_disk.value["device_name"]
     }
   }
 
   update_policy {
-    // default is proactive
-    // Check the disk size via SSH. (Unsued volume and total volume)
     minimal_action = "REPLACE"
     min_ready_sec = 60
     max_surge_fixed = 0
@@ -115,5 +113,5 @@ resource "google_compute_instance_group_manager" "mig" {
     replacement_method = "RECREATE"
   }
 
-  depends_on = [module.compute-instance]
+  depends_on = [module.common]
 }

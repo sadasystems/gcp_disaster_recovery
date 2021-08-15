@@ -27,6 +27,7 @@ module "test-strategy-dr" {
 
   disk_type = "pd-ssd" # "pd-ssd", "local-ssd", "pd-balanced" or "pd-standard"
 
+
   source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
   network_tag = ["allow-all-gfe"]

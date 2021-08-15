@@ -30,7 +30,47 @@ variable "snapshot" {
   })
 }
 
+variable "disks" {
+  type = list(object({
+    boot         = bool
+    auto_delete  = bool
+    disk_name    = string
+    disk_size_gb = number
+    disk_type    = string   #pd-ssd, local-ssd or pd-standard
+    device_name = string
+    labels = map(string)
+    source_image = string
+  }))
+  default = [
+    {
+      boot = null
+      auto_delete = null
+      disk_name = null
+      disk_size_gb = null
+      disk_type = null
+      device_name = null
+      labels = null
+      source_image = null
+    }
+  ]
+}
+
 variable "disk_type" { type = string }
+
+variable "subnetwork_project" {
+  type =string
+  default = null
+}
+
+variable "subnetwork" {
+  type = string
+  default = null
+}
+
+variable "machine_type" {
+  type = string
+  default = null
+}
 
 variable "source_vm" {
   description = "Name of the VM migrated from AWS to GCP"

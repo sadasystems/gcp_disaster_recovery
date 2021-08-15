@@ -6,15 +6,11 @@ locals {
   healthcheck_name          = local.base_instance_name_prefix
   instance_group_name       = local.base_instance_name_prefix
   autoscaler_name           = local.base_instance_name_prefix
-  loadbalancer_name         = local.base_instance_name_prefix
-  images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
-  /*
-  Any attribute from data should be here.
-  attribute == null ? jsondecode(data.external.vm.result.source_vm) : var.attribute
-  */
 
   disks                     = jsondecode(data.external.vm.result.source_vm).disks
   service_account         = jsondecode(data.external.vm.result.source_vm).serviceAccounts[0]
+
+  images                    = [for x in google_compute_image.images : { "source_image" = x.self_link }]
 }
 
 /*
