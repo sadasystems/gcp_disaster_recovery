@@ -31,12 +31,25 @@ module "test-strategy-dr" {
   `EQUIVALENT REST` link. Any value different from the `EQUIVALENT REST` link will be applied to the disk.
 
   */
-  // put dummy disk infor
   disks = [
     {
-      boot = false
+      boot = null
+      auto_delete  = null
+      disk_name    = null
+      disk_size_gb = null
+      disk_type    = null #pd-ssd, local-ssd or pd-standard
+      device_name = null
+      labels = null
+      source_image = null
     }, {
-      boot = false
+      boot = null
+      auto_delete  = null
+      disk_name    = null
+      disk_size_gb = null
+      disk_type    = null #pd-ssd, local-ssd or pd-standard
+      device_name = null
+      labels = null
+      source_image = null
     }
   ]
 
