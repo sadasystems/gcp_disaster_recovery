@@ -30,7 +30,19 @@ locals {
     }
   */
 
-  disks = jsondecode(data.external.vm.result.source_vm).disks
+  source_disks = jsondecode(data.external.vm.result.source_vm).disks
+  disks = var.disks[0].disk_name == null ?
+          [for i, d in local.source_disks: {
+            boot = d.boot
+            auto_delete  = d.autoDelete
+            disk_name    = "${d.deviceName}-disk"
+            disk_size_gb = d.di
+            disk_type    = null #pd-ssd, local-ssd or pd-standard
+            device_name = d.deviceName
+            labels = {}
+            source_image = local.images[i]
+          }
+          ] : var.disks
 
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
   images = [for x in google_compute_image.images : { "source_image" = x.self_link }]
