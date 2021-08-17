@@ -21,8 +21,8 @@ module "test-strategy-dr" {
     start_time         = "04:00"
     max_retention_days = 1 # how long keep snapshots
   }
-
 /*
+
   To-Do:
   If you like to change disk size or to add a new disk, please add here.
 
