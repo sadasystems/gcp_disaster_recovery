@@ -38,7 +38,7 @@ module "test-strategy-dr" {
     {
       boot = null
       auto_delete  = null
-      disk_name    = "vol1-disk"
+      disk_name    = null
       disk_size_gb = null
       disk_type    = null #pd-ssd, local-ssd or pd-standard
       device_name = null
@@ -47,7 +47,7 @@ module "test-strategy-dr" {
     }, {
       boot = null
       auto_delete  = null
-      disk_name    = "vol2-disk"
+      disk_name    = null
       disk_size_gb = 60
       disk_type    = null #pd-ssd, local-ssd or pd-standard
       device_name = null
