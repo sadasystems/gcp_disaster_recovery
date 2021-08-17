@@ -53,15 +53,6 @@ module "test-strategy-dr" {
       device_name = null
       labels = null
       source_image = null
-    }, {
-      boot = false
-      auto_delete  = false
-      disk_name    = "new-disk"
-      disk_size_gb = 10
-      disk_type    = "pd-ssd" #pd-ssd, local-ssd or pd-standard
-      device_name = "new-device"
-      labels = {l1 = "k1"}
-      source_image = ""
     }
   ]
 
