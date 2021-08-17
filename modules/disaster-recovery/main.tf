@@ -10,12 +10,12 @@ locals {
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
   disks = var.disks[0].disk_name == null ? [for i, d in local.source_disks: {
             boot = lookup(var.disks[i],"boot", d["boot"])
-            auto_delete  = lookup(var.disks[i],"auto_delete",d["autoDelete"])
-            disk_name    = "${lookup(var.disks[i], "disk_name", d["deviceName"])}-disk"
+            auto_delete  = lookup(var.disks[i],"auto_delete", d["autoDelete"])
+            disk_name    = lookup(var.disks[i],"disk_name", d["deviceName"])
             disk_size_gb = lookup(var.disks[i],"disk_size_gb", d["diskSizeGb"] )
             disk_type    = "pd-ssd" #pd-ssd, local-ssd or pd-standard
             device_name = lookup(var.disks[i], "device_name",d["deviceName"] )
-            labels = lookup(var.disks[i], "labels", d["labels"])
+            labels = lookup(var.disks[i], "labels", null)
             source_image = var.disks[i].source_image
           }
           ] : var.disks
