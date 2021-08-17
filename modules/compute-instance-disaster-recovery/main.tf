@@ -22,7 +22,12 @@ module "common" {
   vm_name = var.vm_name
   machine_type = var.machine_type
   network_tag = var.network_tag
+  named_ports = var.named_ports
+  igm_initial_delay_sec = var.igm_initial_delay_sec
+  http_health_check_enabled = var.http_health_check_enabled
+  health_check = var.health_check
 }
+/*
 
 resource "google_compute_health_check" "http_autohealing" {
   count               = var.http_health_check_enabled ? 1 : 0
@@ -71,6 +76,7 @@ resource "google_compute_autoscaler" "default" {
     cooldown_period = 60
   }
 }
+*/
 
 resource "google_compute_instance_group_manager" "mig" {
   name               = local.instance_group_name

@@ -1,3 +1,4 @@
+/*
 module "test-strategy-dr" {
   source = "./disaster-recovery"
   project = var.project
@@ -22,14 +23,12 @@ module "test-strategy-dr" {
     max_retention_days = 1 # how long keep snapshots
   }
 
-  /*
   To-Do:
   If you like to change disk size or to add a new disk, please add here.
 
   Important : Please click Google Console's `Compute Engine -> VM Instances` and `Compute Engine -> Disks` menu and select
   `EQUIVALENT REST` link. Any value different from the `EQUIVALENT REST` link will be applied to the disk.
   The number of disks must be the same as the number of source_vm's disks
-  */
 
   disks = [
     {
@@ -76,3 +75,4 @@ module "test-strategy-dr" {
     port                = 22
   }
 }
+*/
