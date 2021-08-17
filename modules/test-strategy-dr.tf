@@ -1,5 +1,5 @@
 module "test-strategy-dr" {
-  source = "./disaster-recovery"
+  source  = "./disaster-recovery"
   project = var.project
 
   // leave it null if you like to use the same service account of source VM.
@@ -21,7 +21,7 @@ module "test-strategy-dr" {
     start_time         = "04:00"
     max_retention_days = 1 # how long keep snapshots
   }
-/*
+  /*
 
   To-Do:
   If you like to change disk size or to add a new disk, please add here.
@@ -36,22 +36,22 @@ module "test-strategy-dr" {
 
   disks = [
     {
-      boot = null
+      boot         = null
       auto_delete  = null
       disk_name    = null
       disk_size_gb = null
       disk_type    = null #pd-ssd, local-ssd or pd-standard
-      device_name = null
-      labels = null
+      device_name  = null
+      labels       = null
       source_image = null
-    }, {
-      boot = null
+      }, {
+      boot         = null
       auto_delete  = null
       disk_name    = null
       disk_size_gb = 60
       disk_type    = null #pd-ssd, local-ssd or pd-standard
-      device_name = null
-      labels = null
+      device_name  = null
+      labels       = null
       source_image = null
     }
   ]
