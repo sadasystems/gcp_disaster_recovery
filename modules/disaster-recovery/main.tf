@@ -30,13 +30,12 @@ locals {
     }
   */
 
-  source_disks = jsondecode(data.external.vm.result.source_vm).disks
+  disks = jsondecode(data.external.vm.result.source_vm).disks
 
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
   images = [for x in google_compute_image.images : { "source_image" = x.self_link }]
 }
 
-/*
 resource "google_compute_image" "images" {
   count   = length(local.disks)
   project = var.project
@@ -44,7 +43,6 @@ resource "google_compute_image" "images" {
   name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
   source_disk = local.disks[count.index].source
 }
-*/
 
 /*
 module "common" {
