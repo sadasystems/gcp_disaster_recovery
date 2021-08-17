@@ -31,7 +31,7 @@ resource "google_compute_image" "images" {
   project = var.project
 
   name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].device_name}"
-  source_disk = local.disks[count.index].source
+  source_disk = local.source_disks[count.index].source
 }
 
 module "common" {
