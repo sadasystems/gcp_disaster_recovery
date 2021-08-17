@@ -31,7 +31,7 @@ module "test-strategy-dr" {
 
   !The number of disks must be the same as the number of source_vm's disks
   !The value defined here will overwrite 'source_vm's value
-  !If you add additional disk, populate disk_name values.
+  !If you add additional disk, populate all of disk_name values.
 */
 
   disks = [
@@ -47,7 +47,7 @@ module "test-strategy-dr" {
     }, {
       boot = null
       auto_delete  = null
-      disk_name    = null
+      disk_name    = "vol2-disk"
       disk_size_gb = 60
       disk_type    = null #pd-ssd, local-ssd or pd-standard
       device_name = null
