@@ -46,7 +46,7 @@ locals {
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
   subnetwork_project = var.subnetwork_project != null? var.subnetwork_project : data.google_compute_instance.source_vm.network_interface[0].subnetwork_project
   subnetwork         = var.subnetwork != null? var.subnetwork : data.google_compute_instance.source_vm.network_interface[0].subnetwork
-  images = [for x in google_compute_image.images : merge(local.disks, { "source_image" = x.self_link })]
+  images = [for i, x in google_compute_image.images : merge(local.disks[i], { "source_image" = x.self_link })]
 }
 
 resource "google_compute_image" "images" {
