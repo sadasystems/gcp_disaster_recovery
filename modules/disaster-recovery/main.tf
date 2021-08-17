@@ -31,8 +31,7 @@ locals {
   */
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
-  disks = var.disks[0].disk_name == null ?
-          [for i, d in local.source_disks: {
+  disks = var.disks[0].disk_name == null ? [for i, d in local.source_disks: {
             boot = d.boot
             auto_delete  = d.autoDelete
             disk_name    = "${d.deviceName}-disk"
