@@ -8,6 +8,7 @@ locals {
   autoscaler_name           = local.base_instance_name_prefix
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
+  images = [for x in google_compute_image.images : { "source_image" = x.self_link })]
   disks = var.disks[0].disk_name == null ? [for i, d in local.source_disks: {
             boot = lookup(d,"boot", var.disks[i].boot)
             auto_delete  = lookup(d, "autoDelete", var.disks[i].auto_delete)
@@ -16,11 +17,11 @@ locals {
             disk_type    = "pd-ssd" #pd-ssd, local-ssd or pd-standard
             device_name = lookup(d, "deviceName", var.disks[i].device_name)
             labels = lookup(d, "labels", var.disks[i].labels)
-            source_image = ""
+            source = lookup(d, "source", var.disks[i].source)
+            source_images =  images[i].self_link
           }
           ] : var.disks
 
-  images = [for i, x in google_compute_image.images : merge(local.disks[i], { "source_image" = x.self_link })]
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
   subnetwork_project = var.subnetwork_project != null? var.subnetwork_project : data.google_compute_instance.source_vm.network_interface[0].subnetwork_project
   temp_subnet = split("/",data.google_compute_instance.source_vm.network_interface[0].subnetwork)
@@ -32,7 +33,7 @@ resource "google_compute_image" "images" {
   project = var.project
 
   name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].device_name}"
-  source_disk = local.disks[count.index].source_image
+  source_disk = local.disks[count.index].source
 }
 
 module "common" {
@@ -48,7 +49,6 @@ module "common" {
   snapshot = var.snapshot
 
   disks = local.disks
-  disk_type = var.disk_type
   subnetwork_project = local.subnetwork_project
   subnetwork = local.subnetwork
   source_vm = var.source_vm
@@ -61,8 +61,8 @@ module "common" {
   http_health_check_enabled = var.http_health_check_enabled
   health_check = var.health_check
 }
-/*
 
+/*
 resource "google_compute_resource_policy" "hourly_backup" {
   name    = local.snapshot_schedule_name
   project = var.project
