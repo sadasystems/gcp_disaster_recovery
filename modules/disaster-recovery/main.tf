@@ -39,13 +39,13 @@ locals {
             disk_type    = null #pd-ssd, local-ssd or pd-standard
             device_name = d.deviceName
             labels = {}
-            source_image = ""
           }
           ] : var.disks
 
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
   subnetwork_project = var.subnetwork_project != null? var.subnetwork_project : data.google_compute_instance.source_vm.network_interface[0].subnetwork_project
-  subnetwork         = var.subnetwork != null? var.subnetwork : data.google_compute_instance.source_vm.network_interface[0].subnetwork
+  temp_subnet = split("/",data.google_compute_instance.source_vm.network_interface[0].subnetwork)
+  subnetwork         = var.subnetwork != null? var.subnetwork : element(local.temp_subnet,length(local.temp_subnet)-1)
   images = [for i, x in google_compute_image.images : merge(local.disks[i], { "source_image" = x.self_link })]
 }
 
