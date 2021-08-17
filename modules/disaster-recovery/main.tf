@@ -36,6 +36,7 @@ locals {
   images = [for x in google_compute_image.images : { "source_image" = x.self_link }]
 }
 
+/*
 resource "google_compute_image" "images" {
   count   = length(local.disks)
   project = var.project
@@ -43,6 +44,7 @@ resource "google_compute_image" "images" {
   name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].deviceName}"
   source_disk = local.disks[count.index].source
 }
+*/
 
 /*
 module "common" {
@@ -72,6 +74,7 @@ module "common" {
   health_check = var.health_check
 }
 */
+/*
 
 resource "google_compute_resource_policy" "hourly_backup" {
   name    = local.snapshot_schedule_name
@@ -251,3 +254,4 @@ module "conjur" {
   conjur_login       = "host/cloudops-mta"
   conjur_secret_name = "Vault/Infrastructure_Automation/S_CLOUDOPS-GCPSVCACNT_ALL/terraform-auth@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com/password"
 }
+*/
