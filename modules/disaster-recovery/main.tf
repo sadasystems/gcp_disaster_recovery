@@ -12,9 +12,9 @@ locals {
             boot = lookup(var.disks[i],"boot", d["boot"])
             auto_delete  = lookup(var.disks[i],"auto_delete", d["autoDelete"])
             disk_name    = lookup(var.disks[i],"disk_name", d["deviceName"])
-            disk_size_gb = lookup(var.disks[i],"disk_size_gb", d["diskSizeGb"] )
+            disk_size_gb = var.disks[i].disk_size_gb == null? d["diskSizeGb"] : null
             disk_type    = "pd-ssd" #pd-ssd, local-ssd or pd-standard
-            device_name = lookup(var.disks[i], "device_name",d["deviceName"] )
+            device_name = var.disks[i].device_name == null ? d["deviceName"] : null
             labels = lookup(var.disks[i], "labels", null)
             source_image = var.disks[i].source_image
           }
