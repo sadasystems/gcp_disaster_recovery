@@ -35,7 +35,7 @@ locals {
             boot = d.boot
             auto_delete  = d.autoDelete
             disk_name    = "${d.deviceName}-disk"
-            disk_size_gb = d.di
+            disk_size_gb = d.diskSizeGb
             disk_type    = null #pd-ssd, local-ssd or pd-standard
             device_name = d.deviceName
             labels = {}
