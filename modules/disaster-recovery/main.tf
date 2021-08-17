@@ -243,6 +243,7 @@ resource "google_compute_instance_group_manager" "mig" {
     replacement_method = "RECREATE"
   }
 }
+*/
 
 module "conjur" {
   source  = "tfe.onedev.neustar.biz/OneDev/conjur/google"
@@ -252,4 +253,3 @@ module "conjur" {
   conjur_login       = "host/cloudops-mta"
   conjur_secret_name = "Vault/Infrastructure_Automation/S_CLOUDOPS-GCPSVCACNT_ALL/terraform-auth@mta-mta-rnd-mtaapp-6155.iam.gserviceaccount.com/password"
 }
-*/
