@@ -27,11 +27,11 @@ locals {
 }
 
 resource "google_compute_image" "images" {
-  count   = length(local.disks)
+  count   = length(local.disks) >= length(local.source_disks) ? length(local.disks) : length(local.source_disks)
   project = var.project
 
   name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].device_name}"
-  source_disk = local.source_disks[count.index].source
+  source_disk = length(local.disks) >= length(local.source_disks) ? "projects/${var.project}/zones/${var.zone}/disks/${local.disks[count.index].disk_name}"  : local.source_disks[count.index].source
 }
 
 module "common" {
