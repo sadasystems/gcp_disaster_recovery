@@ -6,47 +6,24 @@ locals {
   healthcheck_name          = local.base_instance_name_prefix
   instance_group_name       = local.base_instance_name_prefix
   autoscaler_name           = local.base_instance_name_prefix
-  /*
-  To-Do: Convert data.external.vm.result.source_vm to variables 'disk' type
-{
-      "autoDelete": true,
-      "boot": true,
-      "deviceName": "vol1",
-      "diskSizeGb": "100",
-      "guestOsFeatures": [
-        {
-          "type": "VIRTIO_SCSI_MULTIQUEUE"
-        }
-      ],
-      "index": 0,
-      "interface": "SCSI",
-      "kind": "compute#attachedDisk",
-      "licenses": [
-        "projects/velospublic/global/licenses/veloslicense"
-      ],
-      "mode": "READ_WRITE",
-      "source": "projects/mmm-mmm-qa-mmmapp-ac0c/zones/us-central1-a/disks/test-strategy",
-      "type": "PERSISTENT"
-    }
-  */
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
   disks = var.disks[0].disk_name == null ? [for i, d in local.source_disks: {
             boot = lookup(d,"boot", var.disks[i].boot)
-            auto_delete  = d.autoDelete
-            disk_name    = "${d.deviceName}-disk"
-            disk_size_gb = d.diskSizeGb
-            disk_type    = null #pd-ssd, local-ssd or pd-standard
-            device_name = d.deviceName
-            labels = {}
+            auto_delete  = lookup(d, "autoDelete", var.disks[i].auto_delete)
+            disk_name    = "${lookup(d, "deviceName", var.disks[i].disk_name)}-disk"
+            disk_size_gb = lookup(d, "diskSizeGb", var.disks[i].disk_size_gb)
+            disk_type    = "pd-ssd" #pd-ssd, local-ssd or pd-standard
+            device_name = lookup(d, "deviceName", var.disks[i].device_name)
+            labels = lookup(d, "labels", var.disks[i].labels)
           }
           ] : var.disks
 
+  images = [for i, x in google_compute_image.images : merge(local.disks[i], { "source_image" = x.self_link })]
   service_account = var.service_account == null ? jsondecode(data.external.vm.result.source_vm).serviceAccounts[0] : var.service_account
   subnetwork_project = var.subnetwork_project != null? var.subnetwork_project : data.google_compute_instance.source_vm.network_interface[0].subnetwork_project
   temp_subnet = split("/",data.google_compute_instance.source_vm.network_interface[0].subnetwork)
   subnetwork         = var.subnetwork != null? var.subnetwork : element(local.temp_subnet,length(local.temp_subnet)-1)
-  images = [for i, x in google_compute_image.images : merge(local.disks[i], { "source_image" = x.self_link })]
 }
 
 resource "google_compute_image" "images" {
