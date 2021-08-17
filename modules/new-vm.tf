@@ -63,4 +63,5 @@ module "new-vm" {
 
   allow_stopping_for_update = false
   deletion_protection = false
-}*/
+}
+*/
