@@ -27,10 +27,10 @@ locals {
 }
 
 resource "google_compute_image" "images" {
-  count   = length(local.disks)
+  count   = length(local.source_disks)
   project = var.project
 
-  name        = "${local.base_instance_name_prefix}-disk-image-${local.disks[count.index].device_name}"
+  name        = "${local.base_instance_name_prefix}-disk-image-${local.source_disks[count.index].device_name}"
   source_disk = local.source_disks[count.index].source
 }
 
