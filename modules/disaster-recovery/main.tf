@@ -16,7 +16,7 @@ locals {
             disk_type    = "pd-ssd" #pd-ssd, local-ssd or pd-standard
             device_name = lookup(d, "deviceName", var.disks[i].device_name)
             labels = lookup(d, "labels", var.disks[i].labels)
-            source_images = var.disks[i].source_image
+            source_image = var.disks[i].source_image
           }
           ] : var.disks
 
