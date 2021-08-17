@@ -39,7 +39,7 @@ locals {
             disk_type    = null #pd-ssd, local-ssd or pd-standard
             device_name = d.deviceName
             labels = {}
-            source_image = local.images[i]
+            source_image = ""
           }
           ] : var.disks
 
