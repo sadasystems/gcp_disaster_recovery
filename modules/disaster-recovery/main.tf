@@ -8,7 +8,6 @@ locals {
   autoscaler_name           = local.base_instance_name_prefix
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
-  images = [for x in google_compute_image.images : { "source_image" = x.self_link }]
   disks = var.disks[0].disk_name == null ? [for i, d in local.source_disks: {
             boot = lookup(d,"boot", var.disks[i].boot)
             auto_delete  = lookup(d, "autoDelete", var.disks[i].auto_delete)
@@ -18,7 +17,7 @@ locals {
             device_name = lookup(d, "deviceName", var.disks[i].device_name)
             labels = lookup(d, "labels", var.disks[i].labels)
             source = lookup(d, "source", var.disks[i].source)
-            source_images =  images[i].self_link
+            source_images =  google_compute_image.images[i].self_link
           }
           ] : var.disks
 
