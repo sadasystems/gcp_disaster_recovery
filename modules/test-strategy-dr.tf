@@ -28,14 +28,17 @@ module "test-strategy-dr" {
 
   Important : Please click Google Console's `Compute Engine -> VM Instances` and `Compute Engine -> Disks` menu and select
   `EQUIVALENT REST` link. Any value different from the `EQUIVALENT REST` link will be applied to the disk.
-  The number of disks must be the same as the number of source_vm's disks
+
+  !The number of disks must be the same as the number of source_vm's disks
+  !The value defined here will overwrite 'source_vm's value
+  !If you add additional disk, populate disk_name values.
 */
 
   disks = [
     {
       boot = null
       auto_delete  = null
-      disk_name    = null
+      disk_name    = "vol1-disk"
       disk_size_gb = null
       disk_type    = null #pd-ssd, local-ssd or pd-standard
       device_name = null
@@ -50,6 +53,15 @@ module "test-strategy-dr" {
       device_name = null
       labels = null
       source_image = null
+    }, {
+      boot = false
+      auto_delete  = false
+      disk_name    = "new-disk"
+      disk_size_gb = 10
+      disk_type    = "pd-ssd" #pd-ssd, local-ssd or pd-standard
+      device_name = "new-device"
+      labels = {l1 = "k1"}
+      source_image = ""
     }
   ]
 
