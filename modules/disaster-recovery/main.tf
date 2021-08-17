@@ -11,7 +11,7 @@ locals {
   disks = var.disks[0].disk_name == null ? [for i, d in local.source_disks: {
             boot = lookup(var.disks[i],"boot", d["boot"])
             auto_delete  = lookup(var.disks[i],"auto_delete", d["autoDelete"])
-            disk_name    = lookup(d, "deviceName", var.disks[i]["disk_name"])
+            disk_name    = "${lookup(d, "deviceName", var.disks[i].disk_name)}-disk"
             disk_size_gb = var.disks[i].disk_size_gb == null? d["diskSizeGb"] : null
             disk_type    = "pd-ssd" #pd-ssd, local-ssd or pd-standard
             device_name = var.disks[i].device_name == null ? d["deviceName"] : null
