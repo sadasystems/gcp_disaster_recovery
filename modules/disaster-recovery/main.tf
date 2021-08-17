@@ -32,7 +32,7 @@ locals {
 
   source_disks = jsondecode(data.external.vm.result.source_vm).disks
   disks = var.disks[0].disk_name == null ? [for i, d in local.source_disks: {
-            boot = d.boot
+            boot = lookup(d,"boot", var.disks[i].boot)
             auto_delete  = d.autoDelete
             disk_name    = "${d.deviceName}-disk"
             disk_size_gb = d.diskSizeGb
@@ -55,7 +55,6 @@ resource "google_compute_image" "images" {
   source_disk = local.disks[count.index].source_image
 }
 
-/*
 module "common" {
   source = "../common"
 
@@ -82,7 +81,6 @@ module "common" {
   http_health_check_enabled = var.http_health_check_enabled
   health_check = var.health_check
 }
-*/
 /*
 
 resource "google_compute_resource_policy" "hourly_backup" {
