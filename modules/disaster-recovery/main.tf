@@ -17,7 +17,7 @@ locals {
             device_name = lookup(d, "deviceName", var.disks[i].device_name)
             labels = lookup(d, "labels", var.disks[i].labels)
             source = lookup(d, "source", var.disks[i].source)
-            source_images =  google_compute_image.images[i].self_link
+            source_images = ""
           }
           ] : var.disks
 
@@ -46,8 +46,7 @@ module "common" {
   metadata = var.metadata
   labels = var.labels
   snapshot = var.snapshot
-
-  disks = local.disks
+  disks = [for i,d in local.disks: merge(d, {"source_image" = google_compute_image.images[i].self_link})]
   subnetwork_project = local.subnetwork_project
   subnetwork = local.subnetwork
   source_vm = var.source_vm
