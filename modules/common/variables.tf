@@ -29,7 +29,7 @@ variable "disks" {
     disk_type    = string   #pd-ssd, local-ssd or pd-standard
     device_name = string
     labels = map(string)
-      source_image = string
+    source_image = string
   }))
 }
 
