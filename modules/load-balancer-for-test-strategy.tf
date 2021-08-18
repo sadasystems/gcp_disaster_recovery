@@ -10,10 +10,9 @@ module "load-balancer-for-test-strategy" {
   private_key_path = "server.key"
   certificate_path = "server.crt"
 
-  *//*The first host_rule is the default*//*
   host_path_rules = [
     {
-      *//*named_port or NE name*//*
+      /*named_port or NE name*/
       port_name = "https"
       host_rule = {
         host         = ["*"]
@@ -23,7 +22,7 @@ module "load-balancer-for-test-strategy" {
         name = "p1"
 
         path_rule = [{
-          paths = ["*//*"]
+          paths = ["/*"]
         }]
       }
   }]
