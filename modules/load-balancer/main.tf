@@ -9,6 +9,7 @@ locals {
 
 resource "google_compute_global_address" "lb-ip" {
   name = local.loadbalancer_ip
+  project = var.project
   ip_version = "IPV4"
 }
 
