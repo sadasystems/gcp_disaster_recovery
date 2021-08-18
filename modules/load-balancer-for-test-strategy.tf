@@ -7,8 +7,10 @@ module "load-balancer-for-test-strategy" {
   name    = "test-strategy"
 
   # HTTPS
+/*
   private_key_path = "server.key"
   certificate_path = "server.crt"
+*/
 
   instance_group = module.test-strategy-dr.instance_group
   host_path_rules = [
