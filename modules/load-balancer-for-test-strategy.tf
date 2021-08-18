@@ -19,7 +19,7 @@ module "load-balancer-for-test-strategy" {
     {
       port_name = "https"
       host_rule = {
-        host         = ["*", "*.marketshare.com"]
+        host         = ["*", "*.marketshare.com"]  # Put the sub-domain here. e.g 'prod.marketshare.com'
         path_matcher = "p1"
       }
       path_matcher = {
