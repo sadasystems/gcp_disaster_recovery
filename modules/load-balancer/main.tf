@@ -88,7 +88,8 @@ resource "google_compute_backend_service" "default" {
   port_name = var.host_path_rules[count.index].port_name
 
   backend {
-    group = data.terraform_remote_state.backend.outputs.instance_group
+    //group = data.terraform_remote_state.backend.outputs.instance_group
+    group = var.instance_group
     max_utilization = 1
   }
 

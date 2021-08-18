@@ -7,6 +7,8 @@ variable "name" {type =string}
 variable "private_key_path" { type = string}
 variable "certificate_path" { type = string}
 
+variable "instance_group" { type = string }
+
 variable "host_path_rules" {
   type = list(object({
     port_name = string
