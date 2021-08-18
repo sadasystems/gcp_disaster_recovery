@@ -1,7 +1,7 @@
 locals {
   http_proxy_name = "${var.name}-http-proxy"
   https_proxy_name = "${var.name}-https-proxy"
-  url_map_name = "${var.name}-url-map"
+  url_map_name = "${var.name}"
   backend_name = "${var.name}-backend"
   healthcheck_name = "${var.name}-healthcheck"
   loadbalancer_ip = "${var.name}-loadbalancer"

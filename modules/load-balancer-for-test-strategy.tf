@@ -4,7 +4,7 @@ module "load-balancer-for-test-strategy" {
   project = var.project
   region  = "us-central1"
   zone    = "us-central1-a"
-  name    = "test-strategy"
+  name    = "test-strategy-lb"
 
   # You should upload your certificate to Google Console First
   certificate_name = ["marketshare-certificate"]
