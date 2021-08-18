@@ -12,7 +12,7 @@ module "load-balancer-for-test-strategy" {
 */
 
   #certificate_path = "projects/${var.project}/global/sslCertificates/marketshare-cert"
-  certificate_path = "projects/mmm-mmm-prodtest-mmmapp-90cf/global/sslCertificates/marketshare-cert"
+  certificate_path = ["projects/mmm-mmm-prodtest-mmmapp-90cf/global/sslCertificates/marketshare-cert"]
 
   instance_group = module.test-strategy-dr.instance_group
   host_path_rules = [
@@ -20,7 +20,7 @@ module "load-balancer-for-test-strategy" {
     {
       port_name = "https"
       host_rule = {
-        host         = ["*"]
+        host         = ["*", "*.marketshare.com"]
         path_matcher = "p1"
       }
       path_matcher = {

@@ -7,7 +7,7 @@ variable "name" {type =string}
 
 variable "private_key_path" { type = string}
 */
-variable "certificate_path" { type = string}
+variable "certificate_path" { type = list(string)}
 
 variable "instance_group" { type = string }
 

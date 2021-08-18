@@ -40,7 +40,7 @@ resource "google_compute_ssl_certificate" "default" {
 resource "google_compute_target_https_proxy" "default" {
   name  = local.https_proxy_name
   url_map = google_compute_url_map.default.id
-  ssl_certificates = ["projects/mmm-mmm-prodtest-mmmapp-90cf/global/sslCertificates/marketshare-cert"]
+  ssl_certificates = var.certificate_path
 }
 
 resource "google_compute_url_map" "default" {
