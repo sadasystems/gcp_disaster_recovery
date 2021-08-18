@@ -13,6 +13,6 @@ data "terraform_remote_state" "backend" {
   }*/
   backend = "local"
   config = {
-    path = "${path.cwd}/terraform.tfstate"
+    path = "${path.root}/terraform.tfstate"
   }
 }
