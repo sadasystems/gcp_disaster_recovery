@@ -6,15 +6,14 @@ module "load-balancer-for-test-strategy" {
   zone    = "us-central1-a"
   name    = "test-strategy"
 
-  # HTTPS
-/*
-  private_key_path = "server.key"
-*/
+  # You should upload your certificate to Google Console First
+  certificate_name = ["marketshare-cert"]
 
-  #certificate_path = "projects/${var.project}/global/sslCertificates/marketshare-cert"
-  certificate_path = ["projects/mmm-mmm-prodtest-mmmapp-90cf/global/sslCertificates/marketshare-cert"]
-
+  # Put a name of module you like to connect with the load-balancer
+  # The module must be located under the same directory to resolve the name
+  # example. 'module.NAME-OF-THE-MODULE.instance_group'
   instance_group = module.test-strategy-dr.instance_group
+
   host_path_rules = [
     /*named_port */
     {

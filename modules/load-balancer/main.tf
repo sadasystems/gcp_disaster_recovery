@@ -5,6 +5,7 @@ locals {
   backend_name = "${var.name}-backend"
   healthcheck_name = "${var.name}-healthcheck"
   loadbalancer_ip = "${var.name}-loadbalancer"
+  certificate_name = [for c in var.certificate_name: "projects/${var.project}/global/sslCertificates/${c}"]
 }
 
 resource "google_compute_global_address" "lb-ip" {
@@ -30,18 +31,12 @@ resource "google_compute_target_http_proxy" "default" {
   name    = local.http_proxy_name
   url_map = google_compute_url_map.default.id
 }
-/*
-resource "google_compute_ssl_certificate" "default" {
-  name_prefix = var.name
-  private_key = file(var.private_key_path)
-  certificate = file(var.certificate_path)
-}*/
 
 resource "google_compute_target_https_proxy" "default" {
   name  = local.https_proxy_name
   project = var.project
   url_map = google_compute_url_map.default.id
-  ssl_certificates = var.certificate_path
+  ssl_certificates = local.certificate_name
 }
 
 resource "google_compute_url_map" "default" {
