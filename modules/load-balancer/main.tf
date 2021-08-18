@@ -26,7 +26,6 @@ resource "google_compute_global_forwarding_rule" "https" {
 
 resource "google_compute_target_http_proxy" "default" {
   provider = google-beta
-
   project = var.project
   name    = local.http_proxy_name
   url_map = google_compute_url_map.default.id
@@ -40,13 +39,13 @@ resource "google_compute_ssl_certificate" "default" {
 
 resource "google_compute_target_https_proxy" "default" {
   name  = local.https_proxy_name
+  project = var.project
   url_map = google_compute_url_map.default.id
   ssl_certificates = var.certificate_path
 }
 
 resource "google_compute_url_map" "default" {
   provider = google-beta
-
   project = var.project
   name            = local.url_map_name
   default_service = google_compute_backend_service.default[0].id
@@ -89,7 +88,6 @@ resource "google_compute_backend_service" "default" {
   port_name = var.host_path_rules[count.index].port_name
 
   backend {
-    //group = data.terraform_remote_state.backend.outputs.instance_group
     group = var.instance_group
     max_utilization = 1
   }
