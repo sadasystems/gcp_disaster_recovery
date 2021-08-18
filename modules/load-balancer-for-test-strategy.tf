@@ -9,8 +9,9 @@ module "load-balancer-for-test-strategy" {
   # HTTPS
 /*
   private_key_path = "server.key"
-  certificate_path = "server.crt"
 */
+
+  certificate_path = "projects/${var.project}/global/sslCertificates/marketshare-cert"
 
   instance_group = module.test-strategy-dr.instance_group
   host_path_rules = [
