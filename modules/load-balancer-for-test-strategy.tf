@@ -1,4 +1,4 @@
-/*module "load-balancer-for-test-strategy" {
+module "load-balancer-for-test-strategy" {
   source = "./load-balancer"
 
   project = var.project
@@ -27,4 +27,4 @@
         }]
       }
   }]
-}*/
+}
