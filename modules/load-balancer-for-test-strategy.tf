@@ -11,12 +11,13 @@ module "load-balancer-for-test-strategy" {
   private_key_path = "server.key"
 */
 
-  certificate_path = "projects/${var.project}/global/sslCertificates/marketshare-cert"
+  #certificate_path = "projects/${var.project}/global/sslCertificates/marketshare-cert"
+  certificate_path = "projects/mmm-mmm-prodtest-mmmapp-90cf/global/sslCertificates/marketshare-cert"
 
   instance_group = module.test-strategy-dr.instance_group
   host_path_rules = [
+    /*named_port */
     {
-      /*named_port or NE name*/
       port_name = "https"
       host_rule = {
         host         = ["*"]
