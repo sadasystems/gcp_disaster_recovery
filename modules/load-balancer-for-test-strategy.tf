@@ -7,7 +7,7 @@ module "load-balancer-for-test-strategy" {
   name    = "test-strategy"
 
   # You should upload your certificate to Google Console First
-  certificate_name = ["marketshare-cert"]
+  certificate_name = ["marketshare-certificate"]
 
   # Put a name of module you like to connect with the load-balancer
   # The module must be located under the same directory to resolve the name
