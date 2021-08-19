@@ -54,7 +54,7 @@ module "new-vm-dr" {
   network_tag = ["allow-all-gfe"]
   named_ports = [
     {
-      name = "https"
+      name = "https" # load-balancer module will lookup this name
       port = 443
     }
   ]

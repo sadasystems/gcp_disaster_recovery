@@ -61,7 +61,7 @@ module "test-strategy-dr" {
   network_tag = ["allow-all-gfe"]
   named_ports = [
     {
-      name = "https"
+      name = "https"  # Load-balancer module will lookup this name
       port = 443
     }
   ]
