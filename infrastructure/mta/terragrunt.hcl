@@ -1,1 +1,0 @@
-## MTA folder level configuration
