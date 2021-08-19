@@ -1,4 +1,3 @@
-/*
 module "new-vm" {
   source  = "./compute-instance" # If you like to provision only
   project = var.project
@@ -64,4 +63,3 @@ module "new-vm" {
   allow_stopping_for_update = false
   deletion_protection = false
 }
-*/

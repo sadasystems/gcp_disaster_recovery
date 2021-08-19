@@ -1,4 +1,4 @@
-/*module "new-vm-dr" {
+module "new-vm-dr" {
   source  = "./common"
   project = var.project
   service_account = {
@@ -70,5 +70,5 @@
     request_path        = ""
     port                = 22
   }
-}*/
+}
 
