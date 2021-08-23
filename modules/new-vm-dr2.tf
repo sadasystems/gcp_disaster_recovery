@@ -27,7 +27,7 @@ module "new-vm-dr2" {
     {
       boot         = true
       auto_delete  = false
-      disk_name    = "disk1"
+      disk_name    = "dr-disk1"
       disk_size_gb = 10
       disk_type    = "pd-ssd"
       device_name = "dv1"
@@ -36,7 +36,7 @@ module "new-vm-dr2" {
       }, {
       boot         = false
       auto_delete  = false
-      disk_name    = "disk2"
+      disk_name    = "dr-disk2"
       disk_size_gb = 30
       disk_type    = "pd-ssd"
       device_name = "dv2"
