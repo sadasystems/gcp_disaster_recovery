@@ -1,6 +1,7 @@
 # Loadbalancer setup 
 
-![Load Balancer Setup](loadbalancer.png)
+
+![Load Balancer Setup](Loadbalancer.png)
 
 All VM is required to be in an Instance Group to connect to a load balancer
 

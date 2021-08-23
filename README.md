@@ -1,5 +1,6 @@
 # Terraform and Terragrunt script to manage infrastructure 
 
+
 ## Preparing
 ### Install Terraform, Terragrunt and GCP SDK to the machine that runs the command.
 
@@ -147,7 +148,7 @@ To enable Terraform script calls Google Cloud SDK, type the command below
 There are example .tfvars files under `disater-recovery`, `unmanaged-instance-group-to-vm` and `load-balancer` directory.
 
 load-balancer terraform module depends on `disaster-recovery` or `unmanaged-instance-group-to-vm` module to fetch `named-port` information.
-![loadbalancer.png](loadbalancer.png). 
+![loadbalancer.png](Loadbalancer.png). 
 If you like to how to create a load-balancer, [click link](Loadbalancer.md)
 
 You can run `terraform {plan|apply|destroy} -var-file=/path/to/*.tfvars-file` to create resources.
