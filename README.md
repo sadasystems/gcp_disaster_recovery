@@ -1,6 +1,5 @@
 # Terraform and Terragrunt script to manage infrastructure 
 
-
 ## Preparing
 ### Install Terraform, Terragrunt and GCP SDK to the machine that runs the command.
 
