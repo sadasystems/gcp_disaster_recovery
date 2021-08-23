@@ -1,4 +1,4 @@
-module "new-vm-dr" {
+module "new-vm-dr2" {
   source  = "./common"
   project = var.project
   service_account = {
