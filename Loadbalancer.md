@@ -49,6 +49,6 @@ If you like to set up load balancer with Google Console, please visit the link.
 
 These two module output `named port`s
 
--2. Create a Load-balancer at with `load-balancer` module. 
+-2. Create a Load-balancer with `load-balancer` module. (An example is provided under examples folder) 
 
 `load-balancer` module picks up `named ports` from the above.
