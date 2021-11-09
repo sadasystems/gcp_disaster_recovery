@@ -36,9 +36,9 @@ You also need HTTPS certificate in your project to be referenced by load-balance
   .
      
   # You should upload your certificate to Google Console First
-  certificate_name = ["marketshare-certificate"]
+  certificate_name = ["cert-name-in-your-project"]
 
-  instance_group = module.test-strategy-dr.instance_group
+  instance_group = module.NAME-OF-YOUR-MODULE.instance_group
 ```
 
 If you like to set up load balancer with Google Console, please visit the link.

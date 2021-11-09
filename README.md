@@ -115,36 +115,6 @@ load-balancer terraform module depends on `disaster-recovery` or `unmanaged-inst
 ![loadbalancer.png](Loadbalancer.png). 
 If you like to how to create a load-balancer, [click link](Loadbalancer.md)
 
-Load-balancer module fetches a .tfstate file. You should modify load-balancer modules `data.tf` file to fetch the correct .tfstate.
-``` 
-data "terraform_remote_state" "backend" {
-  backend = "local" 
-
-  config = {
-    path = "${path.module}/../disaster-recovery/terraform.tfstate"
-      or 
-    path = "${path.module}/../unmanaged-instance-group-to-vm/terraform.tfstate"
-  }
-}
-
-// In case of using Terraform Enterprise workspace
-data "terraform_remote_state" "vpc" {
-  backend = "remote"
-
-  config = {
-    organization = "hashicorp"
-    workspaces = {
-      name = "workspace_name"
-    }
-  }
-}
-```
-You can fetch terraform workspace's .tfstate as well.
-
-Please, refer to the official document. https://www.terraform.io/docs/language/state/remote-state-data.html#example-usage-remote-backend-
-
-Please, refer to https://www.terraform.io/docs/language/state/remote-state-data.html#example-usage-remote-backend-
-
 ### Clean up - Delete the source VM
 If a new VM has multiple disks, mount them first.
 Restart the new VM and make sure those disks are still mounted.
