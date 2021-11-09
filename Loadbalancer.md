@@ -52,9 +52,3 @@ These two module output `named port`s
 -2. Create a Load-balancer at with `load-balancer` module. 
 
 `load-balancer` module picks up `named ports` from the above.
-
-# Summary 
--1. modify `project-level-folder/load-balancer/terragrunt.hcl` to include your Instance Group as a dependency.
-  - [add dependency block to the terragrunt.hcl file.](https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#dependency)
-
-There are two examples of loadbanacers under `infrastructure/mmm/qa/mmmapp` directory.

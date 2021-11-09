@@ -1,6 +1,6 @@
-module "test-strategy-dr" {
-  source  = "./disaster-recovery"
-  project = var.project
+module "disaster-recovery-for-existing-vm" {
+  source  = "../disaster-recovery"
+  project = "project_name"
 
   // leave it null if you like to use the same service account of source VM.
   service_account = null
@@ -56,9 +56,9 @@ module "test-strategy-dr" {
     }
   ]
 
-  source_vm = "test-strategy" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
+  source_vm = "test" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
-  network_tag = ["allow-all-gfe"]
+  network_tag = ["allow-all"]
   named_ports = [
     {
       name = "https"  # Load-balancer module will lookup this name
