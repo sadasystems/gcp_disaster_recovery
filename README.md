@@ -112,7 +112,7 @@ To enable Terraform script calls Google Cloud SDK, type the command below
 # Terraform usage
 
 load-balancer terraform module depends on `disaster-recovery` or `unmanaged-instance-group-to-vm` module to fetch `named-port` information.
-![loadbalancer.png](Loadbalancer.png). 
+![loadbalancer.png](Loadbalancer.png) 
 If you like to how to create a load-balancer, [click link](Loadbalancer.md)
 
 ### Clean up - Delete the source VM
