@@ -1,12 +1,11 @@
 variable "project" { type = string }
-variable "service_account_impersonate" { type = string }
 
 variable "region" {type = string}
 variable "zone" { type = string }
 variable "name" {type =string}
 
-variable "private_key_path" { type = string}
-variable "certificate_path" { type = string}
+variable "certificate_name" { type = list(string)}
+variable "instance_group" { type = string }
 
 variable "host_path_rules" {
   type = list(object({

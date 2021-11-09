@@ -1,16 +1,19 @@
 locals {
   http_proxy_name = "${var.name}-http-proxy"
   https_proxy_name = "${var.name}-https-proxy"
-  url_map_name = "${var.name}-url-map"
+  url_map_name = var.name
   backend_name = "${var.name}-backend"
   healthcheck_name = "${var.name}-healthcheck"
   loadbalancer_ip = "${var.name}-loadbalancer"
+  certificate_name = [for c in var.certificate_name: "projects/${var.project}/global/sslCertificates/${c}"]
 }
 
 resource "google_compute_global_address" "lb-ip" {
   name = local.loadbalancer_ip
+  project = var.project
   ip_version = "IPV4"
 }
+
 resource "google_compute_global_forwarding_rule" "https" {
   provider = google-beta
   name   = "${var.name}-https"
@@ -24,27 +27,20 @@ resource "google_compute_global_forwarding_rule" "https" {
 
 resource "google_compute_target_http_proxy" "default" {
   provider = google-beta
-
   project = var.project
   name    = local.http_proxy_name
   url_map = google_compute_url_map.default.id
 }
 
-resource "google_compute_ssl_certificate" "default" {
-  name_prefix = var.name
-  private_key = file(var.private_key_path)
-  certificate = file(var.certificate_path)
-}
-
 resource "google_compute_target_https_proxy" "default" {
   name  = local.https_proxy_name
+  project = var.project
   url_map = google_compute_url_map.default.id
-  ssl_certificates = [google_compute_ssl_certificate.default.id]
+  ssl_certificates = local.certificate_name
 }
 
 resource "google_compute_url_map" "default" {
   provider = google-beta
-
   project = var.project
   name            = local.url_map_name
   default_service = google_compute_backend_service.default[0].id
@@ -87,7 +83,7 @@ resource "google_compute_backend_service" "default" {
   port_name = var.host_path_rules[count.index].port_name
 
   backend {
-    group = data.terraform_remote_state.backend.outputs.instance_group
+    group = var.instance_group
     max_utilization = 1
   }
 

@@ -18,7 +18,7 @@ variable "startup_script" {
 }
 
 variable "metadata" { type = map(string) }
-variable "labels" { type = map(string)}
+variable "labels" { type = map(string) }
 
 variable "disks" {
   type = list(object({
@@ -54,5 +54,27 @@ variable "network_tag" {
   default = null
 }
 
-variable "allow_stopping_for_update" {type = bool}
-variable "deletion_protection" { type = bool }
+variable "named_ports" {
+  type = list(object({
+    name = string
+    port = number
+  }))
+}
+
+/* Configuration for Disaster Recovery */
+# Instance group manager
+variable "igm_initial_delay_sec" { type = number }
+
+# Health check for VM
+# https://cloud.google.com/compute/docs/instance-groups/autohealing-instances-in-migs#example_health_check_set_up
+variable "http_health_check_enabled" { type = bool }
+variable "health_check" {
+  type = object({
+    check_interval_sec  = number
+    healthy_threshold   = number
+    timeout_sec         = number
+    unhealthy_threshold = number
+    port                = number
+    request_path        = string
+  })
+}

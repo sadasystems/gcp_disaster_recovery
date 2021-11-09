@@ -21,7 +21,7 @@ variable "metadata" { type = map(string) }
 variable "labels" { type = map(string) }
 
 variable "disks" {
-  type = list(object({
+    type = list(object({
     boot         = bool
     auto_delete  = bool
     disk_name    = string
@@ -31,18 +31,6 @@ variable "disks" {
     labels = map(string)
     source_image = string
   }))
-  default = [
-    {
-      boot = null
-      auto_delete = null
-      disk_name = null
-      disk_size_gb = null
-      disk_type = null
-      device_name = null
-      labels = null
-      source_image = null
-    }
-  ]
 }
 
 # Snapshot schedule
@@ -83,7 +71,7 @@ variable "machine_type" {
 variable "source_vm" {
   description = "Name of the VM migrated from AWS to GCP"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "network_tag" {
@@ -115,4 +103,3 @@ variable "health_check" {
     request_path        = string
   })
 }
-
