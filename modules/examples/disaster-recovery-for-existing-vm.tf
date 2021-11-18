@@ -1,4 +1,11 @@
 module "disaster-recovery-for-existing-vm" {
+  /*
+  Select source directory.
+
+  'disaster-recovery' module will clone a existing VM and create disaster recovery logic
+  'compute-instance' module will create a new VM
+  'compute-instance-disaster-recovery' module will create a new VM as well disaster recovery logic
+  */
   source  = "../disaster-recovery"
   project = "project_name"
 
@@ -8,32 +15,34 @@ module "disaster-recovery-for-existing-vm" {
   region = "us-central1"
   zone   = "us-central1-a"
 
+  # labels on disks
   labels = {
     l1 = "k1"
   }
 
+  # You can turn on some metadata feature on a VM.
+  # https://cloud.google.com/compute/docs/metadata/overview
   metadata = {
     enable_oslogin = true
   }
 
+  # Disk snapshot configuration
   snapshot = {
     hours              = 1 # Snapshot frequency
     start_time         = "04:00"
     max_retention_days = 1 # how long keep snapshots
   }
-  /*
 
-  To-Do:
+  /*
   If you like to change disk size or to add a new disk, please add here.
 
   Important : Please click Google Console's `Compute Engine -> VM Instances` and `Compute Engine -> Disks` menu and select
   `EQUIVALENT REST` link. Any value different from the `EQUIVALENT REST` link will be applied to the disk.
 
   !The number of disks must be the same as the number of source_vm's disks
-  !The value defined here will overwrite 'source_vm's value
+  !The value defined here will overwrite 'source_vm's original value.
   !If you add additional disk, populate all of disk_name values.
 */
-
   disks = [
     {
       boot         = null
@@ -56,6 +65,7 @@ module "disaster-recovery-for-existing-vm" {
     }
   ]
 
+  # VM to be cloned
   source_vm = "test" #Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'
 
   network_tag = ["allow-all"]
@@ -69,6 +79,7 @@ module "disaster-recovery-for-existing-vm" {
   # Instance group manager
   igm_initial_delay_sec = "120" # booting time
 
+  # Health check setting
   http_health_check_enabled = false # 'false' to use TCP protocol, 'true' to use HTTP
   health_check = {
     check_interval_sec  = 10
